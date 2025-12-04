@@ -1,0 +1,1212 @@
+---
+title: LLM基础设施(MCP+A2A)
+date: 2025-10-01T14:56:28+0800
+draft: false
+tags:
+- AI
+- DeepLearning
+- Tutorial
+- MCP
+- A2A
+- ACP
+- ANP
+author: Ringi Lee
+showToc: true
+tocOpen: false
+---
+
+# LLM基础设施
+
+## LLM 技术栈
+
+2025年5月27日，蚂蚁开源在第⼗届技术⽇上，重磅发布了《2025 ⼤模型开源开发⽣态全景与趋势》报告（以下简称“报告”），其中，生态全景图收录了包括智能体应⽤层和模型基础设施层的 135 个项目。
+- Open Source LLM Development Landscape 2025
+- 地址：[antoss-landscape](https://antoss-landscape.my.canva.site)
+
+生态全景图中
+- `应用层`位于最上方，展示了基于开源大模型所开发的各类应用以及相关工具。主要包括:
+  - 能处理复杂任务的`通用助手`，如 OpenManus、OWL 等；
+  - 能辅助开发的`编码助手`，如 OpenHands、aider 等；
+  - 能帮助开发者构建 `Agent 开发框架`，如 Dify、n8n 等；
+    - 训练: Pytorch
+    - 推理: vLLM, SGLang
+    - 应用: Dify 和 RAGFlow
+  - 能为用户提供与大模型交互界面的`客户端界面`，如 Open WebUI、SillyTavern 等；
+  - 帮助开发者对应用进行**开发和部署**工具，如 ComfyUI、Vercel 等；
+  - 用于管理和优化大语言模型的 `API 调用`，如 LiteLLM、Model Context Protocol 等。
+- `基础设施层`位于生态全景图下方，涵盖了数据转换、模型训练、开发、部署以及数据治理等多个方面的项目。
+  - 数据标注、数据整合、数据治理层面，如 Label Studio、Airflow 等；
+  - 在服务与训练层，包括提供大模型服务部署的 Ollam、深度学习框架 PyTorch、TensorFlow 等；
+  - Ray、Spark 等分布式处理框架；
+  - CUTLASS、FlashAttention 等硬件加速库。
+
+大模型开发生态的残酷性: 黑客马拉松
+
+Dang AI 打造的“AI 墓园”。
+- 5079 个 AI 应用工具中，有 1232 个已经停止维护。
+- 如曾获得过 3.1w 个 Star 的 AI 聊天应用 `Chatbot UI`，从 2023 年 3 月创建，到 2024 年 8 月消亡，也不过一年半的光景。
+- 曾获得过 2.1w 个 Star、堪称是最早对 AGI 进行想象的项目之一的 `BabyAGI`，即便早在 2023 年 4 月就前瞻性提出了“自我进化 Agent”的设想，最终还是在一年半后消失在茫茫数字世界中。
+- 甚至连 OpenAI，也有项目出现在这份“死亡名单”中——提出了“群体智能”的概念 `Swarm`，曾在发布时获得了极高的关注度，但最终被产业可落地的 `OpenAI Agents SDK` 所替代，逐渐淡出公众视野。
+
+作为最早落地的应用场景，**AI 搜索**曾被视为 AI 时代的“超级应用”，但随着大模型能力的泛化，那些专注于 AI 搜索的项目优势不再明显，甚至在处理一些复杂任务时，远没有能进行推理和归纳的大模型游刃有余。
+- 分析: 用户并不在意打开的是**搜索页**还是**对话框**，可以联网的模型完全可以满足用户“先问 AI”的需求。
+
+详见站内专题 [AI 搜索](llm_search)
+
+与之形成鲜明对比的是，**AI Coding** 开源项目正呈现出火热的态势，甚至在今年一度刮起了“**氛围编程**”（Vibe Coding）热潮。
+- 一直以来，编程都称得上是 AI 赛道的热门场景，从最早的低代码、无代码，到后期的辅助编程，甚至是 AI 自主编程，AI 的编程能力愈演愈强，也让这一赛道持续火热。
+- 现阶段，除了商业化产品 Cursor、Windsurf 等验证了市场热情外，以 Continue、Cline 为代表的 IDE 插件形态的项目们也是主流的开源选择。
+
+详见站内专题 [辅助编程](llm_code)
+
+未来，AI Agent 框架的发展也将呈现“马太效应”：功能完善、生态健全的平台将吸引更多企业用户，而这些用户的反馈和需求又将进一步推动平台优化，形成正向循环。此外，未来大模型应用会逐步向微服务化演进，即具有特定功能的 Agent/MCP 将成为互联网上独立发布并可被随时调用的服务，或者是以标准配置的形式发布以方便开发者或用户随时本地构建和启动服务。
+
+## 总结
+
+
+从模型上下文协议 (`MCP`) 到 IBM 和思科的智能体通信协议 (`ACP`) ，从谷歌的跨厂商智能体对智能体协议 (`A2A`) 到去中心化的代理网络协议 (`ANP`) ，这些协议正在竞相定义智能体在AI时代如何协调。
+
+参考
+- 【2025-7-11】[Agent协议2.0“三剑客”：MCP协议、A2A协议、AG-UI协议](https://mp.weixin.qq.com/s/xY5oGTcnOk4XUSVNYcIMMA) 含代码
+- 【2025-6-28】[智能体协议困境在哪？Agent通信4大协议：MCP/ACP/A2A/ANP](https://zhuanlan.zhihu.com/p/1922382747378389314)
+- 【2025-5-23】美国东北大学论文 [A SURVEY OF AGENT INTEROPERABILITY PROTOCOLS: MODEL CONTEXT PROTOCOL (MCP), AGENT COMMUNICATION PROTOCOL (ACP), AGENT-TO-AGENT PROTOCOL (A2A), AND AGENT NETWORK PROTOCOL (ANP)](https://www.arxiv.org/pdf/2505.02279)
+
+### 使用指南
+
+路线图：
+- MCP（工具调用）→  ACP（多模态通信）→  A2A（企业协作）→  ANP（开放市场）。
+
+例如
+- 医疗领域可先部署MCP连接电子病历工具，再通过ANP实现跨机构智能体会诊。
+
+### 对比
+
+Agent 智能体 三大核心协议：MCP、A2A与AG-UI
+
+AI应用中，我们通常会遇到三个角色：用户、AI Agent（智能助手）和外部工具。
+要让这三者顺畅配合，就需要统一的沟通方式，也就是“协议”。
+
+协议的 ”三剑客“
+- MCP：AI调用工具的标准；
+- A2A：AI之间协作的标准；
+- AG-UI：AI与用户界面沟通的标准；
+三者结合，构成了现代AI应用系统的通信骨架。
+
+目前有三个主流协议正在被广泛应用：
+- （1）MCP协议 —— 让AI能用外部工具
+  - MCP（Model Calling Protocol）解决AI Agent如何调用外部工具的问题。比如AI想查天气或操作数据库，MCP就像一个通用遥控器，让它可以顺利使用各种工具。
+- （2）A2A协议 —— 让AI之间能对话
+  - A2A（Agent to Agent）是多个AI之间沟通的标准。当多个AI需要合作完成任务时，A2A确保它们能互相理解、协调工作。
+- （3）AG-UI协议 —— 让AI和界面友好互动
+  - AG-UI（Agent to UI）规范了AI与前端界面之间的交互方式。这样用户通过网页或App使用AI功能时，体验更流畅、一致。
+
+|特性|MCP|ACP|A2A|ANP|
+| ---- | ---- | ---- | ---- | ---- |
+|功能聚焦|面向大模型的上下文注入|智能体的本地协作|跨平台的智能体通信|跨平台跨网络的智能体通信|
+|通信模型|客户机/服务器（host/server模型）|去中心化的本地运行时|基于HTTP的客户机/服务器，采用智能体Cards|基于HTTP的客户机/服务器，采用JSON-LD|
+|应用范围|垂直集成（模型调用工具）|本地优先的智能体运行时|智能体之间的水平集成|开放网络中智能体之间的水平集成|
+|发现机制|在服务器上的工具注册|本地广播/运行时注册|HTTP上的A2A.json|HTTP上的智能体-descriptions|
+|传输协议|HTTP(s),JSON|IPC,ZeroMQ,gRPC(灵活)|HTTP(s),JSON-RPC2.0|HTTP(s),JSON-LD|
+|安全模型|App层验证，OAuth2，有范围的API|运行时沙箱，私有网络的安全性|OAuth2，受限的开放端点|W3C DID技术构建去中心化的身份认证|
+|适用场景|大模型应用访问外部数据或外部工具|边缘智能，嵌入式系统，离线智能体|跨平台多智能体工作流|跨网络跨平台的多智能体工作流|
+|用例|大模型连接一组内部的API|设备内的多个小智能体协调|企业级分布式智能体的协作|互联网分布式智能体的协作| 
+
+## MCP
+
+问题：
+- 什么是 MCP？AI 应用的 `USB-C` 端口
+- 为什么要 MCP？
+- 如何使用/开发 MCP？
+
+资料
+- 【2025-3-9】[MCP (Model Context Protocol)](https://zhuanlan.zhihu.com/p/29001189476)
+- 【2025-4-13】[模型上下文协议 (MCP) 可视化指南](https://zhuanlan.zhihu.com/p/1894743783121343410)
+  - 原文 [Visual Guide to Model Context Protocol (MCP)](https://blog.dailydoseofds.com/p/visual-guide-to-model-context-protocol?source=queue)
+
+![](https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F4d25a162-5cc0-42cb-a7d9-a63a3210279a_1086x1280.gif)
+
+### 什么是 MCP
+
+`MCP`（模型上下文协议）：大模型飞速发，数据却常常被困在“孤岛”里，AI助手无法高效地获取和利用这些数据。
+
+LLM应用程序关键限制: 大模型与**外部**数据源和工具的隔离。
+
+每新增一个数据源，都需要复杂的定制实现，不仅耗时还难以规模化扩展。
+
+[微博](https://weibo.com/5648162302/5141628437136111)
+
+ 2024年11月25日, `Anthropic` 推出开放协议 `MCP`（Model Context Protocol）：
+ - 官方文章 [Introducing the Model Context Protocol](https://www.anthropic.com/news/model-context-protocol)
+
+像 AI 应用的 `USB-C` 接口，为 AI 模型与不同数据源和工具的整合提供了标准方式，使大语言模型（LLM）可以安全有序地访问本地或远程资源。
+
+`MCP` （Model Context Protocol，模型上下文协议）定义了**应用程序**和 **AI 模型**之间交换**上下文信息**的方式。
+
+开发者以一致方式将各种**数据源**、**工具**和**功能**连接到 AI 模型（中间协议层），像 `USB-C` 让不同设备能够通过相同的接口连接一样。
+
+MCP 目标:
+- 创建一个通用标准，使 AI 应用程序的开发和集成变得更加简单和统一
+- ![](https://pic4.zhimg.com/v2-3a242914e1f4958e631dd158e043b7c3_1440w.jpg)
+
+MCP 以更标准的方式让 LLM Chat 使用不同工具
+
+Anthropic 实现 LLM Tool Call 标准
+- ![](https://picx.zhimg.com/v2-9fe7fb51f264338a079a444eefa041b1_1440w.jpg)
+
+
+### 为什么要用 MCP
+
+以前，需要人工从数据库中筛选或使用工具检索可能信息，手动粘贴到 prompt 中。
+
+问题: 场景复杂时，手工引入prompt 很困难。
+
+许多 LLM 平台（如 OpenAI、Google）引入 `function call` 功能, 允许模型调用预定义函数获取数据或执行操作，提升自动化水平。
+- 局限性: function call 平台依赖性强，不同 LLM 平台 function call API 实现差异较大。
+- 例如，OpenAI 函数调用方式与 Google 不兼容，开发者在切换模型时需要重写代码，增加了适配成本。
+- 除此之外，还有**安全性**，交互性等问题。
+
+每个AI智能体各自为政，缺乏统一规则，互通有壁垒。
+
+AI行业能否有一套大家都认可的协议，让智能体之间、智能体与工具之间互相对接更加顺畅。
+
+Google 和 Anthropic 分别站了出来，各自抛出了一个方案：`A2A`协议和`MCP`协议。
+
+数据与工具本身客观存在，如何将数据连接到模型的环节更智能、统一?
+- Anthropic 设计了 MCP，充当 AI 模型的"万能转接头"，让 LLM 能轻松的获取数据或者调用工具。
+
+MCP 优势：
+- **生态** - MCP 提供很多插件， 直接使用。
+- **统一性** - 不限制于特定的 AI 模型，任何支持 MCP 的模型都可以灵活切换。
+- **数据安全** - 敏感数据留在自己的电脑上，不必全部上传。
+
+### MCP 原理
+
+
+Function Call 发展而来
+
+- ![](https://pic3.zhimg.com/v2-2bcd98f6541da0b6f14dc9082ee2dcda_r.jpg)
+
+分析
+- MCP 本质：统一的协议标准，使 AI 模型以一致方式连接各种数据源和工具，类似于 AI 世界的"USB-C"接口。
+- MCP 价值：解决了传统 function call 的**平台依赖**问题，提供更统一、开放、安全、灵活的工具调用机制，让用户和开发者都能从中受益。
+- 使用与开发：
+  - 对于普通用户，MCP 提供了丰富的现成工具，用户不了解任何技术细节的情况下使用；
+  - 对于开发者，MCP 提供了清晰的架构和 SDK，使工具开发变得相对简单。
+
+核心架构：
+- MCP 采用 客户端-服务器 模型，包含 `MCP Host`（负责用户交互的平台）、`MCP Client`（与 Server 建立连接的桥梁）和 `MCP Server`（提供资源、工具和提示信息的轻量级程序）。
+
+架构图
+- ![](https://pica.zhimg.com/v2-9d3681630ed930a8dc74d3b452c0cc94_1440w.jpg)
+
+MCP 三个核心组件：Host、Client 和 Server。
+- 用 Claude Desktop (Host) 询问："我桌面上有哪些文档？"
+- `Host`：Claude Desktop 作为 `Host`，负责接收提问并与 Claude 模型交互。
+- `Client`：当 Claude 模型访问文件系统时，`Host` 中内置的 `MCP Client` 会被激活, 负责与适当的 `MCP Server` 建立连接。
+- `Server`：文件系统 `MCP Server` 会被调用, 负责执行实际的文件扫描操作，访问桌面目录，并返回找到的文档列表。
+
+MCP servers 提供三种主要类型的功能：
+- `Resources`（资源）：类似文件的数据，可以被客户端读取（如 API 响应或文件内容）
+- `Tools`（工具）：可以被 LLM 调用的函数（需要用户批准）
+- `Prompts`（提示）：预先编写的模板，帮助用户完成特定任务
+
+
+整个流程：
+- 问题 → Claude Desktop(Host) → Claude 模型 → 需要文件信息 → MCP Client 连接 → 文件系统 MCP Server → 执行操作 → 返回结果 → Claude 生成回答 → 显示在 Claude Desktop 上。
+
+![](https://pic3.zhimg.com/v2-3f7ceba80b16ef134b27119308a04472_1440w.jpg)
+
+关键点：
+1. 数据集成：无论是本地数据库、文件系统，还是远程的 API 服务，MCP 都能助力 AI 模型无缝对接。例如，在财务分析场景下，AI 模型可以通过 MCP 直接访问云端的财务数据 API，快速获取和处理海量的财务报表信息。
+2. 工具调用：它为 AI 模型提供了丰富的预定义工具，包括执行脚本、浏览器自动化、金融数据查询等。就好比给 AI 模型配备了一整套“工具箱”，让它可以更灵活地完成各种任务。
+3. 提示管理：通过标准化的提示模板指导 AI 模型完成任务。比如在内容创作场景中，AI 模型可以依据预设的提示模板，快速生成符合要求的文案、故事等内容。
+4. 传输层多样：支持多种传输机制，像 tdio 传输、基于 HTTP+SSE 的传输等，保障了数据在不同网络环境下的高效传输。
+5. 安全性：MCP 在基础设施内部保护数据，确保用户隐私和数据安全，让用户可以安心地使用 AI 应用。
+
+MCP 这一技术突破了数据隔阂，使 AI 模型的数据获取更便捷、功能集成更灵活，推动我们迈向更智能、更互联的 AI 未来！
+
+
+#### 通信方式
+
+MCP 两种通信方式：
+- **标准输入输出**（Standard Input/Output, `stdio`）：客户端通过启动服务器子进程并使用标准输入（stdin）和标准输出（stdout）建立双向通信，一个服务器进程只能与启动客户端通信（1:1 关系）。
+  - stdio 适用于**本地**快速集成的场景。
+- **服务器发送事件**（Server-Sent Events, `SSE`）：服务器作为**独立进程**运行，客户端和服务器代码完全解耦，支持多个客户端随时连接和断开。
+
+触发命令
+
+```sh
+mcp dev server.py
+```
+
+弹出本地 web 链接
+
+### MCP vs Function Call
+
+
+【2025-5-6】[大模型算法面经：Function Call、MCP、A2A](https://zhuanlan.zhihu.com/p/1898326676087223572)
+
+MCP与Function Call的区别与关系
+- ![](https://pic1.zhimg.com/v2-eec3578e7c52328108ac85b589114988_b.webp)
+
+函数调用是一种机制，允许 LLM 根据用户输入识别要什么工具以及何时调用它。
+
+工作原理：
+- LLM 收到来自用户的提示。
+- LLM 决定它需要的工具。
+- 程序员实现过程以接受来自 LLM 的工具调用请求并准备函数调用。
+- 函数调用（带参数）将传递给将处理实际执行的后端服务。
+
+MCP（即模型上下文协议,Model Context Protocol）试图**标准化**此过程。 
+
+MCP (Model Context Protocol): 开放协议和标准，标准化AI 应用（MCP 客户端）如何**发现**、**连接**和与外部工具/数据源（实现为 MCP 服务器）进行**交互**。
+
+关注系统间通信和集成，解决 Function Calling 指令生成后，如何高效、安全、可扩展地**执行**这些调用。
+- ![](https://picx.zhimg.com/v2-1c76c2a5a299ac7f36efaed9fefd75eb_b.webp)
+
+Function Call 侧重于**模型想要做什么**，而 MCP 侧重于**如何使工具可被发现和可消费**，尤其是在多个Agent、模型或平台之间。
+
+MCP 不是在每个应用程序或代理中**硬连接**工具，而是：
+- 标准化了工具的定义、托管和向 LLM 公开的方式。
+- 使 LLM 能够轻松发现可用工具、了解其架构并使用它们。
+- 在调用工具之前提供审批和审计工作流程。
+- 将工具实施的关注与消费分开。
+
+关系: 
+- Function Calling 是 LLM 产生调用请求的能力
+- MCP 是标准化执行这些请求的协议框架。
+- FC 生成指令，MCP 负责让这些指令能在各种工具间通用、可靠地传递和执行。
+- 互补，FC 是 MCP 架构中模型表达意图的方式之一。
+
+
+### MCP 生态
+
+【2025-4-10】MCP 市场
+- 国外 
+  - [MCPMarket](https://mcpmarket.com/) Browse All MCP Servers
+  - [MCP.so](mcp.so) Find Awesome MCP Servers and Clients The largest collection of MCP Servers.
+    - 已经有 7966 个 MCP
+- 国内 [MCPmarket](https://mcpmarket.cn/) 是中文首个聚焦MCP的工具市场
+
+超过 6000个可直接调用的 MCP 工具 已上线，包括：
+- 官方发布的MCP，如微软、字节、Perplexity
+- 各类社区开发的MCP工具
+- 涵盖社交、效率、数据、搜索、创作等各类工具
+- 全中文文档、社区群支持
+	
+不仅能玩，还能学、以后还能赚！
+
+| 类目 | 国外类目 | 国内类目 | 国内server数 | 国外servers数 |
+| --- | --- | --- | --- | --- |
+| Developer Tools | 开发者工具 | 暂无 | 暂无 | 3094 |
+| API Development | API 开发 | 暂无 | 暂无 | 2397 |
+| Data Science & ML | 数据科学与机器学习 | 暂无 | 暂无 | 1199 |
+| Productivity & Workflow | 生产力与工作流程 | 暂无 | 暂无 | 886 |
+| Web Scraping & Data Collection | 网络爬虫与数据收集 | 暂无 | 暂无 | 431 |
+| Collaboration Tools | 协作工具 | 暂无 | 暂无 | 414 |
+| Deployment & DevOps | 部署与开发运维 | 暂无 | 暂无 | 376 |
+| Database Management | 数据库管理 | 暂无 | 暂无 | 366 |
+| Learning & Documentation | 学习与文档 | 暂无 | 暂无 | 315 |
+| Security & Testing | 安全与测试 | 暂无 | 暂无 | 285 |
+| Cloud Infrastructure | 云基础设施 | 暂无 | 暂无 | 278 |
+| Analytics & Monitoring | 分析与监控 | 暂无 | 暂无 | 247 |
+| Design Tools | 设计工具 | 暂无 | 暂无 | 128 |
+| Browser Automation | 浏览器自动化 | 暂无 | 暂无 | 101 |
+| Social Media Management | 社交媒体管理 | 暂无 | 暂无 | 92 |
+| Content Management | 内容管理 | 暂无 | 暂无 | 90 |
+| Game Development | 游戏开发 | 暂无 | 暂无 | 84 |
+| Official | 官方 | 暂无 | 暂无 | 79 |
+| Marketing Automation | 营销自动化 | 暂无 | 暂无 | 59 |
+| Other | 其他 | 暂无 | 暂无 | 1881 |
+
+
+### MCP 架构
+
+【2025-5-26】[MCP Server的五种主流架构与Nacos的选择](https://mp.weixin.qq.com/s/OKbuyS2KcggvZ72ngiQOdg)
+
+MCP Server 五种架构模式
+- 架构一：MCP Client 直连 Remote Server (SSE)
+  - 直接打电话给专家咨询问题
+  - MCP Client 通过SSE方式直接连接到远程MCP Server，全程保持HTTP长连接。
+- 架构二：MCP Client 通过 Proxy 连接 Remote Server (SSE)
+- 架构三：MCP Client 直连 Local Server (STDIO)
+- 架构四：MCP Client 通过 Local Proxy 连接Local Server (STDIO)
+- 架构五：MCP Client 通过 Local Proxy 连接Remote Server (STDIO+SSE)
+
+图见原文
+
+#### 架构一：MCP Client直连Remote Server (SSE)
+
+这种架构就像你直接打电话给专家咨询问题 —— MCP Client通过SSE方式直接连接到远程MCP Server，全程保持HTTP长连接。
+
+优点
+- 超简单, 没有中间层，部署维护成本低；
+- 实时性好，模型的流式输出体验一流；
+- 集中化管理，监控和运维不费劲；
+
+缺点
+- 网络一卡，体验就崩了；
+- 所有数据都得传到云端，敏感信息有顾虑；
+- 安全风险较高，服务端点直接暴露；
+
+适合谁？ 
+- 如果做SaaS应用、轻量级客户端或公共云服务，对安全要求不那么高，这种架构就挺合适的。
+
+#### 架构二：MCP Client通过Proxy连接Remote Server (SSE)
+
+这种架构就像有个翻译在中间帮你沟通 —— MCP Client先连接到Proxy Server，再由Proxy转接到Remote Server。
+
+优点？
+- 安全性更高，代理层可以做各种防护；
+- 支持智能路由和负载均衡，流量调度更灵活；
+- 可以聚合多个后端服务，一个接口通吃；
+
+缺点？
+- 架构复杂了，维护成本自然上升；
+- 多一层代理可能增加延迟，体验稍差；
+- 代理层可能成为新的故障点；
+
+适合谁？ 
+- 多租户环境、企业网关集成、需要调用多种模型的场景，这种架构就很给力。
+
+#### 架构三：MCP Client直连Local Server (STDIO)
+
+
+这种架构就像你家里有个私人助理 —— MCP Client通过STDIO方式直接连接本地MCP Server，进程间直接通信。
+
+优点？
+- 数据安全性拉满！敏感数据不出本地；
+- 几乎零网络延迟，响应速度飞快；
+- 完全离线环境也能用，不依赖外网；
+
+缺点？
+- 本地计算资源得够强，不然跑不动；
+- 每个环境都要单独部署维护，运维成本高；
+- 模型和服务更新很麻烦，得一个个环境去更新；
+
+适合谁？ 
+- 金融核心系统、医疗数据分析、工业现场系统等对数据安全和隐私有高要求的场景。
+
+#### 架构四：MCP Client通过Local Proxy连接Local Server (STDIO)
+
+这种架构就像你有个私人秘书帮你协调多个本地专家 —— MCP Client先连接到Local Proxy，再由Proxy连接到Local Server。
+
+优点？
+- 服务抽象做得好，客户端不用关心实现细节；
+- 支持本地多实例部署，自动故障转移；
+- 可以实现不同业务线或部门的资源隔离；
+
+缺点？
+- 本地环境更复杂了，维护难度加大；
+- 本地代理需要额外的计算资源；
+- 多层架构让问题定位和调试变得更困难；
+
+适合谁？ 
+- 大型企业内部平台、高可用要求场景、需要统一管理本地AI资源的场景。
+
+#### 架构五：MCP Client通过Local Proxy连接Remote Server (STDIO+SSE)
+
+这种架构就像你有个超级助手，既能处理本地事务又能帮你对接外部专家 —— MCP Client通过STDIO连接Local Proxy，Local Proxy再通过SSE连接Remote Server。
+
+优点？
+- 混合云战略的最佳选择，本地云端资源随意切换；
+- 企业从本地向云端迁移的平滑过渡方案；
+- 客户端体验一致，不用关心服务在哪里；
+
+缺点？
+- 架构最复杂，维护和排障难度最大；
+- 需要确保本地和云端服务的一致性；
+- 性能受网络状况影响，可能有波动；
+
+适合谁？ 
+- 实施混合云战略的大型企业、需要弹性扩展的业务、多区域部署的全球企业。
+
+#### Nacos 如何赋能MCP架构
+
+在企业级MCP部署中，MCP Server 的自动发现与选择及其 Server 的动态安装能力比较高效的解决了各个架构中遇到的场景。在 Nacos 3.0 之前的版本，主要围绕着分布式应用的服务注册发现以及配置管理，提供了三大核心能力：
+1. 服务发现与注册：支持服务的自动注册和发现，实现服务的动态扩缩容；
+2. 配置管理：支持配置的动态更新和推送，无需重启应用；
+3. 服务治理：提供服务路由、负载均衡、流量控制等治理能力；
+
+这些能力与MCP架构的需求高度契合，特别是在多MCP服务器的场景下。
+
+
+Nacos MCP Router：连接 MCP 与 Nacos 的桥梁
+
+Nacos MCP Router (https://github.com/nacos-group/nacos-mcp-router) 是一个基于MCP协议的服务器，它与Nacos深度集成，提供了三个
+
+核心功能：
+1. MCP服务器搜索：根据任务描述和关键词搜索合适的 MCP 服务器，重点解决 MCP 工具过多时解决大模型选择工具的效率的问题。
+2. MCP服务器添加：支持添加stdio和SSE两种协议的 MCP 服务器，配合 Nacos Server 的管理能力，重点解决软件供应链安全的问题。
+3. 工具代理调用：代理 LLM 对目标 MCP 服务器工具的调用，通过一个本地代理的方式解决 Local Server 与 Remote Server 调用的灵活切换问题。
+
+通过以上的几个能力，我们搭建了一种混合 MCP Server 架构的模式，可以实现MCP服务的统一管理和智能路由，大大简化提升工具选择时的性能与企业级 MCP 部署的复杂度。
+
+
+
+
+### MCP 实现
+
+
+环境准备
+
+```sh
+# 安装 uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# 创建项目目录
+uv init txt_counter
+cd txt_counter
+# 设置 Python 3.10+ 环境
+echo "3.11" > .python-version
+# 创建虚拟环境并激活
+uv venv
+source .venv/bin/activate
+# Install dependencies
+uv add "mcp[cli]" httpx
+# Create our server file
+touch txt_counter.py
+```
+
+#### 自定义计数器
+
+构造 prompt
+
+打造一个 MCP 服务器，它能够：
+- 功能：
+  - 统计当前桌面上的 txt 文件数量
+  - 获取对应文件的名字
+
+要求：
+- 不需要给出 prompt 和 resource 相关代码。
+- 假设桌面路径为 /Users/{username}/Desktop
+
+MCP 提供的功能包括：
+
+（1）资源Resources
+
+MCP服务中可提供的资源包括：文件内容、数据库记录、图像等。LLM可以通过MCP服务，读取文件、数据库等等。
+
+（2）提示Prompt
+
+包括可重复使用的提示模板和工作流程。提示使服务器能够定义可重用的提示模板和工作流程，客户端可以轻松地向用户和大型语言模型展示这些模板和工作流程
+
+（3）工具Tools
+
+LLM可用直接调用MCP中提供的工具，工具一般来说就是函数实现，MCP服务将会提供函数的描述和参数的描述给LLM，LLM将会判断应该执行哪个函数，并填写参数，最后在服务端执行函数。
+
+（4）采样Sampling
+
+让MCP 服务器请求 LLM的生成结果。 采样是MCP的一个强大功能，它允许 MCP 服务器通过客户端请求LLM的生成结果，从而实现复杂的智能行为，同时保持安全性和隐私性。
+
+
+关键依赖
+- mcp==0.1.0  # MCP 客户端库
+- openai==1.0.0以上  # 支持 OpenAI 兼容API的客户端
+
+MCP环境配置过程如下：
+
+```sh
+#（1）.创建一个uv项目
+uv init mcp-test
+cd mcp-test
+# （2）.将 MCP 添加到项目依赖项中
+uv add "mcp[cli]"
+#
+```
+
+
+MCP Server 代码
+
+```py
+import os
+from pathlib import Path
+from mcp.server.fastmcp import FastMCP
+
+# 创建 MCP Server
+mcp = FastMCP("桌面 TXT 文件统计器")
+
+@mcp.tool()
+def count_desktop_txt_files() -> int:
+    """Count the number of .txt files on the desktop."""
+    # Get the desktop path
+    username = os.getenv("USER") or os.getenv("USERNAME")
+    desktop_path = Path(f"/Users/{username}/Desktop")
+
+    # Count .txt files
+    txt_files = list(desktop_path.glob("*.txt"))
+    return len(txt_files)
+
+@mcp.tool()
+def list_desktop_txt_files() -> str:
+    """Get a list of all .txt filenames on the desktop."""
+    # Get the desktop path
+    username = os.getenv("USER") or os.getenv("USERNAME")
+    desktop_path = Path(f"/Users/{username}/Desktop")
+
+    # Get all .txt files
+    txt_files = list(desktop_path.glob("*.txt"))
+
+    # Return the filenames
+    if not txt_files:
+        return "No .txt files found on desktop."
+
+    # Format the list of filenames
+    file_list = "\n".join([f"- {file.name}" for file in txt_files])
+    return f"Found {len(txt_files)} .txt files on desktop:\n{file_list}"
+
+if __name__ == "__main__":
+    # Initialize and run the server
+    mcp.run()
+```
+
+
+自定义工具注意：
+- （1）要给每个函数工具**写好注释**
+  - MCP服务将会**自动解析**这些注释，作为工具的描述。
+- （2）定义好每个**参数**类型
+  - 例如：`weight_kg: float`，MCP将自动解析参数的类型，作为参数的描述，并且会将LLM的输出结果自动转为相应的类型。
+- （3）定义好**返回值**类型
+  - 例如：`-> float`，这表示函数将返回一个float类型的值。
+
+测试 server
+
+```sh
+mcp dev txt_counter.py
+# Starting MCP inspector...
+# Proxy server listening on port 3000
+
+# MCP Inspector is up and running at http://localhost:5173
+```
+
+链接内容
+- ![](https://pica.zhimg.com/v2-a5e671c689907229a1d86162597e2da4_1440w.jpg)
+
+MCP 接入到 Claude Desktop 中。流程如下：
+
+```
+# 打开 claude_desktop_config.json (MacOS / Linux)
+# 如果你用的是 cursor 或者 vim 请更换对应的命令
+code ~/Library/Application\ Support/Claude/claude_desktop_config.json
+```
+
+在配置文件中添加以下内容，记得替换 /Users/{username} 为你的实际用户名，以及其他路径为你的实际路径。
+
+```json
+{
+  "mcpServers": {
+    "txt_counter": {
+      "command": "/Users/{username}/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/{username}/work/mcp-learn/code-example-txt", // 你的项目路径（这里是我的）
+        "run",
+        "txt_counter.py" // 你的 MCP Server 文件名
+      ]
+    }
+  }
+}
+```
+
+uv 最好是绝对路径，推荐使用 which uv 获取。
+配置好后重启 Claude Desktop，如果没问题就能看到对应的 MCP Server 了
+
+简单的 prompt 进行实际测试：
+- 能推测我当前桌面上 txt 文件名的含义吗？
+
+可能会请求使用权限，如图一所示，点击 Allow for This Chat
+- ![](https://pic1.zhimg.com/v2-d99e12160a8ae3af75df8ddf7eddda24_1440w.jpg)
+
+
+#### MCP 链接 DeepSeek
+
+
+[如何用MCP实现DeepSeek的工具调用](https://zhuanlan.zhihu.com/p/1893771347332687580)
+- 向 DeepSeek 提问：“我想知道我的身高和体重是否符合标准”
+- DeepSeek 引导用户说出身高与体重，DeepSeek还能够根据用户说出的数字，自动将厘米单位转为为米，随后调用MCP服务中的calculate_bmi，实现BMI的计算
+- 计算完成后，DeepSeek 将会根据计算结果，判断BMI是否为正常范围。
+
+实现
+- `server.py`: MCP服务器中定义了两个工具 ['`get_time`', '`calculate_bmi`']
+- `client.py`: DeepSeek 将会直接调用MCP服务中的 get_time 工具，查询当前时间，并告诉用户当前时间。
+
+1. 用户输入
+2. LLM响应，并输出
+3. 判断LLM的响应是否为工具调用
+4. 若结果为工具调用，执行工具，再将执行的结果发送给LLM，再次获得响应，并输出。
+
+
+【2025-4-23】调试通过
+- DeepSeek key 信息写入 `.env` 文件
+- 问题: 执行命令后, 僵死, 没反应，疑似 mcp 工具未找到，导致初始化故障
+  - `uv run client.py server.py`
+- 解法: 重新安装 `pip install mcp[cli] httpx --upgrade`, 并把 site-package/bin 中的二进制文件加入 Script 中。
+
+测试效果
+
+|类型|提问|分析|结论|解答|
+|--|---|---|---|---|
+|单工具调用|正确|调用工具 `get_time`|现在几点|现在是2025年4月23日，下午3点18分。|
+|单工具调用|正确|调用工具 `calculate_bmi`, 并转换单位|身高170，体重140斤|您的BMI是24.22，处于正常范围的上限（正常范围18.5-24.9）。请注意保持健康的生活方式哦！|
+|非工具调用|正确|未调用工具|现在极端了|我无法理解您的问题。您是想问关于时间、计算BMI，还是有其他问题？|
+|多工具调用|正确|调用多个工具|看下时间，帮我测下BMI，167，135斤|现在是2025年4月23日，下午3点18分。<br>根据您提供的身高1.67米，体重67.5公斤（135斤），您的BMI是24.22。 |
+
+
+```sh
+PS E:\llm\mcp\mcp_test> uv run client.py server.py
+[debug] list tool ...
+[debug] initialize ...
+
+服务器中可用的工具： ['get_time', 'calculate_bmi']
+MCP 客户端启动
+输入 /bye 退出
+>>> 现在极端了
+我无法理解您的问题。您是想问关于时间、计算BMI，还是有其他问题？
+>>> 现在几点
+\```json
+{
+    "tool": "get_time",
+    "arguments": {}
+}
+\```
+[提示]：正在执行函数
+[执行结果]: meta=None content=[TextContent(type='text', text='2025-04-23 15:18:43.446073', annotations=None)] isError=False
+现在是2025年4月23日，下午3点18分。
+>>> 身高170，体重140斤
+\```json
+{
+    "tool": "calculate_bmi",
+    "arguments": {
+        "weight_kg": "70",
+        "height_m": "1.70"
+    }
+}
+\```
+[提示]：正在执行函数
+[执行结果]: meta=None content=[TextContent(type='text', text='24.221453287197235', annotations=None)] isError=False
+您的BMI是24.22，处于正常范围的上限（正常范围18.5-24.9）。请注意保持健康的生活方式哦！
+
+>>> 看下时间，帮我测下BMI，167，135斤
+现在是2025年4月23日，下午3点18分。
+
+根据您提供的身高1.67米，体重67.5公斤（135斤），您的BMI是24.22。这个数值处于正常范围的上限（正常BMI范围是18.5-24.9），建议继续保持健康饮食和适量运动。
+
+```
+
+#### langchain-mcp
+
+环境准备
+
+```sh
+pip install langchain-mcp-adapters
+pip install langchain-openai
+export OPENAI_API_KEY=<your_api_key>
+```
+
+代码
+- [langchain-mcp-adapters](https://github.com/langchain-ai/langchain-mcp-adapters)
+
+支持多个 mcp 服务
+- 每个工具新建一个ClientSession 
+
+```py
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.prebuilt import create_react_agent
+
+client = MultiServerMCPClient(
+    {
+        "math": {
+            "command": "python",
+            # Make sure to update to the full absolute path to your math_server.py file
+            "args": ["/path/to/math_server.py"],
+            "transport": "stdio",
+        },
+        "weather": {
+            # make sure you start your weather server on port 8000
+            "url": "http://localhost:8000/mcp",
+            "transport": "streamable_http",
+        }
+    }
+)
+
+tools = await client.get_tools()
+# ------------ 每个工具新建一个ClientSession ------------
+agent = create_react_agent("openai:gpt-4.1", tools) 
+math_response = await agent.ainvoke({"messages": "what's (3 + 5) x 12?"})
+weather_response = await agent.ainvoke({"messages": "what is the weather in nyc?"})
+
+# ----------- 为指定的工具创建 ClientSession --------------
+from langchain_mcp_adapters.tools import load_mcp_tools
+
+client = MultiServerMCPClient({...})
+async with client.session("math") as session:
+    tools = await load_mcp_tools(session)
+```
+
+
+### MCP 调试
+
+MCP Server Debug
+- Official Tutorial: [Debugging](https://modelcontextprotocol.io/docs/tools/debugging)
+- Official Tutorial: [Inspector](https://modelcontextprotocol.io/docs/tools/inspector)
+
+
+
+## A2A
+
+
+
+### 什么是 A2A
+
+【2025-4-9】 [5000字长文带你看懂，Agent世界里的A2A、MCP协议到底是个啥]()
+
+2025年4月10日，谷歌在 Google Cloud Next 2025大会上宣布开源首个标准**智能体交互协议** —— Agent2Agent Protocol（简称`A2A`），标志着智能体交互领域的一大突破。
+- [Unlock Collaborative, agent to agent scenarios with a new open protocol](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)
+- [A2A](https://github.com/google/A2A)
+- [文档](https://google.github.io/A2A/#/)
+
+![](https://google.github.io/A2A/images/a2a_main.png)
+
+Agent2Agent（A2A）协议使**多个 AI 智能体**协同完成任务，而无需直接共享它们的内部记忆、思考或工具。
+- ![](https://pic1.zhimg.com/v2-0628c05970ebc48736124d672dd8baa6_b.webp)
+
+通过交换**上下文**、**任务更新**、**指令**和**数据**进行通信。
+
+本质上，AI 应用将 A2A 智能体建模为 **MCP 资源**，这些资源由 `AgentCard`（智能体卡片） 表示。
+- ![](https://pic3.zhimg.com/v2-5fe28c34e97cda705ec3947f2dbef6ae_b.webp)
+
+通过这种方式，连接到 MCP 服务器的 AI 智能体可以发现新的合作智能体，并通过 A2A 协议建立连接。
+
+支持 A2A 的远程智能体必须发布一个 “JSON 智能体卡片”，详细说明其能力和认证信息。客户端使用此卡片来查找和与最适合某项任务的智能体进行通信。
+
+A2A 的几个强大特性包括：
+- 安全协作
+- 任务与状态管理
+- 能力发现
+- 来自不同框架的智能体协同工作（如 LlamaIndex、CrewAI 等）
+
+
+
+### MCP vs A2A
+
+智能体通信的开放标准
+- MCP 用于 Agent 与外部 Tool、API、资源之间的交互
+- A2A 用于 Agent 与 Agent 之间的交互
+- ![](https://google.github.io/A2A/images/a2a_mcp_readme.png)
+
+- 用于工具和资源的`MCP`（模型上下文协议）
+  - 将智能体与具有结构化输入/输出的工具、应用程序接口（APIs）和资源相连接。
+  - 谷歌ADK支持MCP工具，使得大量MCP服务器可与智能体配合使用。
+- 用于智能体间协作的`A2A`（智能体对智能体协议）
+  - 不同智能体之间无需共享内存、资源和工具即可进行动态、多模态通信。 
+  - 由社区推动的开放标准。
+  - 使用谷歌ADK、LangGraph、Crew.AI 可获取相关示例。 
+
+Agentic 应用需要同时使用 A2A 和 MCP。
+- MCP 为智能体提供对**工具**的**访问**能力。
+- 而 A2A 则让**智能体之间**能够连接和协作组队。
+
+简而言之：
+- Agent2Agent（A2A）协议允许 AI 智能体连接其他智能体。
+- Model Context Protocol（MCP）让 AI 智能体连接工具/API。
+
+因此，使用 A2A 时，两个智能体可能正在互相对话…… 而本身也可能正在与 MCP 服务器通信。并不互相补充。
+- ![](https://pic1.zhimg.com/v2-f3c2b2c7403a3b79922ecaa54a46bee6_b.webp)
+- ![](https://pic2.zhimg.com/v2-55e2fabe991a35333a8fee520539df39_b.jpg)
+
+
+### A2A 生态
+
+该协议将打破系统孤岛，对智能体的能力、跨平台、执行效率产生质的改变
+- 支持 Atlassian、Box、Cohere、Intuit、Langchain、MongoDB、PayPal、Salesforce、SAP、ServiceNow、UKG和Workday 等主流企业应用平台。
+- A2A协议的开源，类似于谷歌当年牵头80多家企业共同开发`安卓系统`，首批就有50多家著名企业加入。
+
+随着更多企业的加入，A2A的商业价值将得到极大提升，并推动整个智能体生态的快速发展。
+
+这一举措对于促进AI代理在企业间的通信、信息交换和行动协调具有重要意义。
+
+谷歌还效仿 OpenAI 开源了Agent开发套件ADK、内部测试工具`AgentEngine`以及新的Agent市场等。
+
+Google 发布关于Agent的新开放协议 Agent2Agent，简称A2A。
+
+A2A（Agent-to-Agent）协议，让AI代理彼此直接对话、协同工作的协议。
+- Salesforce、SAP、ServiceNow、MongoDB等在内的50多家科技公司的支持参与
+
+### A2A 原理
+
+设计初衷：
+- 让不同来源、不同厂商的Agent 互相理解、协作。
+- 就像 WTO 消减各国间关税壁垒一样。
+
+![](https://google.github.io/A2A/images/a2a_mcp.png)
+
+A2A 开放协议 为智能体提供了一种标准的协作方式，无论其底层框架或供应商如何。
+
+在与合作伙伴设计该协议时，谷歌云遵循了五个关键原则：
+- 拥抱**智能体能力**： A2A专注于使智能体能够以其自然、非结构化的方式进行协作，即使不共享内存、工具和上下文。谷歌云正在实现真正的多智能体场景，而不将智能体限制为“工具”。
+- 基于现有标准构建： 该协议建立在现有的流行标准之上，包括HTTP、SSE、JSON-RPC，这意味着它更容易与企业日常使用的现有IT堆栈集成。
+- 默认**安全**： A2A旨在支持企业级身份验证和授权，在发布时与OpenAPI的身份验证方案保持同等水平。
+- 支持**长时间运行**的任务： 谷歌云将A2A设计得灵活，并支持各种场景，从快速完成任务到可能需要数小时甚至数天（当有人类参与时）的深度研究，它都能胜任。在此过程中，A2A可以向其用户提供实时反馈、通知和状态更新。
+- **模态无关**： 智能体的世界不仅限于文本，这就是为什么谷歌云将A2A设计为支持各种模态，包括音频和视频流。
+
+一旦采用A2A，不同供应商和框架的Agent(小国家)，加入了一个自由贸易区，能够用共同语言交流、无缝协作，联手完成单个Agent难以独立完成的复杂工作流程。
+
+A2A促进了“客户端”智能体和“远程”智能体之间的通信。
+
+客户端智能体负责制定和传达任务，而远程智能体负责对这些任务采取行动，以尝试提供正确的信息或采取正确的行动。这种交互涉及几个关键能力：
+- 能力发现： 智能体可以使用JSON格式的“智能体卡片（Agent Card）”来宣传其能力，允许客户端智能体识别能够执行任务的最佳智能体，并利用A2A与远程智能体通信。
+- 任务管理： 客户端和远程智能体之间的通信面向任务完成，智能体在其中努力满足最终用户的请求。这个“任务”对象由协议定义并具有生命周期。它可以立即完成，或者对于长时间运行的任务，每个智能体可以进行通信以就完成任务的最新状态保持同步。任务的输出被称为“工件（artifact）”。
+- 协作： 智能体可以相互发送消息以传达上下文、回复、工件或用户指令。
+- 用户体验协商： 每条消息包含“部分（parts）”，这是一个完全成型的内容片段，如生成的图像。每个部分都有指定的内容类型，允许客户端和远程智能体协商所需的正确格式，并明确包括用户UI能力的协商——例如，iframes、视频、Web表单等。
+
+### 组件
+
+
+核心组件
+- `Agent Card`：公开的 JSON 文件（通常托管在 /.well-known/agent.json），用于描述该 Agent 的名称、功能、技能（Skill）、URL、认证方式等信息，便于客户端进行「服务发现」和「能力匹配」。
+- `Task`：表示具体工作单元，具有唯一 ID，并可以在多轮交互中不断更新状态。
+- `Message`：客户端和 Agent 之间互通时用的消息对象（"user" 或 "agent" 角色），其中可包含多种类型的 Part（如文本部分、文件部分、数据部分等）
+- `Artifact`：由 Agent 在执行任务过程中生成的输出结果。它与 Message 的差别在于，Artifact 通常是「结果物」或产物，而 Message 常用于「对话或指令」。
+- `Push Notification`：可选功能，如果 Agent 支持 pushNotifications，就可以向客户端指定的 URL 主动发起任务进度更新，而无需客户端轮询。
+- `Streaming`：如果 Agent 支持 streaming 功能，就可以在处理某个任务时，通过 tasks/sendSubscribe 使用 SSE 进行分段或实时地输出状态与结果。
+
+
+### 案例
+
+
+A2A项目实践
+- 【2025-4-23】[A2A协议(Agent to Agent Protocol)详解与官方案例实践分享](https://zhuanlan.zhihu.com/p/1895786881360316389)
+
+A2A协议在国内资料较少，且依赖Google平台的部分功能（如API_KEY），但其在AI Agent生态中的潜力不容忽视。
+
+#### 官方案例
+
+前置条件
+- github 代码获取
+- 申请 Google KEY
+
+按langgraph的README文件进行实践
+- 1、设置Google API 环境变量 
+  - `echo "GOOGLE_API_KEY=your_api_key_here" > .env`
+- 2、设置区域信息
+  - `export FIREBASE_FUNCTIONS_DEFAULT_REGION=us-west1`
+  - 不然会报错 `google.genai.errors.ClientError: 400 FAILED_PRECONDITION. {'error': {'code': 400, 'message': 'User location is not supported for the API use.', 'status': 'FAILED_PRECONDITION'}}` 
+- 3、启动 langgraph，如下图：
+  - `uv run .`
+- 4、启动客户端，客户端会主动发现并识别通过A2A协议开发的Agent
+  - `uv run hosts/cli`
+- 5、回到langgraph 目录，A2A协议开发的langgraph Agent下,多了一行日志，表明当前Agent被客户端获取到了。
+- 6、就可以在`hosts/cli`窗口进行汇率相关问题询问了。
+
+#### 天气查询服务
+
+【2025-7-12】[A2A实战：用一个简单案例体验多Agent协作的魅力](https://mp.weixin.qq.com/s/084YYYYvYAtHyMJBFd7RcA)
+
+简单的UI界面，体验一下A2A协议下的多Agent协作流程
+- 天气查询服务，模拟一个具备“天气预告”和“空气质量报告”能力的Agent。
+
+演示系统组成：
+- 前端页面：使用 Google 的开源框架 Mesop 构建，负责用户与 Host Agent 的交互。
+- Host Agent：作为主控代理，协调用户请求并调用远程Agent。
+- Remote Agent：运行于 Google ADK 环境中的 A2A Client，每个 Remote Agent 会从 A2A Server 获取 Agent Card，然后执行对应任务。
+
+流程图代码见[原文](https://mp.weixin.qq.com/s/084YYYYvYAtHyMJBFd7RcA)
+
+## AG-UI
+
+【2025-5-13】AI agents can finally talk to your frontend!
+- 参考 [x.com](https://x.com/akshay_pachaar/status/1935678975982121271?s=05)
+- 解读 [AI领域新里程碑：继MCP、A2A之后，AG-UI协议强势登场！](https://zhuanlan.zhihu.com/p/1908978798252242425)
+
+### 起因
+
+当前大多数 agent 都属于**后端自动化**工具，执行一些数据迁移、表单填写、内容总结一类的任务，这些 agent 在后台运行，对用户不可见。
+
+但是**交互式 agent**（比如 Cursor、Windsurf、Devin 等）已经实现了与用户的实时协同工作，也将带来海量的应用场景。这种情况下，就需要这些 agent 能够具备**实时更新**、工具编排、**可共享**的可变状态、安全边界控制以及前端同步等能力。
+
+### 什么是 AG-UI
+
+AG-UI（Agent User Interaction Protocol，智能体用户交互协议） 是开放、轻量、基于事件的协议，由 CopilotKit 公司发布，它通过标准 HTTP 或可选的二进制通道，以流式方式传输一系列 JSON 事件，主要用来对 AI agent 和前端应用程序的交互进行标准化
+- 官方文档 [AG-UI](https://docs.ag-ui.com/introduction)
+- 在线[Demo](https://agui-demo.vercel.app)
+- GitHub 开源地址：[ag-ui](https://github.com/ag-ui-protocol/ag-ui)
+
+AG-UI 为 AI agent 和前端应用程序之间搭建了一座桥梁，让这两者之间的交互更加友好，为用户带来更好体验。
+- ![](https://mmssai-1331437701.cos.ap-shanghai.myqcloud.com/images/2025-05/NjA8gwicXyeJYUVRS2ItCV4mRPLJkw4He1PiaOK9weSWQ42dicOSAQw2nTAmOZOKqq9urS1XcfcSiaIDHdseLuHBYw.png)
+
+### 能力
+
+核心能力
+- ✅ 统一事件流	所有交互统一采用结构化的 JSON 事件格式，降低前后端适配成本
+- ✅ 实时交互	支持 token-by-token 的流式推送，提供极致响应式的用户体验
+- ✅ 工具编排	Agent 执行过程中的 Tool 调用全过程均可被标准事件表示并渲染
+- ✅ 状态共享	提供完整快照 STATE_SNAPSHOT 与增量更新 STATE_DELTA，高效同步状态
+- ✅ 并发控制与中断	支持线程管理、任务取消、重启等机制，提升系统的可控性与稳定性
+- ✅ 安全控制	协议内建权限管理、身份认证等机制，适配企业级安全需求
+
+
+### 组件
+
+AG-UI 核心组件包括：协议层（Protocol Layer）、标准化 HTTP 客户端（Standard HTTP Client）、消息类型（Message Type）、运行智能体（Running Agent）、状态管理（State Management）、工具交接（Tools and Handoff）以及事件（Events）。
+
+示意图如下：
+- • Application：用户交互用到的应用程序（比如 chat 或其他任何 AI 应用）
+- • AG-UI 客户端：通用的通信客户端，诸如 HttpAgent，或用于连接现有协议的专用客户端
+- • Agent：后端用户处理用户请求并生成流式响应的 agent
+- • Secure Proxy：能够提供额外能力或作为安全代理的后端服务
+
+![](https://pic4.zhimg.com/v2-3f60646626e56e1764abedb95a1d9905_1440w.jpg)
+
+
+工作流
+- ![](https://pic2.zhimg.com/v2-b45ce1d705a219f51a9ff5efeaa3df93_1440w.jpg)
+
+AG-UI 工作流程基于事件驱动架构，步骤：
+- 前端发送请求：
+  - 用户在前端界面（如聊天窗口）输入信息。
+  - 前端应用将用户输入封装为 RunAgentInput 类型的 JSON 请求，发送到后端的 /awp 端点。
+- 后端处理请求：
+  - 后端接收到请求后，解析 RunAgentInput，提取 thread_id、run_id 和用户消息等信息。
+  - 后端启动 AI 代理的处理流程，并准备通过事件流向前端发送处理状态和结果。
+- 事件流通信：
+  - 后端通过 Server-Sent Events（SSE）或 WebSocket 等协议，向前端持续发送事件。
+  - 事件包括但不限于：
+  - RunStartedEvent：表示代理开始处理请求。
+  - TextMessageContentEvent：代理生成的文本内容。
+  - RunFinishedEvent：代理完成处理。
+- 前端更新界面：
+  - 前端接收到事件后，根据事件类型和内容，实时更新用户界面，展示代理的处理过程和结果。
+
+
+### 生态
+
+ AI 生态中的作用不同：
+- AG-UI：主要处理由用户（人）参与的交互以及流式更新用户界面；
+- A2A：主要促进智能体（agent-to-agent）之间的通信和协作；
+- MCP：主要解决跨不同模型之间工具调用的标准化和上下文处理问题；
+
+![](https://pic2.zhimg.com/v2-d34c4f8dc30a2a038badf357eec31e67_1440w.jpg)
+
+
+### 其他
+
+The AG-UI Protocol bridges the critical gap between **AI agents** and **frontend apps**, making human-agent collaboration seamless.
+- MCP: Agents to tools
+- A2A:  Agents to agents
+- AG-UI: Agents to users
+
+100% open-source.
+
+Key features:
+- 🤝 Works with LangGraph, LlamaIndex, Agno, CrewAI & AG2
+- 🎯 Event-based protocol with 16 standard event types
+- 💬 Real-time agentic chat with streaming
+- 🧑‍💻 Human-in-the-loop collaboration
+- 💬 ChatUI & Generative UI
+
+
+## ACP 
+
+IBM's Agent Communication Protocol (ACP)
+
+【2025-3-11】IBM 和思科发布智能体通信协议 (ACP)，将ACP定位为MCP的扩展版本。
+- [What is Agent Communication Protocol (ACP)?](https://www.ibm.com/think/topics/agent-communication-protocol)
+
+IBM表示："MCP目前提供了与模型和代理共享上下文的基本机制，如工具、资源和提示。ACP在利用这些功能的同时，明确将代理作为主要参与者。"
+
+ACP：**受控环境**中的结构化协作
+
+智能体通信协议 (Agent Communication Protocol，ACP) 最初由 BeeAI 和 IBM 提出，用于支持在同一局部或边缘环境中运行的 AI 智能体 之间的结构化通信、发现和协作, 开放标准。
+
+类比: AI 智能体的邮政服务
+- ACP 定义 “信封”(消息格式) 和传递规则，这样使用不同堆栈的智能体仍然可以交换有意义的信息。
+- 与面向云的协议 (如 A2A) 或上下文路由协议 (如 MCP) 不同，ACP 是为**本地优先**的实时代理编排而设计的，具有**最小网络开销**和在**共享运行时**内部署的智能体之间的紧密集成。
+
+ACP 定义**去中心化**的agent环境，其中每个智能体使用本地广播/发现层公布其身份、功能和状态。
+- 智能体通过事件驱动的消息传递进行通信，通常使用本地总线或 IPC (进程间通信) 系统，可选的运行时控制器可以编排智能体行为、聚合遥测和执行策略。
+- ACP 智能体通常作为轻量级、无状态的服务或具有共享通信底层的容器运行。
+
+ACP 专为**低延迟**环境设计 (例如，本地协调、机器人、离线边缘 AI)，可以通过 gRPC、 ZeroMQ 或自定义运行时总线实现。ACP强调本地自主权限，而不需要云依赖或外部服务注册，同时支持自动任务路由的功能和语义描述符。
+
+ACP 典型应用场景是**边缘设备**上的多智能体协调 (例如，无人机、物联网集群或机器人舰队)，本地优先的大模型系统协调调用，支持传感器输入和操作执行。鉴于自治的运行时环境，智能体能够在没有云基础设施的环境下进行协调。
+
+ACP 为模块化 AI 系统提供了本地协议层的运行时，优先考虑低延迟协调、弹性和可组合性。对于隐私敏感、自治或边缘优先的部署来说，这是很自然的选择，因为在这些环境中云优先的部署中是不切实际的。
+
+
+## ANP
+
+ANP：Web智能体的未来 
+
+Agent Network Protocol (ANP)
+
+当前所有Agent协议中，agent网络协议 (ANP) 最符合**主动推理**和**空间网络**的要求。
+
+ANP 建立在`分布式标识符` (distributed identifiers，DIDs) 和 JSON-LD 链接数据之上，允许智能体在语义上描述自己，在全局范围内发现彼此，并进行对等通信。
+
+类比，全球性安全的AI 智能体在线市场
+- ANP 为智能体提供了 id (如数字护照) 和规则，以发现彼此，证明身份，并公开和安全地协作。
+- 协议本身会携带身份信息、身份验证信息，目前主要是使用W3C的DID方案，一个智能体可以用自己的身份信息，与其他所有的智能体进行交互，不必在其他智能体平台申请账号。
+- ANP采用了**去中心化**的身份安全通信，基于关联数据的语义建模，通过开放注册表或搜索索引智能体的描述进行发现。
+
+
+## 新协议
+
+
+### TEA
+
+【2025-9-29】Agentic Tool-Environment protocol
+- 论文 [AgentOrchestra: Orchestrating Hierarchical Multi-Agent …](https://arxiv.org/pdf/2506.12508)
+
+当前基于大语言模型（LLM）的智能体系统（如A2A、MCP协议）存在三大局限：
+- **上下文管理能力不足**：无法有效捕捉资源和工具的完整复杂性。
+- **环境适应性差**：环境封装方法差异大，观察-动作空间依赖手动设计。
+- **缺乏动态智能体架构**：智能体结构固定，难以作为自适应协作者。
+
+提出**工具-环境-智能体（TEA）统一协议**，将环境、智能体和工具视为“一等资源”集成到同一系统中。
+
+核心构成：
+- **基础设施层**：统一LLM接口和内存系统。
+- **核心协议**：工具上下文协议（TCP）、环境上下文协议（ECP）、智能体上下文协议（ACP）。
+- **协议转换**：定义了A2T、T2A、E2T、T2E、A2E、E2A六种转换关系，实现资源动态编排。
+
+TEA协议详解
+- **TCP**：扩展MCP，支持本地/远程工具加载、详细工具注册，并能将智能体注册为工具。
+- **ECP**：定义统一的环境输入、输出和规则，将整个动作空间整合为工具包。
+- **ACP**：建立智能体的统一模式，支持角色、能力和目标的语义元数据，形式化智能体间动态交互。
+
+AgentOrchestra框架架构
+- **规划智能体**：中央协调器，采用ReAct范式，负责宏观任务解析与动态规划。它使用一个结构化的 `todo` 工具进行任务分解与状态追踪，并通过ACP协调子智能体。
+
+专用子智能体：
+- **深度研究智能体**：多轮、多模态研究工作流，进行大规模信息检索。
+- **浏览器使用智能体**：基于ECP，实现自动化、细粒度的Web交互。
+- **深度分析智能体**：支持多步分析和多模态数据源推理。
+- **工具管理器智能体**：在TCP下管理工具，支持智能工具创建、检索和重用。
+
+<img width="814" height="888" alt="image" src="https://github.com/user-attachments/assets/047a9428-a1f9-482e-93c3-03e7dcbaa103" />
+
+<img width="1209" height="1080" alt="image" src="https://github.com/user-attachments/assets/8c2c0244-d61f-4e2d-b106-20e360993a88" />
+
+
+实验结果
+- 在GAIA、SimpleQA和Humanity's Last Exam (HLE)三大基准上的评估表明，达到了通用智能体的最先进水平。
+- SOTA性能：在GAIA测试集上取得83.39% 的总体准确率，显著超越AWORLD (77.58%)等强基线。
+- 消融研究：从仅有规划智能体（36.54%）开始，逐步添加研究、浏览器、分析和工具管理智能体，性能分别提升至57.14%、72.76%、79.07%和最终的83.39%。
+
+
+
+## 应用
+
+### Teamo 
+
+【2025-6-12】[MCP时代已经过去，Team of Agents时代要来了](https://mp.weixin.qq.com/s/SJIXLrr8OxpNsvHgE_DO6Q)
+
+Teamo 全称是“Team of Agents”。
+- 非类 Manus 的工作流，而是“团队化作业”的 Agent Team。
+
+Agent 组团来给你打工。
+
+Teamo 是真实运作公司所构成的 Agent 组织，每个角色在团队中拥有自己的职级和汇报关系。
+
+如果有个复杂任务，给 Manus 比较像是委派给**一个人**去做，给 Teamo 则比较像是委派给**一个团队**去做。
+
+从原先以**工作流**驱动的「单智能体」到以 **Agent 协作**驱动的「群体智能」的范式跃迁。
+
+Agent 被 Team 化后，不仅可靠性提升，由于引入了大量并行操作节点，复杂任务执行的速度也被大大提速了
+
+这次 Alpha 版本的 Teamo 主要对外放出了搜、写和咨询这三个团队供测试，所以可以初步闭环验证的主要是知识类的场景。
+
+从这个产品雏形看到了 A2A 范式在大生产力问题中蕴含的巨大可能性。
+
+### 爬虫
+
+
+用 DeepSeek 和 MCP 实现一句话抓取网页
+- 工具: Cursor 里的 FireCrawl Agent MCP
+
+
+### 招聘
+
+
+招聘经理通过 Agentspace 界面让代理寻找合适的候选人👀 
+- [a2a-a-new-era-of-agent-interoperability](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/)
+1. 客户端代理与其他专门代理协作，搜集潜在候选人
+2. 用户收到候选人建议后，指示代理安排面试
+3. 面试结束后，另一个代理进行背景调查
+
+演示视频
+- [demo](https://x.com/i/status/1910117477859942582)
+
+### 阿里云
+
+【2025-4-9】阿里云百炼也官宣搞MCP
+
+### AI代码管家
+
+【2025-4-6】 [GitHub突然放大招！全球首个「AI代码管家」炸场，程序员集体沸腾](https://mp.weixin.qq.com/s/R3r6y68bXvWkVOy7iztN4g)
+
+GitHub 官宣一款代号`MCP Server`的开源神器，短短2小时冲上Hacker News榜首
+
+这款由GitHub联合AI独角兽Anthropic打造的「代码智能管家」，用Go语言彻底重构，号称能让AI替你打工写代码、修Bug、管仓库，甚至能用说人话指挥它干活
+
+旧版服务器只能做“代码搬运工”，而 MCP Server 直接打通**AI大脑**和**代码仓库**，把GitHub变成「会思考的活系统」
+
+5大逆天功能，打工人跪求内测
+1. 🤖 AI审查官：PR合并速度飙升530%
+2. 🔒 仓库「安全盾」：72小时漏洞→4小时灭火
+3. 🛠️ 自定义武器库：代码扫描任你魔改
+4. 🌐 跨仓库「量子纠缠」：依赖冲突减少30%
+5. 🎙️ 说人话编程：「get_me」函数封神
+
+过去程序员最怕什么？等PR等到天荒地老！
+
+传统流程：人工检查TODO标记、License冲突、代码规范 → 平均耗时3.2天
+
+MCP Server 骚操作：
+- • 自动扫描PR，1秒生成漏洞地图（配图：高亮显示未处理TODO的代码截图）
+- • 附赠AI修复方案，甚至能联动CI/CD自动打补丁
+某电商大厂实测：6小时极速合码，半夜12点的咖啡终于省了！
+
+2. 🔒 仓库「安全盾」：72小时漏洞→4小时灭火
+
+硬编码密钥、SQL注入、敏感信息泄露…这些坑你踩过吗？
+
+MCP Server每天定时扫描全仓库，连陈年老代码都不放过！
+
+真实案例：某金融公司凌晨2点突现密钥泄露风险，AI秒级定位+自动生成掩码方案，修复速度从72小时→4小时，安全团队集体保住年终奖💰
+
+3. 🌐 跨仓库「量子纠缠」：依赖冲突减少30%
+
+微服务架构下最头疼的依赖地狱，MCP Server一招破解：
+- • 自动对齐多项目版本（比如同时升级Spring Boot到2.7.5）
+- • 智能推荐兼容方案（配图：依赖关系可视化图谱）
+某开源社区维护者哭诉：“早用这个，我能少秃一半！”
+
+1. 🎙️ 说人话编程：「get_me」函数封神
+
+对着电脑喊一嗓子就能操控GitHub？
+
+神奇语法：
+
+```sh
+get_me("显示我上周创建的私有仓库")  
+get_me("把feature/login分支的TODO全改成FIXME")  
+```
+
+网友玩梗：“以后改代码是不是得先考普通话二甲？”
+
+5. 🛠️ 自定义武器库：代码扫描任你魔改
+
+厌倦了千篇一律的ESLint规则？MCP Server开放工具描述自定义接口：
+- • 写个YAML文件就能接入自研扫描工具
+- • 联动AI做动态测试（比如模拟万人并发压测）
+
+极客玩法：有人已经做出了二次元风格代码审查插件，检测到Bug就播放“阿姨压一压”…
+
+
+### 高德MCP
+
+
+Al+高德MCP：10分钟自动制作一份旅行手卡
+- 小红书[笔记](https://www.xiaohongshu.com/explore/67e8fd5a000000001d027d85?app_platform=android&ignoreEngage=true&app_version=8.77.0&share_from_user_hidden=true&xsec_source=app_share&type=video&xsec_token=CB3Vv4c5kyzT8aT-BZx9UUIfCirVpBEjLskUR9VeP3dck=&author_share=1&xhsshare=WeixinSession&shareRedId=OD06NUlINT42NzUyOTgwNjY7OTpIOT5B&apptime=1744081522&share_id=85632878adf0407c968e139f82f906c4&share_channel=wechat&wechatWid=da79273b5c86874c0a4ff1852e64df68&wechatOrigin=menu)
+
+# 结束
