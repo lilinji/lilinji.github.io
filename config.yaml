@@ -157,6 +157,10 @@ menu:
       name: FAQ
       url: /faq/
       weight: 50
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 60
 
 # 输出格式
 outputs:
