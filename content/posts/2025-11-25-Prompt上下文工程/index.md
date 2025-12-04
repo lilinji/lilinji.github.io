@@ -554,7 +554,7 @@ Manus 心得：所有方法综合使用
 最深刻的领悟：
 > “我们最大的飞跃，不是来自添加了更花哨的上下文管理技巧，而是来自‘简化’和‘移除不必要的层’。”
 
-<img width="2394" height="6264" alt="image" src="https://github.com/user-attachments/assets/58f5f4a8-e1ee-40a3-a539-5c39a1369150" />
+<img width="auto" height="auto" alt="image" src="https://github.com/user-attachments/assets/58f5f4a8-e1ee-40a3-a539-5c39a1369150" />
 
 
 
