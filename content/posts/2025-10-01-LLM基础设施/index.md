@@ -764,7 +764,7 @@ MCP Server Debug
 - [A2A](https://github.com/google/A2A)
 - [文档](https://google.github.io/A2A/#/)
 
-![](https://google.github.io/A2A/images/a2a_main.png)
+![](a2a_main.png)
 
 Agent2Agent（A2A）协议使**多个 AI 智能体**协同完成任务，而无需直接共享它们的内部记忆、思考或工具。
 - ![](https://pic1.zhimg.com/v2-0628c05970ebc48736124d672dd8baa6_b.webp)
@@ -837,7 +837,7 @@ A2A（Agent-to-Agent）协议，让AI代理彼此直接对话、协同工作的�
 - 让不同来源、不同厂商的Agent 互相理解、协作。
 - 就像 WTO 消减各国间关税壁垒一样。
 
-![](https://google.github.io/A2A/images/a2a_mcp.png)
+{{< figure src="a2a_mcp.webp" alt="A2A 与 MCP 交互示意" caption="Illustration depicting the interaction between Google's Agent2Agent (A2A) protocol and Anthropic's Model Context Protocol (MCP), highlighting secure collaboration, task management, and capability discovery between AI agents. (image credit: Swirl AI)" align="center" >}}
 
 A2A 开放协议 为智能体提供了一种标准的协作方式，无论其底层框架或供应商如何。
 
@@ -931,7 +931,6 @@ AG-UI（Agent User Interaction Protocol，智能体用户交互协议） 是开�
 - GitHub 开源地址：[ag-ui](https://github.com/ag-ui-protocol/ag-ui)
 
 AG-UI 为 AI agent 和前端应用程序之间搭建了一座桥梁，让这两者之间的交互更加友好，为用户带来更好体验。
-- ![](https://mmssai-1331437701.cos.ap-shanghai.myqcloud.com/images/2025-05/NjA8gwicXyeJYUVRS2ItCV4mRPLJkw4He1PiaOK9weSWQ42dicOSAQw2nTAmOZOKqq9urS1XcfcSiaIDHdseLuHBYw.png)
 
 ### 能力
 
