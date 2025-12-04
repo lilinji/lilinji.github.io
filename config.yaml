@@ -1,0 +1,254 @@
+baseURL: 'https://lilinji.github.io/'
+languageCode: 'zh-cn'
+defaultContentLanguage: 'zh-cn'
+title: "Ringi's Log"
+theme: 'PaperMod'
+
+# 基础配置
+enableRobotsTXT: true
+enableGitInfo: false
+enableEmoji: true
+enableInlineShortcodes: true
+enableMissingTranslationPlaceholders: false
+hasCJKLanguage: true  # 中文支持
+
+# 永久链接配置
+permalinks:
+  posts: '/:year/:month/:slug/'
+
+# 网站元信息
+params:
+  env: production
+  title: "Ringi's Log"
+  description: "记录云计算、容器技术、OpenStack、Ceph 存储等技术领域的学习笔记和实践经验"
+  author: "Ringi Li"
+  keywords: 
+    - Blog
+    - 云计算
+    - OpenStack
+    - Docker
+    - Ceph
+    - 容器技术
+    - Linux
+    - 技术博客
+  dateformat: "January 02, 2006"
+  
+  # 主页配置
+  homeInfoParams:
+    Title: "欢迎来到 Ringi's Log 👋"
+    Content: |
+      记录AI、云计算、容器技术、分布式存储的学习笔记与实践经验
+  
+  # 个人简介页面
+  profileMode:
+    enabled: false
+    title: "Ringi's Log"
+    subtitle: "AI & 云计算 & 容器技术"
+    imageUrl: ""
+    imageTitle: ""
+    imageWidth: 120
+    imageHeight: 120
+    buttons:
+      - name: 文章
+        url: /posts
+      - name: 标签
+        url: /tags
+  
+  # 社交链接
+  socialIcons:
+    - name: github
+      url: "https://github.com/lilinji"
+    - name: wechat
+      url: "https://www.wechat.com/lilinji"
+    - name: twitter
+      url: "https://twitter.com/golucklee"
+    - name: instagram
+      url: "https://www.instagram.com/lilinji/"
+    - name: scholar
+      url: "https://scholar.google.com/citations?user=dCa-pW8AAAAJ&hl=en&oi=ao"
+  
+  # 显示配置
+  ShowReadingTime: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowWordCount: true
+  ShowRssButtonInSectionTermList: true
+  ShowShareButtons: true
+  ShowToc: true
+  UseHugoToc: true
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+  comments: false
+  hidemeta: false
+  hideSummary: false
+  showtoc: true
+  tocopen: false
+  
+  # 编辑建议
+  editPost:
+    URL: "https://github.com/lilinji/lilinji.github.io/tree/main/content"
+    Text: "建议修改"
+    appendFilePath: true
+  
+  # 搜索配置
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    keys: ["title", "permalink", "summary", "content"]
+  
+  # 图片配置
+  cover:
+    hidden: false
+    hiddenInList: false
+    hiddenInSingle: true
+    linkFullImages: true
+    responsiveImages: true
+  
+  # 图标文件
+  assets:
+    favicon: "/favicon_wine.ico"
+    favicon16x16: "/favicon-16x16.png"
+    favicon32x32: "/favicon-32x32.png"
+    apple_touch_icon: "/apple-touch-icon.png"
+  
+  # 标签页配置
+  label:
+    text: "Ringi's Log"
+    icon: "/favicon_wine.ico"
+    iconHeight: 35
+  
+  # 分析配置
+  analytics:
+    google:
+      SiteVerificationTag: ""
+    bing:
+      SiteVerificationTag: ""
+    baidu:
+      SiteVerificationTag: ""
+  
+  # Google Analytics
+  googleAnalytics: "G-HFT45VFBX6"
+
+# 菜单配置
+menu:
+  main:
+    - identifier: home
+      name: Posts
+      url: /
+      weight: 10
+    - identifier: archives
+      name: Archive
+      url: /archives/
+      weight: 20
+    - identifier: search
+      name: Search
+      url: /search/
+      weight: 30
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 40
+    - identifier: faq
+      name: FAQ
+      url: /faq/
+      weight: 50
+
+# 输出格式
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+# 分页配置
+pagination:
+  pagerSize: 10
+
+# 分类和标签
+taxonomies:
+  category: categories
+  tag: tags
+
+# Markdown 配置
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    anchorLineNos: true
+    codeFences: true
+    guessSyntax: true
+    lineNos: true
+    style: monokai
+  tableOfContents:
+    enabled: true
+    endLevel: 3
+    ordered: false
+    startLevel: 2
+
+# 构建配置
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+# 站点地图配置
+sitemap:
+  changefreq: weekly
+  filename: sitemap.xml
+  priority: 0.5
+
+# 隐私配置
+privacy:
+  googleAnalytics:
+    anonymizeIP: true
+    respectDoNotTrack: true
+  twitter:
+    enableDNT: true
+  youtube:
+    privacyEnhanced: true
+
+# 相关内容推荐
+related:
+  includeNewer: true
+  indices:
+    - name: tags
+      weight: 100
+    - name: categories
+      weight: 80
+    - name: date
+      weight: 10
+  threshold: 80
+  toLower: false
+
+# 服务配置
+services:
+  googleAnalytics:
+    ID: G-HFT45VFBX6
+  rss:
+    limit: 20
+
+# 缓存配置
+caches:
+  getjson:
+    dir: :cacheDir/:project
+    maxAge: 10m
+  getcsv:
+    dir: :cacheDir/:project
+    maxAge: 10m
+  images:
+    dir: :resourceDir/_gen
+    maxAge: 720h
+  assets:
+    dir: :resourceDir/_gen
+    maxAge: 720h
+
+# 最小化配置
+minify:
+  disableXML: false
+  minifyOutput: true
