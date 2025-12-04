@@ -11,7 +11,8 @@ showToc: true
 tocOpen: false
 ---
 
-# 人工智能学习资料
+# 人工智能学习资料 
+* [人工智能书籍](https://drive.google.com/drive/folders/10LpuJ6Aa1M8h73tWrE4fSeAqu1RSIaWm?usp=sharing)
 ## Github/编辑
 **名词解释**
     解释(代码引用示例之一)
