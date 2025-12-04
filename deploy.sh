@@ -11,26 +11,13 @@ echo "Deploy to GitHub Pages"
 echo "======================================================================"
 echo ""
 
-# 检查是否有 public 目录
-if [ ! -d "public" ]; then
-    echo "❌ Error: public/ directory not found"
-    echo "   Please run: ./build.sh"
-    exit 1
-fi
-
-# 检查是否有 index.html
-if [ ! -f "public/index.html" ]; then
-    echo "❌ Error: public/index.html not found"
-    echo "   Please run: ./build.sh"
-    exit 1
-fi
+# 不再检查 public 目录或 index.html，部署整个仓库（遵循 .gitignore）
 
 echo "📦 Step 1: Preparing deployment..."
 echo "   - Commit message: $MESSAGE"
 echo ""
 
-# 进入 public 目录
-cd public
+# 在仓库根目录进行部署（不切换目录）
 
 # 初始化 git (如果需要)
 if [ ! -d ".git" ]; then
@@ -51,7 +38,6 @@ if git status --short | grep -q .; then
     git status --short
 else
     echo "⚠️  No changes to deploy"
-    cd ..
     exit 0
 fi
 
@@ -82,12 +68,10 @@ if git push -f https://github.com/lilinji/lilinji.github.io.git main; then
 else
     echo "❌ Push failed"
     echo "   Please check your GitHub credentials and repository access"
-    cd ..
     exit 1
 fi
 
-# 返回原目录
-cd ..
+# 保持在仓库根目录
 
 echo "📊 Deployment Summary:"
 echo "   - Commit: $MESSAGE"

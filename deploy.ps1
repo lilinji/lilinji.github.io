@@ -13,26 +13,13 @@ Write-Host "=" -NoNewline -ForegroundColor Cyan
 Write-Host ("=" * 69) -ForegroundColor Cyan
 Write-Host ""
 
-# 检查是否有 public 目录
-if (-not (Test-Path "public")) {
-    Write-Host "❌ Error: public/ directory not found" -ForegroundColor Red
-    Write-Host "   Please run: .\build.ps1" -ForegroundColor Yellow
-    exit 1
-}
-
-# 检查是否有 index.html
-if (-not (Test-Path "public/index.html")) {
-    Write-Host "❌ Error: public/index.html not found" -ForegroundColor Red
-    Write-Host "   Please run: .\build.ps1" -ForegroundColor Yellow
-    exit 1
-}
+# 不再检查 public 目录或 index.html，部署整个仓库（遵循 .gitignore）
 
 Write-Host "📦 Step 1: Preparing deployment..." -ForegroundColor Cyan
 Write-Host "   - Commit message: $Message" -ForegroundColor White
 Write-Host ""
 
-# 进入 public 目录
-Push-Location public
+# 在仓库根目录进行部署（不切换目录）
 
 try {
     # 初始化 git (如果需要)
@@ -56,7 +43,6 @@ try {
     }
     else {
         Write-Host "⚠️  No changes to deploy" -ForegroundColor Yellow
-        Pop-Location
         exit 0
     }
     
@@ -92,19 +78,16 @@ try {
     else {
         Write-Host "❌ Push failed" -ForegroundColor Red
         Write-Host "   Please check your GitHub credentials and repository access" -ForegroundColor Yellow
-        Pop-Location
         exit 1
     }
     
 }
 catch {
     Write-Host "❌ Deployment error: $_" -ForegroundColor Red
-    Pop-Location
     exit 1
 }
 
-# 返回原目录
-Pop-Location
+# 保持在仓库根目录
 
 Write-Host "📊 Deployment Summary:" -ForegroundColor Cyan
 Write-Host "   - Commit: $Message" -ForegroundColor White
