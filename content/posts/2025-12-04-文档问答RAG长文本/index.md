@@ -314,7 +314,6 @@ arbois-novel 的ai小说创作工具，从构思到成文都全流程可以跑�
 - [论文地址](https://arxiv.org/abs/2305.13304)
 - [项目地址](https://github.com/aiwaves-cn/RecurrentGPT)
 - 在线 Demo: [长篇小说写作](https://www.aiwaves.org/recurrentgpt), [交互式小说](https://www.aiwaves.org/interactivefiction)
-- ![](https://p3-sign.toutiaoimg.com/tos-cn-i-qvj2lq49k0/a679b4e41e0d483bae2b1ac35ae2da63~noop.image?_iz=58558&from=article.pc_detail&x-expires=1686034283&x-signature=1GLOG8XAvQwzzXbm0v1ip16bz5Q%3D)
 
 Transformer 大语言模型最明显的限制之一: 输入和输出的**长度限制**。
 - 虽然输入端的长度限制可以通过 **VectorDB** 等方式缓解
@@ -324,7 +323,9 @@ Transformer 大语言模型最明显的限制之一: 输入和输出的**长度�
 
 RecurrentGPT 则另辟蹊径，利用大语言模型进行**交互式**长文本生成的首个成功实践。它利用 ChatGPT 等大语言模型理解自然语言指令的能力，通过自然语言模拟了循环神经网络（RNNs）的循环计算机制。
 - 每一个时间步中，RecurrentGPT 会接收上一个时间步生成的内容、最近生成内容的摘要（短期记忆），历史生成内容中和当前时间步最相关的内容 (长期记忆)，以及一个对下一步生成内容的梗概。RecurrentGPT 根据这些内容生成一段内容，更新其长短时记忆，并最后生成几个对下一个时间步中生成内容的规划，并将当前时间步的输出作为下一个时间步的输入。这样的循环计算机制打破了常规Transformer 模型在生成长篇文本方面的限制，从而实现任意长度文本的生成，而不遗忘过去的信息。
-- ![](https://p3-sign.toutiaoimg.com/tos-cn-i-qvj2lq49k0/f1bd9be64d144e18914652db4ce325c8~noop.image?_iz=58558&from=article.pc_detail&x-expires=1686034283&x-signature=4WMRfq0FjPeJxmK0ujy7roS3sbA%3D)
+
+![](202306201612059.png)
+
 
 
 ### 【2025-7-14】DeepWriter

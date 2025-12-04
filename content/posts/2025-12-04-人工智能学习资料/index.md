@@ -20,7 +20,7 @@ tocOpen: false
 > 备注信息：
 
 * [Git简易指南](http://www.bootcss.com/p/git-guide/),[图说Git](http://marklodato.github.io/visual-git-guide/index-en.html),[git文件状态和工作区域](https://www.cnblogs.com/polk6/p/git-fileStatus.html)
-* ![flow](https://images2017.cnblogs.com/blog/153475/201710/153475-20171013183602293-822234036.png)
+* ![流程](flow.png)
 * 【2018-7-24】[Git交互式在线学习](https://learngitbranching.js.org/)，最好的实战教程，图例：
 ![效果图](https://user-images.githubusercontent.com/7308241/39848730-040bd09e-53df-11e8-964e-2d48f35a4355.gif)
 * [github官方markdown指南](https://guides.github.com/features/mastering-markdown/ "英文版")
@@ -155,13 +155,12 @@ echo '{"a":2,"b":[3,6,8]}' |JSON.sh
 - [地图汇](http://www.dituhui.com/)
 - [5min上手写echarts第一个图标](http://echarts.baidu.com/echarts2/doc/start.html),[echarts如何从json文件读数据？](http://bbs.csdn.net/topics/392042291)
 - 【2017-7-30】Google开发的数据可视化web工具[Facet Dive](https://pair-code.github.io/facets/)，【2018-3-13】可以嵌入jupyter notebook做特征工程可视化分析, 安装方法参考[PAIR-CODE](https://github.com/PAIR-code/facets),[Google AI](https://ai.google/pair)，【2018-9-11】[集成到tensorboard工具中：what-if](https://pair-code.github.io/what-if-tool/iris.html)
-- ![facets](https://github.com/PAIR-code/facets/blob/master/img/dive-census.png)
+- ![facets](dive-census.png)
 - [2018-6-15]数据挖掘软件：[weka](https://www.cs.waikato.ac.nz/ml/weka/)适用于EDA探索性数据分析，[Orange](https://orange.biolab.si/)数据挖掘和机器学习软件
 - [北大可视化](http://vis.pku.edu.cn/wiki/start)
 - 词云生成[图悦](http://www.picdata.cn/)
 - [北大可视化](http://vis.pku.edu.cn/wiki/start)
 - [2018-2-28] OLAP可视化分析工具,[官网](https://www.meteorite.bi/products/saiku),[saiku社区版](https://community.meteorite.bi/)，[安装方法](http://www.kanhaige.com/post-5.html),[简介]()，[Kylin, Mondrian, Saiku系统的整合](https://tech.youzan.com/kylin-mondrian-saiku/?utm_source=tuicool&utm_medium=referral),[saiku安装教程](http://blog.csdn.net/longshenlmj/article/details/17359645)
-- ![saiku](http://www.joyofdata.de/blog/wp-content/uploads/2014/06/data-insights.png)
 - 【2018-3-5】[python+echarts给你的数据做美颜](https://zhuanlan.zhihu.com/p/24952863),[pycharts](https://github.com/pyecharts/pyecharts)安装，[官方文档](http://pyecharts.org/#/zh-cn/prepare)，[jupyter notebook中使用pycharts](https://zhuanlan.zhihu.com/p/28157126)，[github代码完整示例](https://github.com/pyecharts/pyecharts-users-cases/blob/master/notebook-users-cases/notebook-user-cases.ipynb)，【2019-05-22】[pyechart旧版绘图参数介绍-官网没有](https://gitee.com/sunjiyun26126/pyecharts),效果示例:
 ![echarts](https://pic4.zhimg.com/v2-5cc223125d7b0a0e051cbc91e0a19e07_b.gif)
 - 【2018-9-27】[vue组件demo网站](https://panjiachen.github.io/vue-element-admin/#/dashboard)，[Element UI组件库](http://element-cn.eleme.io/#/zh-CN/component/installation)
@@ -184,21 +183,19 @@ echo '{"a":2,"b":[3,6,8]}' |JSON.sh
    - 网络阅读的最佳实践，不在“取”，在“舍”，知舍才能知关键，料不在多，有感悟一二足矣。
 
 - 费曼技巧：通过向别人清楚地解说一件事，来确认自己真的弄懂了这件事。参考：[号称终极快速学习法的费曼技巧，究竟是什么样的学习方法？](https://www.zhihu.com/question/20576786)
-- ![费曼技巧](https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1505214981844&di=c9a85fee49f3eba5dbad2f575d260e69&imgtype=0&src=http%3A%2F%2Fs1.sinaimg.cn%2Fmw690%2F001UzQQOgy72rDwKKBy40)
+- ![费曼技巧](feiman.jpg)
 
 - 学习金字塔
 
 ![学习金字塔](https://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D600%2C800/sign=dae5bdf00ef79052ef4a4f383cc3fbf2/78310a55b319ebc44d04b87a8526cffc1f1716d1.jpg)
 
 - 【2018-7-27】什么是博士？[长图](https://pic1.zhimg.com/80/v2-57b8823fbf9213c4661ab132527b9f68_hd.jpg)
-![什么是博士？](http://1073.edu.jg.com.cn:81/forum/201508/20/101120hvtckvuivk4k4gp0.jpg)
 
 ### 数学基础
 [返回目录](#目录)
-- 【2019-06-18】数学基础概率，来自：[深度学习知识大全](https://github.com/isymbo/DeepLearning) ![](https://github.com/Mikoto10032/DeepLearning/raw/master/notes/Images/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80.png)
+- 【2019-06-18】数学基础概率，来自：[深度学习知识大全](https://github.com/isymbo/DeepLearning) 
 - 【2018-12-16】[一图解释数学体系-数学深渊](https://www.math.uh.edu/~tomforde/Images/Abstraction.jpg)
 - [可微可导可积连续之间的关系](http://blog.csdn.net/huxiaokang1234/article/details/52550999)
-- ![关系图](https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536924210156&di=a18aabb22e18562695d4de17472305d1&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1888760372%2C2815382288%26fm%3D214%26gp%3D0.jpg)
 - 【2019-04-30】[微积分的本质](https://www.bilibili.com/video/av24325548)
 - <iframe src="//player.bilibili.com/player.html?aid=24325548&cid=40809259&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 - [如何通俗讲解放射变换？](https://www.zhihu.com/question/20666664)
@@ -257,19 +254,16 @@ $$f \left( x _ { n + 1 } \right) - f \left( x _ { n } \right) = f ^ { \prime } \
 ### 计算机基础
 - 【2018-5-1】[数据结构总结篇](http://lib.csdn.net/article/datastructure/11369)_
 - 排序算法总结：[视觉感受常见排序算法](http://blog.jobbole.com/11745/)
-![对比](http://hi.csdn.net/attachment/201105/24/0_1306225542srVx.gif)
 - 【2017-8-1】排序算法可视化对比[Sorting Algorithms Animations](https://www.toptal.com/developers/sorting-algorithms/),[日本程序猿做的排序动画](http://jsrun.it/norahiko/oxIy)，[舞动的排序算法【舞蹈视频】](http://v.youku.com/v_show/id_XNTA3NDUwODA4.html?spm=a2h0j.8191423.module_basic_relation.5~5!2~5~5!3~5~5~A)
 - 【2018-4-28】算法可视化网站[Visualgo](https://visualgo.net/en),包含动画演示+伪代码，[旧金山大学的数据结构算法可视化](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 - 【2019-05-30】基础算法可视化algorithm-visualizer，[GitHub地址](https://github.com/algorithm-visualizer/algorithm-visualizer),[演示地址](https://algorithm-visualizer.org/)
 - 【2019-06-18】[算法导论C++实现](https://github.com/huaxz1986/cplusplus-_Implementation_Of_Introduction_to_Algorithms)
 - [海量数据处理算法总结【超详解】](http://www.cnblogs.com/ECJTUACM-873284962/p/6910842.html)
 - [水库抽样算法精简](http://blog.csdn.net/u012397189/article/details/52181005),空间亚线性算法
-![水库抽样](http://s11.sinaimg.cn/mw690/005yGsbEty6QDWko4gq0a&690)
 - 【2019-07-18】[逆采样(Inverse Sampling)和拒绝采样(Reject Sampling)原理](https://blog.csdn.net/anshuai_aw1/article/details/84840446)
-   - ![](https://ask.qcloudimg.com/http-save/yehe-781483/vx4sybdwef.jpeg?imageView2/2/w/1620)
 - 【2019-06-06】[程序员小吴](https://www.cxyxiaowu.com/)的[图解Leetcode](https://github.com/MisterBooo/LeetCodeAnimation)
 - 【2019-06-10】[LeetCode 代码实现](https://github.com/kamyu104/LeetCode-Solutions)
-- 【2019-06-18】代码体系概览,摘自[Leetcode题集](https://github.com/azl397985856/leetcode)![](https://camo.githubusercontent.com/df94968056561d8fcd1952cca7b3353c433309ec/68747470733a2f2f706963342e7a68696d672e636f6d2f76322d30303930313332373836383866353230633037306232373931303235356362315f722e6a7067)
+- 【2019-06-18】代码体系概览,摘自[Leetcode题集](https://github.com/azl397985856/leetcode)
 
 ### 分布式计算
 - [flume+kafka+hdfs+storm组合](http://www.aboutyun.com/thread-6855-1-1.html)
@@ -301,7 +295,6 @@ $$f \left( x _ { n + 1 } \right) - f \left( x _ { n } \right) = f ^ { \prime } \
    - [使用python进行描述性统计](http://www.cnblogs.com/jasonfreak/p/5441512.html)
    - [使用sklearn优雅的进行数据挖掘](http://www.cnblogs.com/jasonfreak/p/5448462.html)
    - 使用sklearn进行集成学习:[理论](http://www.cnblogs.com/jasonfreak/p/5657196.html),[实践](http://www.cnblogs.com/jasonfreak/p/5720137.html)
-![fe](http://images2015.cnblogs.com/blog/927391/201606/927391-20160628112051062-1290708859.jpg)
  特征工程常用方法：
 ![常用方法](https://pic3.zhimg.com/20e4522e6104ad71fc543cc21f402b36_r.png)
 - 不平衡数据集如何处理？研究表明，在某些应用下，1∶35的比例就会使某些分类方法无效，甚至1∶10的比例也会使某些分类方法无效。
