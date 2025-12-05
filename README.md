@@ -123,6 +123,17 @@ content/posts/2024-12-03-my-post/
 ```markdown
 ![图片描述](image.png)
 ```
+# 图片说明 (推荐)
+```markdown
+<figure>
+  <img src="image.png" alt="Instance-level contrastive learning">
+  <figcaption>
+    Figure 11: The training pipeline...  
+    (Image source: <a href="https://arxiv.org/abs/1805.01978">Wu et al., 2018</a>)
+  </figcaption>
+</figure>
+```
+
 
 ## 🏗️ 项目结构
 
