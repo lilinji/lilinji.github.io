@@ -136,7 +136,7 @@ make dev
 - Demo: [leettools](https://svc.leettools.com/)
 
 命令行或通过 GradIO UI 运行，控制输出行为，比如提取结构化数据或改变输出语言，还能控制搜索行为，比如限制特定网站或日期，或仅抓取指定URL列表的内容。
-- ![](https://private-user-images.githubusercontent.com/882734/379039848-0483e6a2-75d7-4fbd-813f-bfa13839c836.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzczODc4MjEsIm5iZiI6MTczNzM4NzUyMSwicGF0aCI6Ii84ODI3MzQvMzc5MDM5ODQ4LTA0ODNlNmEyLTc1ZDctNGZiZC04MTNmLWJmYTEzODM5YzgzNi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMTIwJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDEyMFQxNTM4NDFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zNjA0NmIwM2UyZWM0NGMyZjg0NWMxNmZhMGE2MDM5ZWE0NTNmNWY5M2JjNTI5OGZiMzE1NjFhN2E4OWZkODJmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.myY8mEl7DObJUVfgLkkmnWYZPYPTwv53tTo_Lm1A5U4)
+![ask.py](screenshot.gif)
 
 
 
@@ -348,8 +348,6 @@ Agent超网是一个**级联**的**多层**工作流，包括
 500行Python代码构建的AI搜索工具，而且还会开源。后端是 `Mixtral-8x7b` 模型，托管在 LeptonAI 上，输出速度能达到每秒大约200个 token，用的搜索引擎是 Bing 的搜索 API。
 - [search_with_lepton](https://github.com/leptonai/search_with_lepton)
 - [体验](https://search.lepton.run/search)
-- ![](https://private-user-images.githubusercontent.com/1506722/298886477-845d7057-02cd-404e-bbc7-60f4bae89680.png)
-
 作者还写了一下自己的经验：
 - (1) 搜索质量至关重要。优质的摘要片段是形成精准概括的关键。
 - (2) 适当加入一些虚构内容实际上有助于补充摘要片段中缺失的“常识性信息”。
