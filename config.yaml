@@ -111,7 +111,7 @@ params:
   
   # 图标文件
   assets:
-    favicon: "/favicon_wine.ico"
+    favicon: "/favicon.ico"
     favicon16x16: "/favicon-16x16.png"
     favicon32x32: "/favicon-32x32.png"
     apple_touch_icon: "/apple-touch-icon.png"
@@ -119,7 +119,7 @@ params:
   # 标签页配置
   label:
     text: "Ringi's Log"
-    icon: "/favicon_wine.ico"
+    icon: "/favicon.ico"
     iconHeight: 35
   
   # 分析配置
