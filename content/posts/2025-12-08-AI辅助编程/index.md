@@ -1,0 +1,1621 @@
+---
+title: AI辅助编程
+date: 2025-12-08T09:28:21+08:00
+draft: false
+tags:
+- Coder
+- LLM
+- AI
+- DeepLearning
+- Tutorial
+- AGI
+- 幻觉
+- 代码生成
+- 代码测试
+author: Ringi Lee
+showToc: true
+tocOpen: false
+---
+
+# AI辅助编程
+
+
+## 总结
+
+
+2025年5月27日，蚂蚁开源在第⼗届技术⽇上，重磅发布了《2025 ⼤模型开源开发⽣态全景与趋势》报告
+
+**AI Coding** 开源项目正呈现出火热的态势，甚至在今年一度刮起了“**氛围编程**”（Vibe Coding）热潮。
+- 一直以来，编程都称得上是 AI 赛道的热门场景，从最早的低代码、无代码，到后期的辅助编程，甚至是 AI 自主编程，AI 的编程能力愈演愈强，也让这一赛道持续火热。
+- 现阶段除了商业化产品 `Cursor`、`Windsurf` 等验证了市场热情外，以 `Continue`、`Cline` 为代表的 IDE 插件形态的项目们也是主流的开源选择。
+
+技术层面
+- AI 在理解**复杂业务逻辑**时存在一定短板。在代码质量、安全性、合规性上，均面临不小的挑战。对于一些关键业务是否交给 AI，不少企业仍心存顾虑。
+- 此外，目前公开的**代码数据集**存在质量参差不齐等问题，这也给模型优化带来挑战。
+
+预计未来 24 个月内，随着**代码验证**技术（如形式化方法与符号执行的结合）、**多模态训练数据**（代码 + 文档 + 运行时日志）的成熟，以及开发者反馈闭环的优化，AI 开发助手将会承担更多常规开发任务，但仍需人类开发者在关键决策点进行监督。
+
+### 新范式
+
+开发者与 AI 之间最佳的协作范式？如何解决项目级别问题？
+
+【2025-6-25】[Anthropic 最佳实践: AI Coding 新范式](https://zhuanlan.zhihu.com/p/1919169757757805672)
+
+从敲代码的“工具”升级为融入整个开发生命周期的“伙伴”（未来可能变为导师）。
+- 区别于 feature-level problem 一个简单的 prompt 便可解决，更规范更标准的工作模式。
+
+Zen of Vibe Coding Outline
+- ![](https://pic1.zhimg.com/v2-0b0d6a37146def900c04fde0c2e438b4_1440w.jpg)
+
+人机协同的“双模”驱动（Agent & Ask）
+
+Anthropic 实践表明，与 AI 高效协作的关键：“**任务分类**”。
+- 根据任务性质，在两种不同模式间切换，即 “自主代理模式”（**委托**）与“同步共驾模式”（**监督**）。
+- 对应 Cursor Agent 和 Ask 模式。
+- 目前主流 AI Coding 软件都兼容这两种模式。
+
+构建高效人机协同系统所必需的思维方式。
+- 原则一：建立**自我验证**的闭环系统
+  - AI 写代码前，先生成测试用例（ memory 或 system rules 中）。
+  - 随后，AI 任务就变成“通过所有测试”。
+  - 这个简单的流程转变，创建了自我修正的闭环，极大提升自主模式的可靠性。
+- 原则二：培养精准的**任务分类**直觉
+  - 高效协作的前提是**做出正确的决策**：何时放手，何时掌控。
+  - 开发者要快速判断任务适合 “Agent” 模式的外围探索，还是“Ask” 模式的核心构建。
+  - 这种判断力，是区分普通使用者与高级玩家的关键。
+- 原则三：追求工程级别的**精确沟通**
+  - 与 AI 的沟通是严肃的工程行为。模糊指令必然导致不可靠的输出。
+  - 尤其在同步模式下，提示应如同 API 文档般精确，明确指出要操作的文件、函数、类以及预期的行为。
+  - 沟通的精度，直接决定了协作的效率和产出的质量。
+
+
+如何区分这两种模式？
+
+#### 自主代理模式 （Agent）
+
+开发者扮演“架构师”或“项目经理”的角色，向 AI 下达高阶指令，授予较高的自主权，来完成相对独立的任务。
+
+AI 如同被委派任务的智能 Agent，负责从编码、测试到迭代的完整闭环。
+
+适用场景：
+- 快速原型开发：验证一个新想法，构建 MVP。
+- 非核心功能实现：为产品增加外围或辅助性功能，例如工具、插件等。
+- 技术探索：在不熟悉的框架或库中进行实验性编码。
+
+Anthropic 提供案例：
+- 团队在非优先级的背景下，要求 Claude 为其编辑器实现 Vim 键位绑定。
+- 最终，约 70% 的代码由 Claude 自主完成，开发者仅需进行少量的审查和迭代。
+
+在明确的目标和边界下，AI Agent 能爆发出惊人的生产力。
+
+操作原则：
+- 启用“自动接受模式”：允许 AI 持续地编写、测试和修正代码。
+- 保障安全边界：始终从一个干净的 git 分支开始，并设置 checkpoint（备份），确保任何偏离预期的结果都能被轻松回滚。
+
+#### 同步共驾模式 （Ask）
+
+开发者与 AI 更像是经验丰富的`飞行员`与`智能副驾`（Copilot）。
+- 开发者掌握主导权，进行实时监督和引导
+- 而 AI 则负责处理具体的、重复性的编码任务，充当一个不知疲倦的“结对编程”伙伴。
+
+适用场景：
+- 核心业务逻辑开发：处理直接影响产品核心价值的复杂代码。
+- 关键 Bug 修复：对重要问题进行精准修复。
+- 大型代码库重构：在遵循严格架构和风格指南的前提下进行修改。
+- 关键实践：核心功能开发
+
+为代码库或者项目实现一个关键的 feature，这区别于一些简单的 utils，它对整个项目成功运行非常重要。在处理这类涉及应用业务逻辑的关键特性时，需要向 Claude 提供极为详尽的 prompt，并实时监控其产出，确保代码质量、架构合规性与编码风格的统一。开发者聚焦于“思考”，AI 聚焦于“执行”。
+
+操作原则：
+- 提供高信息密度的提示 (Prompt)：指令必须清晰、具体，无歧义，尤其是在处理命名相似的组件时。
+  - 不能依赖模型 agentic 的去处理可能的歧义，在要修改的代码前显式的引用文件名或者类似的标识，减少模型的认知负担
+- 实时反馈与修正：将 AI 的工作流视为一个需要持续监督的过程，而非一次性的任务交付。因为这是重要的核心逻辑，需要你反复的修改和优化。
+  - 这就是为什么叫 Ask 模式，问题的解决显然不是一次询问就能解决的。
+
+
+### 资讯
+
+
+2025年5月28日，字节跳动发布最新内部邮件，逐步禁用包括 Cursor、Windsurf 在内的第三方 AI 开发软件，转而推广自研编程助手 Trae 作为替代方案。
+- 邮件由字节跳动安全与风控部门发出，称此举是出于防范数据泄露风险的考虑，自 6 月 30 日起将分批在内部实施相关禁用措施。
+
+## 代码能力
+
+【2024-9-6】 第三方观点 常见编码助手：阿里通义灵码，商汤小浣熊，智谱codegeex，讯飞iflycoder
+- 反响最好是通义灵码…
+
+【2025-2-25】 最强代码模型 Claude 3.7, Grok 3
+
+【2025-11-26】Anthropic Engineering 博客最新文章：
+- 原文 [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
+- 长时间运行的 AI 代理仍然面临在多个上下文窗口中工作的挑战
+
+<img width="2752" height="1536" alt="image" src="https://github.com/user-attachments/assets/d3f88b3d-39e8-41bb-a036-a3ba1a502481" />
+
+
+
+《为什么 90% 的 AI 项目都会失败？——从 Claude Code 被当脚本用说起》
+- [twitter](https://x.com/naki2012/status/1993570677467890144)
+
+很多公司兴冲冲地部署各种“企业级 AI 项目”，例如把 Claude Code、GPT、Gemini 搬上服务器，让它们对代码库“自动做分析”“自动提报告”“自动查变更”。
+
+听起来很先进，但现实往往是：这些项目上线不到两周，就悄悄死掉了。为什么？因为这些 AI 被要求做的事情，根本不是它们被创造出来的用途。
+
+这就像买了一架飞机，结果用来当电风扇吹。能吹一点风，但不值得。
+
+绝大多数 AI 项目为什么注定失败？
+
+（1）不是技术，而是**人类的误解**
+
+旧时代管理者总认为：AI = 高级脚本
+- 调一次 → 产出一次 → 汇报一次
+
+但真正的 AI（特别是代码 AI）其实是：
+- 需要上下文
+- 需要多轮推理
+- 需要迭代
+- 需要持续学习
+- 需要理解整个代码图谱
+- 需要记住架构演进
+- 需要做 reasoning，而不是 grep
+
+让它做“一次性分析”这种需求，本质上是：用飞机载 3 公斤快递。不是不能做，而是——完全不值得。
+
+（2）单轮调用 AI 去分析代码，是**结构性错误**
+
+为什么？因为忽略了代码的本质特征：
+- 高频变动
+- 横向依赖
+- 潜在耦合
+- 历史原因
+- 模块习俗
+- 真实上下文
+- 团队暗规则
+- 不可见逻辑
+
+一轮调用无法重建任何一个真实工程的“因果链”。这就导致：
+- AI 每次都像盲人摸象，
+- 每天都在重新摸一遍。
+
+成本高、价值低、速度慢、结论不准。
+
+现实世界里的代码库，不是你把几段 diff 扔进去它就能立刻理解的。
+
+这不是 AI 问题，是**设计者对“软件复杂性”的理解不够**。
+
+（3）最讽刺的是：这些失败的 AI 项目，从**一开始就注定要失败**
+
+因为真实目的不是：
+- 提升效率
+- 减少错误
+- 优化迭代
+- 提升团队能力
+
+而是：
+- “看起来我们在拥抱 AI”
+- “可以在周会上展示”
+- “可以写进流程”
+- “可以向上汇报”
+
+这些项目不是为了解决问题，而是为了满足“**政治红利**”。
+
+这种项目的生命一般分三步：
+1. 部署很快（没想清楚）
+2. 试用很短（不好用）
+3. 下线很悄悄（不好解释）
+
+最终都进入一个共同的下场：没人再提它，就像它从未存在过一样。
+
+（4）真正的 AI-native 代码系统是什么样？
+
+真实有效的 AI-native 模式应当包含：
+- 全量索引整个代码库
+- 持续增量同步
+- 建立 code graph（结构图谱）
+- 多轮推理
+- 理解整个历史演进
+- 自动生成 patch
+- 自动验证
+- 能和 CI/CD 整合
+- 长期记忆 + 长期一致性
+
+换句话说：
+- 不是“开一枪”，而是“接管一个系统”。
+- 不是做一次，而是融入整个工作流。
+- 不是当脚本，而是当协作者。
+
+这才叫 AI-native。
+
+（5）总结
+
+绝大多数 AI 项目失败，不是因为 AI 不够强，而是因为用它的人不够懂。
+
+最常见的误解：
+- “我终于拿到一把激光剑了！
+- 我要用来……切菜。”
+
+当然可以这么做，但这不是激光剑的错，这是时代的错位。
+
+很多组织在“拥抱 AI”，但他们拥抱的是表象，而不是结构。
+
+他们用的是 2025 年的 AI，但思考还停在 2015 年。
+
+这就是 90% 的 AI 项目必然失败的根本原因。
+
+
+### LLM 编程能力怎么样
+
+
+
+
+#### Claude
+
+【2025-9-24】[Anthropic 联创曝内部工程师已不写代码了，但工作量翻倍！开发者嘲讽：所以 Claude bug才那么多？](https://mp.weixin.qq.com/s/Sh-CWimkBtASC5_lAtjs8Q)
+
+Anthropic 联合创始人 Dario Amodei
+> “未来 1-5 年，可能有一半的白领岗位会消失，失业率会飙升至 10% 到 20%，无论这项技术能带来多少好处”。
+
+Anthropic 内部，工程师们已经不写代码了，而是通过**管理大量的 AI Agent 系统**来写代码，并且在这种模式下，每个人完成的工作量是以前的 **2-3 倍**。
+
+130 名工程师过去一年使用 AI 体验: 工作发生了翻天覆地的变化。
+- 很多人现在的工作量是以前的两、三倍，但他们已经不再写代码了，而是管理 AI Agent 系统集群。 
+- “我的工作完全变了，我得重新思考自己在 Anthropic 的角色。”
+- 支撑 Claude 运行和设计下一代 Claude 所需的绝大部分代码，都是由 Claude 自己编写的。
+- 不仅 Anthropic 是这样，其他发展迅速的 AI 公司也一样。
+
+老板视角（站着说话不腰疼）
+- 员工不会因此失业，公司还在飞速发展。
+- Dario 还提议政府向 AI 公司多征税，表示这并不会影响 Anthropic 的发展
+
+YouTube
+- [Anthropic’s Dario Amodei & Jack Clark & Axios’ Jim VandeHei](https://www.youtube.com/watch?v=nvXj4HTiYqA)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nvXj4HTiYqA?si=1rn2ROmCpIHcqZ2D" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+高管们为公司全 AI 代码而开心的时候，开发者们却对这种情况充满质疑。
+
+有人犀利发问：
+>- AI 写代码这么厉害，为什么 Claude 桌面客户端经常 UI 卡？
+>- 所以这就是 Claude 所谓“bug”被社区反映了一个多月才被发现的原因？
+
+>- 你们有没有写过代码、用 AI 干过一件生产工作？<span style='color:red'>
+>- 一个人用几个 Agent 写代码很扯</span>，严重破坏心流
+>- 而且 AI 无法窥探产品全局和核心价值点，一般设计的架构和代码可能会完全偏离产品方向。
+>- 不是说 AI 不好，而是还没有到能革命地步，最起码没有想的那么美
+
+> 这个联合创始人被员工给骗了，用 AI 编过程序的人都知道，用 AI 编写满意的程序，**不把 Prompt 写清楚，产生不了结果**。而写满意的 Prompt 可不是那么容易的，而且还要把想法分成若干步骤，让 AI 一步步逼近你的需求。中间还有一些参数调整，如果用 AI 帮忙，还不如自己改呢！”
+
+目前的技术水平 AI 只能**辅助**，<span style='color:red'>全 AI 代码是胡扯</span>，只有少部分人觉得很惊叹。
+
+
+#### 正方
+
+大模型代码能力达到专家水平
+
+
+#### 反方
+
+【2025-6-19】[大模型全员0分！谢赛宁领衔华人团队，最新编程竞赛基准出炉，题目每日更新禁止刷题](https://zhuanlan.zhihu.com/p/1918971192515233230)
+
+有人说，LLM编程现在已超越人类专家，但本次测试结果表明并非如此。
+
+表现最佳的模型，在中等难度题上的一次通过率仅53%，难题通过率更是为0。
+
+即使是最好的模型o4-mini-high，一旦工具调用被屏蔽，Elo也只有2100，远低于真正大师级的2700传奇线。
+
+谢赛宁等人出题，直接把o3、Gemini-2.5-pro、Claude-3.7、DeepSeek-R1 一众模型全都难倒。
+- 【2025-6-13】论文 [LiveCodeBench Pro: How Do Olympiad Medalists Judge LLMs in Competitive Programming?](https://arxiv.org/pdf/2506.11928)
+- 实时榜单 [LiveCodeBench Pro](https://livecodebenchpro.com/)
+
+[LiveCodeBench Pro](https://github.com/GavinZhengOI/LiveCodeBench-Pro)：一个包含来自IOI、Codeforces和ICPC的竞赛级编程问题的实时基准测试。
+- 奥林匹克获奖者构建，比赛结束后立即收集每道Codeforces、ICPC和IOI题目，在互联网上出现正确答案之前捕获每个问题。
+- 动态题库考验LLMs算法逻辑深度
+- 题库还每日更新，来预防LLMs“背题”
+- 584道顶流竞赛题，团队手动对每个问题进行标注，标注内容包括解决每个任务所需的关键技能，并根据问题的认知焦点将题目分为知识密集型、逻辑密集型和观察密集型三大类。
+- 题目分为三个难度级别，非人工挑选，而是正态分布自动选择。
+
+谢赛宁表示：
+- 击败这个基准就像AlphaGo击败李世石一样。我们还没有达到那个水平——甚至对于有明确可验证结果的问题也是如此。
+
+结合题目分类与提交结果，对比人类专家的解题模式，分析模型在不同难度（简单 / 中等 / 困难）、题型（知识密集型 / 逻辑密集型 / 观察密集型）下的表现，定位模型在算法推理、样例利用及边缘案例处理等方面的短板。
+
+![](https://pic3.zhimg.com/v2-9b8c11747850ca410aac29b532599230_1440w.jpg)
+
+结论
+- 模型在**知识密集型**和**逻辑密集型**问题上表现更好，擅长 “**死记硬背**”（如数据结构模板）
+- 但在**观察密集型**问题或**案例工作**中表现较差，搞不定 “灵光一现” 的贪心、博弈题。
+
+LLMs擅长实现类问题，但在需要**精细算法推理**和**复杂案例分析**的题目上表现欠佳，还常给出看似正确实则错误的解释。
+
+LLMs经常无法正确通过题目提供的示例输入，显示其对给定信息的利用不充分。
+
+## 代码生成概要
+
+
+【2025-4-13】悉尼大学论文
+- [From LLMs to LLM-based Agents for Software Engineering: A Survey of Current, Challenges and Future](https://arxiv.org/pdf/2408.02479)
+
+summarise six key topics: `requirement engineering`, `code generation`, `autonomous decision-making`, `software design`, `test generation`, and `software maintenance`. 
+
+SE:
+1) **需求文档** Requirement Engineering and Documentation: Capturing, analyzing, and documenting software requirements, as well as generating user manuals and technical documentation.
+2) **代码开发** Code Generation and Software Development: Automating code generation, assisting in the development lifecycle, refactoring code, and providing intelligent code recommendations.
+3) **自学习和决策** Autonomous Learning and Decision Making: Highlighting the capabilities of LLM-based agents in autonomous learning, decision-making, and adaptive planning within SE contexts.
+4) **软件设计评估** Software Design and Evaluation: Contributing to design processes, architecture validation, performance evaluation, and code quality assessment.
+5) **软件测试** Software Test Generation: Generating, optimizing, and maintaining software tests, including unit tests, integration tests, and system tests.
+6) **软件安全、维护** Software Security & Maintenance: Enhancing security protocols, facilitating maintenance tasks, and aiding in vulnerability detection and patching
+
+We review and differentiate the work of LLMs and LLM-based agents from these six topics, examining their differences and similarities in tasks, benchmarks, and evaluation metrics. 
+
+| Category | LLMs | LLM - based agents | Total |
+| ---- | ---- | ---- | ---- |
+| Requirement Engineering and Documentation | Requirement Classification and Extraction (4)<br>Requirement Generation and Description (6)<br>Requirements Satisfaction Assessment (1)<br>Requirement Verification (1)<br>Quality Evaluation (5)<br>Ambiguity Detection (2) | Generation of Semi - structured Documents (1)<br>Generate safety requirements (1)<br>Automatically generating use cases based on requirements (1)<br>Requirements Satisfaction Assessment (1)<br>Automated User Story Quality Enhancement (3) | 28 |
+| Code Generation and software development | Code Generation Debugging (3)<br>Code Evaluation (2)<br>Implement HTTP server (1)<br>Enhancing Code Generation Capabilities (5)<br>Specialized Code Generation (3)<br>Human Feedback Preference Simulation (1) | Automating the Software Development Process (5)<br>Large - Scale Code and Document Generation (2)<br>Tool and External API Usage (4)<br>Multi - Agent Collaboration and Code Refine (6)<br>Improving Code Generation Quality (3) | 35 |
+| Autonomous Learning and Decision Making | Multi - LLM Decision - Making (1)<br>Creativity Evaluation (1)<br>Self - Identify and Correct Code (1)<br>Judge Chatbot Response (1)<br>Mimics Human Scientific Debugging (1)<br>Deliberate Problem Solving(1) | Collaborative Decision - Making and Multi - Agent Systems (6)<br>Learning, Reasoning and Decision - Making (12)<br>Learning and Adaptation through Feedback (4)<br>Simulation and Evaluation of Human - like Behaviors (2) | 30 |
+| Software Design and Evaluation | Creative Capabilities Evaluation (1)<br>Performance in SE Tasks (1)<br>Educational Utility and Assessment (1)<br>Efficiency Optimization (2) | Automation of Software Engineering Processes (3)<br>Enhancing Problem Solving and Reasoning (4)<br>Integration and Management of AI Models and Tools (3)<br>Performance and Efficiency Improvement (2)<br>Performance Assessment in Dynamic Environments (2) | 19 |
+| Software Test Generation | Bug Reproduction and Debugging (2)<br>Security Test (2)<br>Test Coverage (3)<br>Test - Informed Code Generation (1)<br>Universal Fuzzing (1) | Multi - agent Collaborative Test Generation (3)<br>Autonomous Testing and Conversational Interfaces (3) | 15 |
+| Software Security & Maintenance | Vulnerability Detection (7)<br>Vulnerability Repair (2)<br>Program Repair (5)<br>Code Generation (1)<br>Requirements Analysis (1)<br>Fuzzing (1)<br>Duplicate Entry (1)<br>Code Generation and Debugging (4)<br>Penetration Testing and Security Assessment (2)<br>Program Analysis and Debugging (1) | Autonomous Software Development and Maintenance (6)<br>Program Fault Localization (4)<br>Vulnerability Detection and Generation Testing (3)<br>Smart Contract Auditing and Repair (2)<br>Safety and Risk Analysis (2)<br>Adaptive and Communicative Agents (1) | 43 | 
+
+
+
+
+
+## Vibe Coding
+
+
+【2025-5-12】[Vibe Coding彻底火了，到底什么是"氛围编程"？它如何改变未来的软件开发？](https://www.cnblogs.com/txw1958/p/18791536)
+
+Vibe Coding 伴随着强大的、经过代码生成优化的 AI 模型的兴起而出现。
+
+一些分析师认为，Vibe Coding 只是**低代码平台**的下一步发展，在这种模式下，**自然语言**成为了编程语言。
+
+历史
+- 2010 年代兴起的**低代码**/**无代码**平台
+- 2021 年出现 **AI 代码助手**（如 GitHub Copilot）是 Vibe Coding 的早期先驱。
+- 2022 年底 ChatGPT 的发布标志着会话式编码时代的到来。
+- 2025 年，Vibe Coding 已经从一种边缘化的实验转变为一种主流趋势，这得益于 AI 技术的进步和实际应用中的成功案例。
+
+Vibe Coding 核心原则：
+- 使用自然语言进行提示，将 AI 视为代码生成的合作伙伴，通过迭代反馈循环不断完善代码，以及在一定程度上接受 AI 生成但可能不完全理解的代码。
+
+这种方法的核心在于将与代码交互从直接操作转变为通过**自然语言**进行更高层次的抽象，从根本上改变了开发者与代码库的关系。
+- 传统编码需要使用特定语法进行明确而详细的指令
+- 而 Vibe Coding 则通过允许自然地表达意图来抽象化这一过程。
+
+这标志着开发者角色从亲力亲为、注重细节转向更具指导性和方向性的转变。
+
+### 定义
+
+Vibe Coding （氛围编程） 是一种依赖人工智能的计算机编程实践
+
+核心在于开发者使用**自然语言提示**向针对代码优化的大型语言模型（LLM）描述问题，由 LLM 生成软件，从而使程序员摆脱编写和调试底层代码的需要。 
+
+这个术语由计算机科学家、OpenAI 联合创始人兼特斯拉前人工智能主管 `Andrej Karpathy` 于 2025 年 2 月提出，并迅速成为一种新兴的**编码方式**。
+
+Vibe Coding 倡导者认为，即使是业余程序员也能在无需大量培训和技能的情况下生成软件，这代表了一种更为直观和便捷的开发模式。
+
+关键特征
+- 用户通常在不完全理解代码底层机制的情况下接受 AI 生成的代码。这与仅仅将 LLM 作为代码输入的辅助工具不同，后者仍然需要开发者审查、测试和理解每一行代码。
+
+Vibe Coding 本质: 完全沉浸于"AI 助手"氛围中，将详细的实现过程外包给 AI。 
+
+正如 Karpathy 最初所描述的那样：
+> "这不算真正的编程 -- 我只是看看东西，说说东西，运行东西，然后复制粘贴东西，而且它大多都能工作" 。
+
+![](https://pica.zhimg.com/100/v2-2ed036167de9eca017644fef4a271818_r.jpg)
+
+
+<!-- draw.io diagram -->
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;dark-mode&quot;:&quot;auto&quot;,&quot;toolbar&quot;:&quot;zoom layers tags lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; agent=\&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36\&quot; version=\&quot;26.2.15\&quot;&gt;\n  &lt;diagram name=\&quot;第 1 页\&quot; id=\&quot;hea0hmRtUkb3emoj8UKX\&quot;&gt;\n    &lt;mxGraphModel dx=\&quot;532\&quot; dy=\&quot;602\&quot; grid=\&quot;1\&quot; gridSize=\&quot;10\&quot; guides=\&quot;1\&quot; tooltips=\&quot;1\&quot; connect=\&quot;1\&quot; arrows=\&quot;1\&quot; fold=\&quot;1\&quot; page=\&quot;1\&quot; pageScale=\&quot;1\&quot; pageWidth=\&quot;827\&quot; pageHeight=\&quot;1169\&quot; math=\&quot;0\&quot; shadow=\&quot;0\&quot;&gt;\n      &lt;root&gt;\n        &lt;mxCell id=\&quot;0\&quot; /&gt;\n        &lt;mxCell id=\&quot;1\&quot; parent=\&quot;0\&quot; /&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-1\&quot; value=\&quot;代码实现\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;fontSize=18;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;\n          &lt;mxGeometry x=\&quot;400\&quot; y=\&quot;170\&quot; width=\&quot;120\&quot; height=\&quot;40\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-6\&quot; value=\&quot;\&quot; style=\&quot;edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;ox_2a3tY4vBSa7XDAzj7-2\&quot; target=\&quot;ox_2a3tY4vBSa7XDAzj7-4\&quot;&gt;\n          &lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-7\&quot; value=\&quot;自然语言描述\&quot; style=\&quot;edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;\&quot; vertex=\&quot;1\&quot; connectable=\&quot;0\&quot; parent=\&quot;ox_2a3tY4vBSa7XDAzj7-6\&quot;&gt;\n          &lt;mxGeometry x=\&quot;-0.0453\&quot; y=\&quot;-2\&quot; relative=\&quot;1\&quot; as=\&quot;geometry\&quot;&gt;\n            &lt;mxPoint x=\&quot;18\&quot; y=\&quot;-12\&quot; as=\&quot;offset\&quot; /&gt;\n          &lt;/mxGeometry&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-2\&quot; value=\&quot;开发者\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;fontSize=18;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;\n          &lt;mxGeometry x=\&quot;30\&quot; y=\&quot;170\&quot; width=\&quot;70\&quot; height=\&quot;40\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-4\&quot; value=\&quot;AI模型\&quot; style=\&quot;shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#bac8d3;strokeColor=#23445d;shadow=1;fontSize=15;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;\n          &lt;mxGeometry x=\&quot;240\&quot; y=\&quot;80\&quot; width=\&quot;80\&quot; height=\&quot;80\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-5\&quot; value=\&quot;测试反馈\&quot; style=\&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=18;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;\n          &lt;mxGeometry x=\&quot;220\&quot; y=\&quot;240\&quot; width=\&quot;120\&quot; height=\&quot;40\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-8\&quot; value=\&quot;\&quot; style=\&quot;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;edgeStyle=orthogonalEdgeStyle;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;ox_2a3tY4vBSa7XDAzj7-4\&quot; target=\&quot;ox_2a3tY4vBSa7XDAzj7-1\&quot;&gt;\n          &lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;&gt;\n            &lt;mxPoint x=\&quot;170\&quot; y=\&quot;200\&quot; as=\&quot;sourcePoint\&quot; /&gt;\n            &lt;mxPoint x=\&quot;250\&quot; y=\&quot;130\&quot; as=\&quot;targetPoint\&quot; /&gt;\n          &lt;/mxGeometry&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-9\&quot; value=\&quot;生成代码\&quot; style=\&quot;edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;\&quot; vertex=\&quot;1\&quot; connectable=\&quot;0\&quot; parent=\&quot;ox_2a3tY4vBSa7XDAzj7-8\&quot;&gt;\n          &lt;mxGeometry x=\&quot;-0.0453\&quot; y=\&quot;-2\&quot; relative=\&quot;1\&quot; as=\&quot;geometry\&quot;&gt;\n            &lt;mxPoint x=\&quot;-16\&quot; y=\&quot;-12\&quot; as=\&quot;offset\&quot; /&gt;\n          &lt;/mxGeometry&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-10\&quot; value=\&quot;\&quot; style=\&quot;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;ox_2a3tY4vBSa7XDAzj7-1\&quot; target=\&quot;ox_2a3tY4vBSa7XDAzj7-5\&quot;&gt;\n          &lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;&gt;\n            &lt;mxPoint x=\&quot;330\&quot; y=\&quot;130\&quot; as=\&quot;sourcePoint\&quot; /&gt;\n            &lt;mxPoint x=\&quot;440\&quot; y=\&quot;180\&quot; as=\&quot;targetPoint\&quot; /&gt;\n          &lt;/mxGeometry&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-12\&quot; value=\&quot;\&quot; style=\&quot;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;\&quot; edge=\&quot;1\&quot; parent=\&quot;1\&quot; source=\&quot;ox_2a3tY4vBSa7XDAzj7-5\&quot; target=\&quot;ox_2a3tY4vBSa7XDAzj7-2\&quot;&gt;\n          &lt;mxGeometry relative=\&quot;1\&quot; as=\&quot;geometry\&quot;&gt;\n            &lt;mxPoint x=\&quot;440\&quot; y=\&quot;220\&quot; as=\&quot;sourcePoint\&quot; /&gt;\n            &lt;mxPoint x=\&quot;350\&quot; y=\&quot;270\&quot; as=\&quot;targetPoint\&quot; /&gt;\n          &lt;/mxGeometry&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-14\&quot; value=\&quot;测试反馈\&quot; style=\&quot;edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;\&quot; vertex=\&quot;1\&quot; connectable=\&quot;0\&quot; parent=\&quot;ox_2a3tY4vBSa7XDAzj7-12\&quot;&gt;\n          &lt;mxGeometry x=\&quot;-0.2722\&quot; y=\&quot;-7\&quot; relative=\&quot;1\&quot; as=\&quot;geometry\&quot;&gt;\n            &lt;mxPoint x=\&quot;-5\&quot; y=\&quot;-2\&quot; as=\&quot;offset\&quot; /&gt;\n          &lt;/mxGeometry&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;ox_2a3tY4vBSa7XDAzj7-15\&quot; value=\&quot;AI辅助编程&amp;lt;div&amp;gt;Vibe Coding&amp;lt;/div&amp;gt;\&quot; style=\&quot;text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=21;\&quot; vertex=\&quot;1\&quot; parent=\&quot;1\&quot;&gt;\n          &lt;mxGeometry x=\&quot;205\&quot; y=\&quot;20\&quot; width=\&quot;150\&quot; height=\&quot;30\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n      &lt;/root&gt;\n    &lt;/mxGraphModel&gt;\n  &lt;/diagram&gt;\n&lt;/mxfile&gt;\n&quot;}"></div>
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
+
+
+### 区别
+
+Vibe Coding 与传统编码
+
+|方面|Vibe Coding|传统编码|
+| ---- | ---- | ---- |
+|开发速度|更快 — AI 辅助生成加速编码和迭代|较慢 — 手动编码、调试和优化需要更多时间|
+|可访问性|更易上手 — 降低非程序员的门槛|较难上手 — 需要正式的编程知识|
+|所需技能|提示、审查、系统设计、问题定义|语法知识、算法、数据结构、调试|
+|代码理解|黑箱式理解 — 接受但不完全理解|深度理解 — 开发者直接控制和理解代码库|
+|调试|可能具有挑战性 — 依赖 AI 修复问题|更容易 — 开发者理解代码逻辑|
+|代码质量|不稳定 — 取决于 AI 能力和提示|更可控 — 开发者可以遵循最佳实践|
+|长期可维护性|可能更难 — 缺乏深入理解和文档|更容易 — 结构良好且有文档记录的代码|
+|复杂性处理|受 AI 限制 — 难以维护大型项目的结构|无限制 — 完全控制复杂性和自定义|
+|关注点|高层次问题解决 — 开发者描述意图|实现细节 — 开发者手动编写、优化和调试代码|
+|灵活性|存在一些限制 — AI 生成的结构可能僵化|无限制 — 开发者可以完全控制代码的各个方面|
+|学习曲线|更容易 — 主要依赖自然语言|更陡峭 — 需要学习语法、算法、调试和优化|
+|学习资源|新兴领域，资源快速增长，但相对分散|成熟体系，资源丰富，体系化教程、文档完善| 
+
+### 开发者要求
+
+开发者技能要求的改变
+
+Vibe Coding 的出现对开发者的技能要求产生了显著的影响，并正在改变传统的软件开发方法。
+
+这部分内容介绍了开发者技能要求的改变：
+- 更高层次的能力要求
+  - AI辅助下，程序员角色转变为“监督者”和“设计师” ，质量控制、架构规划、深度问题解决等高层次技能愈发重要。工程师需擅长确定产品需求、设计系统方案，把控AI产出代码，还要增强与AI协作、管理AI的能力。
+- 计算机科学基础作用的变化
+  - 自然语言渐成“新编程语言”，传统算法、数据结构等计算机科学知识重要性在部分场景被削弱，但理解算法原理、系统性能和调试技巧等传统技能仍是复杂项目支撑，不可完全忽视。 
+- 职业路径与岗位影响
+  - 基础编码型初级岗位需求或减少，“AI提示工程师”“AI策略师”等新兴职位将出现。未来软件从业者多充当“提示提供者”和“代码管理者”，需在职业规划上与时俱进。 
+
+
+开发者需要更加注重**问题定义和规范**，清晰地使用自然语言表达需求和期望的结果。
+- 确定最佳的提问方式变得至关重要。
+- 同时，开发者需要具备指导和审查 AI 生成代码的能力，评估、完善和测试 AI 产出的代码。
+- 开发者更像是扮演指导者或编辑的角色。
+
+系统设计和架构的理解变得比低层次的编码更为重要。
+- 批判性思维和问题解决能力对于评估和改进 AI 生成的代码至关重要。
+- 此外，开发者需要学习如何有效地与 AI 沟通，掌握提示技巧以获得期望的结果。
+- 虽然侧重点有所变化，但对编程基本原理的理解对于有效地指导 AI 和进行调试仍然很有价值。
+
+Vibe Coding 对传统软件开发方法的影响体现在以下几个方面：
+- 软件开发更加注重意图驱动，即更关注期望的结果而不是具体的实现细节。
+- 迭代周期变得更快，Vibe Coding 与敏捷开发方法高度契合，强调快速迭代和灵活性。
+- AI 处理了部分传统上由初级开发者完成的任务，可能导致团队结构的变化。非程序员也能参与到软件创建中，模糊了项目不同角色之间的界限。
+- 此外，可能出现"快速迭代发布"或"MVP 驱动开发"的趋势，即更倾向于实时构建和发布产品，而不是进行大量的原型设计。 
+- Vibe Coding 还可能促使编程语言向更高层次抽象发展，并可能降低对学习多种编程语言的需求。自然语言可能成为主要的交互界面。
+- 然而，Vibe Coding 强调快速迭代和最少的前期规划，这与瀑布模型的顺序性形成对比。
+
+Vibe Coding 标志着软件开发模式的根本转变，从细致的手动编码转向更抽象、意图驱动的方法，人类开发者在此过程中扮演着指导 AI 的角色。这必然要求开发者掌握新的核心技能。如果 AI 负责底层编码，那么人类所需的技能自然会转向更高层次的关注点。清晰地定义问题和指导 AI 的能力变得至关重要。此外，AI 的输出需要验证，这需要批判性思维和对软件架构的理解。这表明开发者正在从"代码编写者"转变为更像是能够有效利用 AI 的"软件架构师"或"产品负责人"。
+
+
+### 优势
+
+
+Vibe Coding 优势：
+- **提升开发效率**：借助AI承担繁琐编码任务，大幅提升生产力，能将原本数日开发原型的时间缩短至数小时，加速概念到原型迭代，可提高项目75%开发速度。
+- **降低开发门槛**：采用自然语言编程，让无编码经验、非计算机科学（CS）背景人员通过描述需求开发软件，无代码基础也能在一小时内做出可用产品，实现编程体验民主化。 
+- **专注创意和设计**：开发者可将精力集中于产品创意和架构设计，把重复劳动交予AI，使开发体验更流畅有趣，激发创新灵感。 
+
+
+Vibe Coding 通过多种机制显著提高了开发者的工作效率。
+- 首先，AI **快速**生成复杂或重复代码，大幅缩短开发时间。
+  - 例如，过去可能需要数天才能完成的原型，现在可能在数小时内即可构建完成。
+- 其次，Vibe Coding 使开发者能够将更多精力投入到**高层次问题**解决、架构设计和产品设计上，而不是纠缠于语法错误和样板代码。 这种转变让开发者能够更专注于创新和创造性的工作。
+- 此外，Vibe Coding 有利于**快速原型设计和迭代**。
+  - 通过简单自然语言指令，开发者可以快速尝试新的想法并获得初步的演示版本，从而加速反馈循环。
+  - Vibe Coding 还降低了软件开发的门槛，使那些编程经验有限甚至没有编程经验的人也能够创建软件。领域专家可以直接使用自然语言描述他们的需求，而无需先将其转化为代码。
+- Vibe Coding 还能自动化繁琐的任务，将重复性的编码工作和调试工作交给 AI 处理，从而解放开发者的精力。
+- 此外，语音编码的兴起使得开发者可以通过口头表达想法，再由 AI 将其转化为代码，这对于具有不同认知风格的开发者来说尤其有益。
+
+以下场景中，Vibe Coding 优势尤为突出：**快速原型设计**、**创建小众和个性化应用**、**自动化简单任务**、促进更广泛的开发参与、加速产品迭代周期以及在需求明确的情况下。 
+
+例如，Kevin Roose 提出的"个人软件"概念，即通过 AI 构建满足个人特定需求的应用程序。Vibe Coding 的优势在于能够加速开发的初始阶段，并赋能那些编程技能有限的个人。这预示着软件创造者范围的扩大以及想法实现速度的提升。
+
+### 局限
+
+
+尽管Vibe Coding带来诸多便利，却存在不容忽视的局限性，实际应用中开发者需关注并采取缓解策略。
+- **调试与错误排查难度**：AI自动编程处理复杂bug能力有限，遇到微妙或涉及上下文逻辑问题，可能反复尝试却抓不住要点。还可能生成看似合理实则错误的代码（幻觉）或调用不存在函数。当AI连续给出错误修改建议时，工程师常需亲自调试。 
+- **代码质量和可维护性问题**：AI生成代码未必符合最佳实践，若用户不有意引导，持续叠加修改和新功能且缺乏重构，代码会臃肿难懂，埋下安全漏洞或低效实现隐患。AI生成代码常只注重主流程，边缘情况、性能优化和安全方面可能有隐患。 
+- **复杂项目的扩展和长期维护**：当前AI编码工具应对大型、持续演进项目能力有限。项目规模变大、需管理状态和调整架构时，模型难保持全局上下文，易在变化需求中“迷失” 。项目后期完善、跨模块集成及深度性能优化，需人类开发者深入理解和系统性思维，正如风投人Andrew Chen所说：“前75%的功能轻而易举……然而当你尝试进一步修改和迭代时，一切就开始乱套了” 。 
+
+
+不足
+- 调试方面，AI 工具不一定能解决所有错误。调试 AI 生成的代码可能具有挑战性，因为开发者可能不完全理解其底层的逻辑。
+  - 如果开发者没有参与代码的创建过程，那么在出现问题时，可能难以追踪错误。对于复杂的问题，仅仅依靠直觉理解可能不够，还需要系统的调试技巧。AI 在尝试修复错误时，有时可能会引入新的问题。
+  - AI 模型在处理大型代码库时，其上下文窗口的限制也会阻碍对代码的全面理解。
+  - 此外，AI 有时会将代码插入到错误的位置或丢失上下文信息。
+- 代码质量方面，AI 生成代码未必能针对性能进行优化，也可能不符合最佳实践。这可能导致代码结构、命名约定和逻辑的不一致。
+  - 过度依赖 AI 可能会导致开发者产生"自动完成依赖"，不再深入理解代码。如果 AI 没有经过安全编码实践的充分训练，则可能引入安全漏洞。在不进行充分审查的情况下就接受 AI 生成的代码，可能会导致一些问题被忽略。
+  - AI 生成的代码有时可能只是初步的框架，需要大量的人工完善。
+- 长期维护的角度来看，对 AI 生成代码缺乏深入理解会使得未来的维护和修改变得困难。
+  - 快速生成代码而缺乏适当的设计会导致技术债务的累积。直觉式的编码可能导致代码结构混乱，难以维护。 纯粹的 Vibe Coding 通常缺乏文档，这会阻碍未来的理解。
+  - 早期 AI 决策可能难以在后期进行修改，导致架构上的锁定。代码的结构更像是涌现出来的，而不是经过仔细设计的。过度依赖 AI 可能会导致开发者失去基本的编程技能。
+  - 此外，Vibe Coding 对软件的长期可靠性也提出了挑战。
+
+Vibe Coding 虽然提供了速度和便利性，但同时也带来了与**代码质量**、**可维护性**以及**开发者基本技能可能退化**相关的重大风险。
+
+如果不加批判地采用 Vibe Coding，可能会导致大量的技术债务和长期的挑战。Vibe Coding 带来的短期效率提升，可能会以长期的技术债务为代价。对 AI 生成代码缺乏深入理解会产生黑箱效应。没有这种理解，调试会变得更加困难，确保代码质量具有挑战性，并且未来的修改可能存在风险且效率低下。过度关注快速生成而忽视仔细的设计和文档编制，会导致技术债务并阻碍长期可维护性。
+
+### 方法
+
+AI编程协作的实际应用策略，即“AI编程协作四步法”：
+1. **需求拆解**：把复杂需求细分成多个小任务，逐个交给AI实现，避免提出笼统大需求。必要时可先让AI绘制原型草图，再逐步细化。
+2. **渐进引导**：从简单功能开始开发，完成后再逐步添加复杂功能，像搭积木一样构建系统，每次新增功能都基于之前稳定的基础，循序渐进防止混乱。 
+3. **错误反馈**：出现错误或异常时，直接给AI提供报错信息，让其尝试修复。现代编码AI通常能根据错误日志自动调整代码，实现初步自我纠错。 
+4. **功能验证**：频繁运行和测试每个新增功能，确保按预期工作，不要等大量功能实现后才整体调试。对AI生成代码及时验证，利于尽早发现问题。 
+
+
+### 工具与平台
+
+随着这一趋势兴起，市面上出现了多款 AI 编程助手和集成开发环境，帮助开发者更方便地实践 Vibe Coding 思路。其中具有代表性的包括：
+- ChatGPT 与 Claude：通用对话式大型语言模型，可用于生成代码片段、解释错误信息、优化代码等。许多开发者将其作为对话式编程助手，通过自然语言向 AI 提问来获取实现思路或代码示例，加速开发过程。
+- Cursor AI：一款内置 AI 功能的桌面代码编辑器，界面和操作类似 VS Code。Cursor 集成了 AI 聊天和代码自动补全等能力，支持开发者在编辑器中直接用自然语言命令生成或修改代码。
+- Windsurf：另一款新兴的 AI 编程 IDE，提供代码对话生成等功能。Windsurf 强调自动分析整个项目的上下文，并通过"代理人"引导逐步完成任务，使用体验上对新人更加友好。
+- GitHub Copilot：由 GitHub 推出的 AI 编码助手插件，可无缝集成到 VS Code、JetBrains 等主流 IDE 中。Copilot 能根据当前文件内容实时建议下一行或整段代码，被视为 AI 辅助编码的先行者之一。
+
+不同类型的开发者都可以根据自身需求，利用上述工具提高工作效率。对于非技术背景或编程初学者，ChatGPT 这类对话 AI 能充当启蒙老师，帮助理解编程概念并提供现成代码；像 Cursor、Windsurf 这样的工具更是让他们可以用自然语言直接创造程序，大幅降低了入门门槛。
+
+对于有经验的工程师，AI 工具则可承担大量重复劳动，让他们将精力集中于架构设计和疑难问题解决。例如资深开发者可以让 AI 快速生成样板、测试代码，然后专注于审核和优化，从而整体提效。
+
+对于创业者或独立开发者，Vibe Coding 更是如虎添翼 -- 单枪匹马也能做出过去需要团队协作才能完成的产品雏形。Karpathy 本人就曾演示在一小时内分别构建出一个阅读应用和一个小游戏，这在以前几乎是难以想象的速度。
+
+可以预见，无论新人还是老手，善用 AI 编程助手都已成为提升开发效率、完成更具野心项目的关键技能之一。
+
+
+### 经验
+
+【2025-5-12】 [Zen of Vibe Coding: 引子与问题划分](https://www.zhihu.com/pin/1903297939083880111)
+
+LLM 时代下，工程师的哪些能力才是有价值的？
+
+![](https://pic2.zhimg.com/100/v2-77522998c27e7d11b00c5ae9e8e08ebd_r.jpg)
+
+Vibe Coding 体验，几个小时内实现了 0 到 0.7，但之后可能会遇到：
+1. 折腾了几天从 0.7 实现到了 0.8 （进度非线性）
+2. 折腾了几天从 0.7 实现到了 0.5 （花费时间但反作用）
+3. 有好几个版本的 0.7+- 但是不知道如何选择 （工具灾难）
+
+对于问题1/2 可以把问题分为：
+- **Project-Level**，整体项目相关的，涉及多个/复杂/耦合的问题。特点是需求比较模糊，可以继续细分与讨论，比如“设计具有某个功能的插件/应用”。
+- **Feature-Level**，具体功能相关的，涉及单个/少数/独立的问题。特点是需求比较清晰，可以参考大部分 GitHub 中的 issue，比如“修复某个因为 XX 导致的 bug”。
+- **Project-Level** 可以通过拆解得到多个 
+- **Feature-Level** 问题 ➡️ Feature-Level 是原属于 Junior 工程师的任务 ➡️ 当前 LLM 更擅长解决 Feature-Level 问题。
+
+🥕结论： 
+- Project-Level 需要人主动思考与细致规划，拆解为多个 Feature-Level 问题，再由 Vibe Coding 解决，这样高效不少。
+
+## 代码辅助工具
+
+
+### AI Shell
+
+AI Shell 将**自然语言**转换为**Shell命令**的CLI工具。受 GitHub Copilot X CLI 启发，但AI Shell是开源的，为所有人提供服务。
+
+用户只需安装 AI Shell 并从OpenAI获取API密钥，便可使用该工具。
+- [ai-shell](https://github.com/BuilderIO/ai-shell)
+
+![](https://user-images.githubusercontent.com/844291/230413167-773845e7-4c9f-44a5-909c-02802b5e49f6.gif)
+
+
+
+### Cursor
+
+【2024-11-16】10几个人如何构建20多亿的cursor，Lex 对 Cursor 团队访谈
+- 视频版 [Cursor CEO访谈](https://youtu.be/oFfVt3S51T4?si=pOPwdXxdALWLrcuw)
+- 文章介绍 
+  - 【2024-10-31】[Cursor：如何构建 AI Coding 最佳实践？](https://mp.weixin.qq.com/s/4gXqwmtTFny9QMuw1WVdRw)
+
+AI coding 是模型推理能力增加之后的下一个竞争高地。
+- Github Copilot 是第一个 LLM-driven 的消费级应用
+
+除了模型厂商、AI Labs 之外，这个领域的参与者也有着 Cursor 这样的初创团队
+
+作为一个 LLM-first IDE，Cursor 在今年迅速出圈
+- 一方面: 底层模型 `Claude Sonnet 3.5` 模型 coding 能力提升带来的体验升级
+- 另一方面: 团队在 AI Coding UI/UX 上的持续投入。
+
+技术选型
+- 刚开始用 Vim 做代码编辑。当时还没有 Neovim，只有 Vim 和一个终端。
+- 2021 年 Copilot 发布时，由于 Copilot 只能在 VS Code 上使用，所以 Cursor 转用 VS Code 了。
+- Copilot 和 VS Code 组合使用体验特别好，所以即便很喜欢 Vim，还是转向了 VS Code。
+- 开发 Cursor 之前，VS Code 都是默认编辑器。
+
+Cursor 是怎么做预测的？Cursor 延迟很低, Tab 健能做下一步动作预测（next action prediction）
+
+背后的技术细节
+- 训练了专门**MoE小模型**: 这些模型很依赖 pre-fill tokens
+  - 这些模型面对的是非常长的 prompt，需要处理很多代码行，但是实际生成的 token 并不多。这种情况下使用**稀疏模型**（Sparse Model）就很合适，一种 MoE 模型。这个突破**显著**提高了模型处理长上下文时的性能。
+- 基于**推测解码**（Speculative Decoding）构建了**推测编辑**（Speculative Edits）。
+
+这两个因素是 Cursor 生成质量高、速度快的关键。
+
+没有哪个模型能在所有方面的表现都比其他模型更好，包括速度、代码编辑能力、处理大量代码的能力、上下文长度和代码能力等等。不过，整体上表现最好的模型是 Sonnet，这也是共识。
+
+大量和 prompt 相关的信息，包括文档、添加的文件和对话历史等。
+
+问题：在 context window 有限的情况下，该如何筛选和组织这些信息？
+- Cursor Priompt  渲染器把内容合理地排布在页面上，只需要告诉它想要什么，它就会帮你实现。
+- 开发了 Priompt 内部系统， 借鉴现代网页开发的最佳实践。和固定版式的杂志排版不同，网站开发中会涉及到的一个情况是，不同设备的中信息的展示多少、格式等是动态变化的，而用户到底在哪里查看网站开发者事前并不知道，但无论终端怎么变，都要保证网站信息在不同设备上正常显示。AI 提示词工程也是类似，我们要做到无论 input 内容多大、怎么变，output 的格式都能正确展示。
+
+
+团队创始成员 Aman Sanger （CEO）、Arvid Lunnemark（CTO）、Sualeh Asif（COO）和 Michael Truell（设计主管）详细分享了 Cursor 产品体验、infra、模型训练、数据安全等细节，以及对于 AI coding、AI Agent 的思考，通过这些分享也能了解 Cursor UI/UX 背后的理念。
+- • **o1 不会干掉 Cursor**，AI Coding 领域才刚刚开始；
+- • 围绕**代码预测、补齐**等各类任务 Cursor 还训练了一系列专门的小模型；
+- • Cursor 正在试验一个叫做 `Shadow Space` 的产品概念，后台运行一个隐藏窗口让 AI 在不影响到开发者的操作的情况下进行 coding 任务；
+- • 团队在 code base  indexing 上投入了大量精力，这个 indexing 系统会成为接下来其他代码任务可以展开的基础；
+- • 未来编程会是自然语言和代码将共存，根据具体任务选择最有效的交互；
+- • **AI 正在重塑编程体验**，提高效率的同时保持程序员的创造力和控制力；
+- • Cursor 认为 Claude 3.5 Sonnet 综合实力更强，Sonnet 最强的地方在于能够很好地**理解开发者表述并不清晰的目标**，预测程序员接下来的操作、给出适当建议；
+- • 即便是 SOTA 模型, 也**不擅长找 bug**，这会是 Cursor 的机会；
+- • 当前代码任务基准测试并不能准确反映模型的真实能力，因为现实中的代码任务更加复杂多样，并且充满了模糊性和上下文依赖。Cursor 团队更倾向于通过真实用户的使用反馈来评估模型的性能；
+- • 目前还没有人能很好地解决 models routing 问题，底座模型和自有模型之间可以初步实现模型切换，但如果是 GPT-4o、Claude sonnet 和 o1 之间的切换可能要更加复杂。
+
+
+### MarsCode
+
+【2024-6-27】[探索豆包 MarsCode：字节跳动的AI编程助手](https://zhuanlan.zhihu.com/p/705825268)
+
+字节跳动推出的革命性工具——豆包 [MarsCode](https://www.marscode.cn/) ，免费的AI编程助手，旨在提升开发者的编码体验。
+
+MarsCode不仅仅是一个编程工具，它是一个全方位的AI助手，集成了代码补全、生成、解释、优化、注释生成、单元测试生成、智能问答和问题修复等强大功能。它支持多种编程语言，并且可以无缝集成到Visual Studio Code和JetBrains等主流IDE中。
+
+主要功能
+- AI助手：提供代码补全、生成、优化、注释生成和解释。
+- 智能问答: 唤起对话框后，你可以在输入框中输入你的问题，然后点击 发送 按钮或敲击回车键，豆包 MarsCode 编程助手将回答你的问题。你可以进行多轮问答，不断补充细节，从而使插件的回答更加准确。
+
+
+### cline
+
+Cline是一款功能强大且完全免费的AI编程工具，能够显著提高开发效率。
+
+代码编程插件 [Cline](https://github.com/cline/cline)
+- vs code 插件[地址](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev)
+
+![](https://pic2.zhimg.com/v2-221f39f89a39116bde7788d0524aa5ed_1440w.jpg)
+
+VSCode中安装Cline插件：
+- 打开VSCode
+- 点击插件图标
+- 搜索"Cline"并安装
+- 安装完成后，左侧会出现小机器人图标
+
+Cline支持配置多种API key，包括Open Router、Open AI和Ollama等。
+- 也可使用 deepseek api
+
+创建一个登录页面非常简单：
+- 在Cline中输入任务描述："写一个好看的登录页面，使用HTML、JS、CSS"
+- Cline会自动分析需求，并逐步生成HTML、CSS和JavaScript代码
+- 最终生成的页面美观实用，完全符合预期
+
+【2025-1-21】实践
+
+任务：
+> 生成一段html,js代码，实现功能：逐项卡片展示数组a里的项目，布局要求：第一行加粗展示“RedNote Slangs for TiktokRefugee”，其次再展示卡片，每行3个卡片，超过后另起一行，每个卡片浅蓝色背景，卡片是云朵颜色，3个字段字体颜色依次是红色、绿色、紫色，点击卡片后自动放大，要求简洁、美观、立体效果、配色好看；数据：国内常用网络用语，每个短语包含字段：中文短语、英文短语、英文解释；以 javascript list 输出, 示例 [['a', 'a', 'a']]；注意：只输出代码，不要解释
+
+报错
+> Command failed with exit code 1: powershell (Get-CimInstance -ClassName Win32_OperatingSystem).caption
+'powershell' 
+
+提交问题官方 [issue](https://github.com/cline/cline/issues/1334)
+
+### Trae
+
+资料
+- 【2025-1-20】[字节全新AI编程软件：Trae！免费无限量使用Claude](https://zhuanlan.zhihu.com/p/19573922437)
+- 【2025-7-23】[如何评价 Trae 发布 2.0，以及新推出的 SOLO 模式体验如何？](https://www.zhihu.com/question/1930712114894431572/answer/1930973959412753056) 字节内部员工 [重生之我在大厂搞 AI Coding]()
+
+[Trae](https://www.trae.ai/) 是字节跳动推出的免费中文 AI IDE，通过 AI 技术提升开发效率。
+- 支持原生中文，集成了 Claude 3.5 和 GPT-4o 等主流 AI 模型，完全免费使用。
+
+#### 发展史
+
+时间线
+- 2022 年 11 月 15 日，措不及防的蚂蚁大礼包让我需要重新思考未来的规划，还好随即很幸运的加入了字节。
+- 2023 年 11 月 15 日，我被一个电话召集到了杭州闭关室，从此负责起 MarsCode Cloud IDE 团队的云工作区等相关工作，那是疯狂奔跑的一年。
+- 2024 年 11 月 15 日，再次进入了闭关室，又是疯狂的半年，于是就有了大家看到的 Trae 1.0、2.0 的演进。
+
+![](https://picx.zhimg.com/v2-6e05f78f9dbe3bae46511532459f9255_r.jpg?source=2c26e567)
+
+#### 功能
+
+Trae 主要功能: Builder 模式和 Chat 模式
+- Builder 模式可帮助开发者从**零**开始构建项目
+- Chat 模式支持对代码库或编程问题进行提问和优化。
+
+Chat 模式
+- 快捷键：使用 Cmd + i 或 Cmd + u 调用 Chat 功能。
+- 交互方式：在对话框中输入问题或代码需求，Trae 会基于 AI 模型生成代码建议或解答。
+- 代码更新：Trae 会显示原始代码和优化后的代码对比，开发者可以选择接受或拒绝。
+
+Builder 模式
+- 项目生成：通过简单描述（如“生成一个图片压缩工具”），Trae 可以自动生成项目代码。
+- 交互执行：在生成过程中，Trae 可能会征求用户意见（如是否执行命令），需要手动确认。
+- 代码预览与调试：Trae 提供 Webview 功能，可以直接在 IDE 内预览 Web 页面，方便前端开发。如果遇到错误，可以通过点击命令行中的“Add To Chat”按钮，将错误信息复制到 Chat 中，让 AI 帮助解决。
+- 上下文引用：在 Chat 中可以引用代码块、文件、文件夹或整个项目。
+- 命令行工具：支持在本地终端安装 Trae 的命令行工具。
+
+注意事项：
+- Trae 的 AI 功能目前不支持直接读取外网链接。
+- 使用 Builder 生成项目时，建议提前手动创建虚拟环境（如 Python 的 venv 或 Conda），避免环境变量问题。
+
+Trae 具备友好的交互设计，如代码预览、Webview 功能，以及强大的代码生成能力。
+
+作为一款直接对标 Cursor 和 Windsurf 的全新 AI IDE，Trae 的目标不仅是与这些工具竞争，更是要弥补它们在中文开发者体验上的短板。现在 Trae IDE 的 Claude 3.5 和 GPT-4o 都是限时免费用
+
+![](https://pic1.zhimg.com/v2-3935e23284e2f3c7368af9396a839084_1440w.jpg)
+
+
+#### 架构
+
+1.0 架构
+
+![](https://pic1.zhimg.com/v2-feb9eb0b2f4c11eb77f6ceffb0a5d36b_r.jpg?source=2c26e567)
+
+2.0 架构
+
+![](https://pic1.zhimg.com/v2-a6697d1ce68a2027776828e1efb28b20_r.jpg?source=2c26e567)
+
+
+### Firebase
+
+【2025-4-10】谷歌发布 AI 编程工具 [Firebase Studio](https://firebase.studio/) 一款基于云端、人工智能驱动的集成开发环境（IDE）
+- lovable + cursor + replit + windsurf 合体应用
+- 支持一键构建后端、前端和移动应用
+- 支持 React、Next.js、Angular、Vue.js、Flutter、Android、Node.js、Java 和 Python Flask 等多种编程语言和框架，让开发者能快速上手，满足不同项目需求。
+
+从生产到发布都在一个地方完成，除了网页还有安卓应用
+
+应用发布后还带有数据监控能力
+
+Firebase Studio 为缺乏编程经验的用户提供便利，这符合当前“`氛围编码`”（vibecoding）热潮。
+
+与 Cursor AI 等竞品相比，Firebase Studio 优势:
+- 不仅支持多种编程框架，还注重用户体验，通过直观的界面和强大的AI生成能力，为非技术用户提供更友好的开发体验。
+
+
+特点
+- Forget about infrastructure
+  - 无服务器的 PaaS 层平台，使用者不需要关心服务器、网络甚至不需要去做运维，只需尽情使用就好。
+- Make smart, data-driven decisions
+  - 数据驱动决策，现在大家都有一个共识，决策应当依托于数据。通过 A/B test，数据会帮助使用者决定使用什么颜色的按钮、每天的广告频次、该用那一半的页面布局等等。
+- 跨平台，良好的兼容性
+  - 用户可能用苹果（iOS），安卓（Android），或别的应用，可能用C语言，或“ 调用 API ”的方式，Firebase 全都可以支持。
+- 免费支持
+  - 一则 Firebase Google 本身就是免费的，二则 WebEye 作为谷歌云的高级合作伙伴，除了谷歌的支持以外，WebEye 也会24小时随时提供支持。
+
+
+### AlphaEvolve
+
+
+AlphaEvolve 是一个由 Google DeepMind 开发的“超级智能编码助手”
+
+【2025-5-14】AlphaEvolve 像无穷智慧和耐心的“编程大师”，不是一次性给最终答案，而是通过不断地尝试、学习、改进自己的代码，像生物进化一样，一步步“进化”出越来越好的解决方案。
+- [AlphaEvolve: A Gemini-powered coding agent for designing advanced algorithms](https://deepmind.google/discover/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/)
+- [alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/AlphaEvolve.pdf](https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/AlphaEvolve.pdf)
+
+核心目标：
+- 利用AI力量，通过直接修改和优化计算机代码的方式，来攻克那些极具挑战性的科学问题和工程难题。
+
+成果：
+- 让矩阵乘法更快： 在一个困扰了数学家和计算机科学家50多年的问题上，AlphaEvolve 发现了一种新的 4×4 复数矩阵乘法算法，这是自1969年Strassen算法以来在该特定问题上的首次改进！
+- 优化Google“大脑”： 它帮助优化了Google数据中心的调度算法，让庞大的计算资源得到更有效的利用；还改进了TPU（谷歌的AI芯片）硬件加速器的电路设计。
+- 加速AI训练： 甚至，它还加速了支撑 AlphaEvolve 自身的AI大模型的训练过程。
+- 数学新发现： 在纯数学领域，AlphaEvolve 发现了许多新的、可证明正确的算法和数学构造，超越了之前已知的最佳成果，比如改进了Erdős提出的最小重叠问题、11维空间中的接吻数问题等。
+
+FunSearch 思路：
+- 让AI大模型（LLM）扮演“函数发现者”，通过进化式搜索，找到解决特定数学问题的小型、高效的Python函数。
+- 证明了LLM引导的进化方法在发现新知识方面的潜力。
+
+AlphaEvolve 则是在 FunSearch 的基础上进行全方位“超级升级”：
+- 进化范围更广： FunSearch 主要进化单个小函数，AlphaEvolve 能进化包含多个函数和组件的整个代码文件。
+- 代码规模更大： FunSearch 处理的代码通常几十行，AlphaEvolve 能处理数百行。
+- 语言更通用： FunSearch 主要用Python，AlphaEvolve 支持**任何**编程语言。
+- 评估更灵活： FunSearch 需要快速评估，AlphaEvolve 能应对耗时更长的评估，还能用AI加速器。
+- AI大脑更强： AlphaEvolve 用的是更先进、能力更强的AI大模型，并且给AI的信息更丰富。
+- 目标更多元： FunSearch 主要优化单一目标，AlphaEvolve 能同时优化多个目标。
+
+AlphaEvolve 把 FunSearch 思想提升到了一个全新的高度。
+
+### Claude Code
+
+[Claude Code：智能编程的最佳实践](https://zhuanlan.zhihu.com/p/1966793594229721062)
+
+【2025-4-18】Anthropic 发布 Claude Code，用于智能编程的命令行工具。更原生的方式来将Claude集成到编程工作流程中。
+- 官网 [Claude Code: Best practices for agentic coding](https://www.anthropic.com/engineering/claude-code-best-practices)
+
+
+## 代码生成
+
+
+### 数据集
+
+
+#### BigCodeBench
+
+BigCodeBench: 继 HumanEval 之后的新一代代码生成基准测试
+- [BigCodeBench: The Next Generation of HumanEval](https://huggingface.co/blog/leaderboard-bigcodebench)
+
+BigCodeBench 包含1140个函数级任务，挑战 LLMs 遵循指令并将来自139个库的多个函数调用作为工具进行组合。
+
+BigCodeBench 为每个任务提供了复杂的、面向用户的指令，包括清晰的功能描述、输入/输出格式、错误处理和已验证的交互示例。我们避免逐步的任务指令，相信有能力的 LLMs 应该能够从用户的角度以开放的方式理解和解决任务。我们通过测试用例验证特定功能。
+
+![](https://github.com/bigcode-bench/bigcode-bench.github.io/blob/main/asset/tease.svg?raw=true)
+
+
+### 网站设计
+
+
+【2025-3-7】[Wegic](https://wegic.ai/)
+
+提示语
+
+```sh
+设计一个科技公司主页，要求大气
+主营业务：软件开发、人工智能、大模型、AIGC等
+团队成员：王文，北京航空航天大学；管同学，北京交通大学博士；王小文，中国农业大学计算机硕士
+过往项目：① 嵌入式设备开发 ② 视频直播软件开发 ③ 大模型对话助手
+联系方式：公众号 廿面体，邮箱 wqw547243068@163.com
+```
+
+
+#### 哪吒抽取系统
+
+
+【2025-2-25】 实测: 大模型生成《哪吒2》人物抽签系统
+- [公众号](https://mp.weixin.qq.com/s/jbbTPy_zkZIfRUH8wjkSGA)
+
+总结（60分及格，低分不计入榜单）
+- 功能完成度：DeepSeek V3＞Gemini-2 Flash＞豆包 1.5-Pro＞OpenAI o3-mini
+- 页面美观度：DeepSeek V3＞DeepSeek R1满血版=DeepSeek R1联网版=Gemini-2 Flash＞豆包 1.5-Pro
+- 数据准确度：DeepSeek R1满血版=豆包 1.5-Pro＞DeepSeek R1联网版=OpenAI o3-mini=Gemini-2 Flash＞GPT-4o-mini
+- 自我认知：全部失败，只有DeepSeek能报出模型名（不过是GPT-4）
+
+整体：DeepSeek V3强于DeepSeek R1=openai系列
+
+![](https://pic1.zhimg.com/v2-2185f2f980835b7e02b5b4c27b9ec736_1440w.jpg)
+
+
+#### 聊天框
+
+提示词
+
+```sh
+用前端代码写一个聊天对话页面，布局：第一行是标题 "ChatBot Demo"，背景是蓝天, 5朵边缘模糊的白云从左往右慢慢飘动，右上角是太阳，周围发出金光；标题下是 对话框，UI 仿照微信聊天框风格，聊天框居中，占页面 1/2，半透明效果，可滑动，立体效果，Bot/User两种角色分别使用不同logo；支持流式输出；左侧是两个滑动控制条，控制两个参数 temperature 取值范围 [0,1], top_p 取值范围 [0,1]; 对话框下方备注“LLM Web 示例<br>2025-03-01”
+```
+
+#### Figma 转代码
+
+【2025-5-15】[资讯](https://mp.weixin.qq.com/s/AlzeT_1OeFzS6mRC3PDNOA)
+
+Figma 设计稿转化为前端代码
+
+MCP Server - [Figma AI Bridge]()，自动将 Figma 设计稿转换为整洁的前端代码，并生成相应的网页。
+- 简单高效，无需复杂配置，跟随文中的步骤操作，即可体验智能化的设计交付。[tutorial-mcp-figma](https://docs.trae.com.cn/ide/tutorial-mcp-figma)
+
+
+
+## NL2Code
+
+【2023-5-30】[代码大模型综述：中科院和MSRA调研27个LLMs，并给出5个有趣挑战](https://mp.weixin.qq.com/s/t2SMftox6546E7kvRgQMnA)
+- NL2Code: 将自然语言转换成可执行代码来提高开发人员的工作效率
+- 中科院和微软亚洲研究院在 ACL 2023 国际顶会上发表的一篇综述：调研了 NL2Code 领域中的「27 个大型语言模型以及相关评价指标」，分析了「LLMs 的成功在于模型参数、数据质量和专家调优」，并指出了「NL2Code 领域研究的 5 个机遇挑战」，最后作者建立了一个分享[网站](https://nl2code.github.io)来跟踪 LLMs 在 NL2Code 任务上的最新进展。
+- [Large Language Models Meet NL2Code: A Survey](https://arxiv.org/abs/2212.09420)
+
+
+### Web 站点
+
+AI在线生成前端页面
+
+#### DeepSite
+
+[DeepSite](https://deepsite.site/) 由 Deepseek 驱动的 Huggingface AI 代码助手
+
+DeepSite 是一款 AI 编码工具，无需编程知识即可创建网站和 Web 应用程序。通过 DeepSite 强大的平台获得实时预览、SEO 优化和快速部署。
+
+
+#### LocalSite-ai
+
+【2025-5-12】开源替代——LocalSite-ai 支持在线预览前端页面，所见即所得编辑，并且支持多个AI API提供商，以及支持响应式设计。
+- 地址：[LocalSite-ai](github.com/weise25/LocalSite-ai)
+
+
+
+#### UXBox
+
+
+【2025-8-23】[UXBox](https://www.uxbox.org/) 开源的设计与原型制作工具，目前正处于早期开发阶段。
+- github [uxbox](https://github.com/Allensmile/uxbox)
+
+
+UXBOX 提供 完整的设计工具，包括: 界面布局工具、原型编辑工具和交互测试工具等。这些工具使得设计师可以快速地将创意转化为实际的产品原型，并对其进行测试和优化。
+
+UXBOX 适用于所有设计和原型的标准格式SVG，这意味着它支持大多数现代的设计标准，并且可以与多种软件和平台兼容。这使得设计师可以在多个环境中使用UXBOX，无论是在个人电脑还是移动设备上，都能保持设计的一致性和流畅性。
+
+UXBOX 界面设计直观易用，使得即使是初学者也能快速上手。同时，也提供了丰富的教程和文档，帮助用户更好地理解和使用这个工具。这种用户友好的设计使得UXBOX能够吸引大量的设计师和开发者，促进其社区的形成和发展。
+
+UXBOX作为一款开源的设计与原型制作工具，具有广泛的应用前景和潜力。它的设计理念和技术实现都值得学习和借鉴。
+
+## 代码测试
+
+
+随着软件系统的复杂性不断增加，软件测试的重要性越来越高，测试活动将影响开发人员的工作效率，产品的可靠性、稳定性和合规性，以及最终产品的运营效率。
+
+
+### 智能测试
+
+智能测试发展阶段
+- 大模型出现之前，软件测试领域一直在探索“智能测试”，例如精准测试、通过各种传统算法生成用例、UI自动化测试等。
+- 大模型出现后，智能测试层次不断提升，真正进入了“智能测试”新时代。
+
+《大模型应用跟踪月报（2024年10月）》，从场景上看
+- 相较于2024年上半年常见的知识助手、编码助手、智能客服等场景
+- 大模型在销售赋能、软件测试、智能运维等场景的应用上升明显。
+- ![](https://shaqiu-hub.oss-cn-hangzhou.aliyuncs.com/article/2676_W24ouczRC)
+
+软件测试领域，**自动化测试脚本**成为继**测试用例生成**外又一个显著赋能企业质量和测试活动的重要场景。
+
+从测试端到端工作量分布来看，**测试自动化**工作量占比较大，随着测试业务量的持续增大，对测试自动化的**及时性**和**自动化率**提出了更高要求，同时测试自动化程度高也会降低测试执行部分的工作量。
+
+### 大模型能力
+
+#### 优势
+
+核心优势
+- 自然语言理解能力
+  - 从**非结构化**需求文档中提取测试需求和关键场景。
+  - 自动识别需求中的**模糊或矛盾**之处，优化测试设计。
+- **知识学习**与**推理**能力
+  - 大模型的上下文推理能力强，复杂场景下生成高质量测试用例。
+  - 基于现有知识，预测潜在缺陷位置，提升测试效率。
+- **多语言**和**多平台**支持
+  - 支持多种语言的测试脚本生成和转换（如将 Java 转为 Python 测试代码）。
+  - 跨平台测试（如 Web 和移动端）中提供一致性支持。
+- 数据**生成**与**分析**能力
+  - 生成多样化测试数据，包括：边界值、随机值和异常值。
+  - 高效分析测试结果并自动生成测试报告。
+
+                        
+参考：
+- 【2025-1-13】[大模型在测试中的应用：开启智能化测试新时代](https://blog.csdn.net/tony2yy/article/details/145108116)
+
+#### 不足
+
+大模型存在的问题
+- 模型的准确性与上下文理解
+  - 特定领域的专业知识可能不足，需结合领域数据进行微调。
+- 生成代码的可维护性
+  - 自动化生成的代码质量不稳定，可能需要人工优化，RAG知识库等手段来提升质量。
+- 测试流程集成
+  - 将大模型能力高效集成到现有测试工具链中仍需探索。
+- 数据隐私与安全
+  - 生成测试数据或分析日志时，需确保敏感信息的脱敏处理。
+
+                        
+参考：
+- 【2025-1-13】[大模型在测试中的应用：开启智能化测试新时代](https://blog.csdn.net/tony2yy/article/details/145108116)
+- 【2024-06-19】[【AI大模型】在测试中的深度应用与实践案例](https://blog.csdn.net/rjdeng/article/details/139246321)
+
+
+### 自动化场景
+
+大模型为自动化测试脚本生成带来新方案
+- 大模型可以编写自动化测试脚本，用于`单元`、`API`和`UI`功能性和非功能性检查及评估，但是可能需要其他平台或工具执行自动化测试脚本。
+
+范围
+- 测试用例生成
+- 自动化脚本生成
+- 缺陷预测
+- 测试数据生成
+- 等任务
+
+### (1) 测试用例生成
+
+通过解析需求文档，大模型可以生成覆盖不同场景和边界条件的测试用例
+
+基本流程一致
+- 收集全部产品需求和研发设计文档，输入到大模型，生成自动测试用例
+
+区别
+- 方案1：**原文**整体输入大模型
+- 方案2：原文**摘要**后再给大模型
+- 方案3：原文存入向量数据库，通过搜索相似内容，自动生成部分测试用例
+
+3种方案使用场景不同，优缺点也可互补
+
+| 方案 | 文档处理方式 |优点|缺点|适用场景|
+| ---- | --- | ---- | ---- | ---- |
+| 方案1 | **原文整体**|用例内容相对准确|不支持特大文档，容易超出token限制|**普通规模**需求及设计|
+| 方案2 | **原文摘要**|摘要后无需担心token问题|用例**内容不准确**，大部分都概况|**特大规模**的需求及设计|
+| 方案3 | **RAG**|用例内容更**聚焦**，无需担心token问题|部分用例|仅对需求及设计中**部分**生成用例| 
+
+参考
+- 【2024-10-07】[利用LangChain与大模型自动化生成测试用例](https://blog.csdn.net/2401_84495872/article/details/142739932)
+
+
+#### streamlit
+
+
+代码 [AITester](https://github.com/timshen/AITester)
+
+
+
+#### LangChain
+
+Langchain 测试用例生成方案
+
+
+#### 用户登录模块
+
+需求：
+- 测试用户登录模块，包括正常登录、错误密码、账号锁定等场景。
+
+代码示例
+
+```py
+from wenxin_api import TextGeneration
+# 初始化大模型
+model = TextGeneration(api_key="your_api_key")
+
+# 输入需求描述
+requirement = """
+用户登录模块需要支持以下场景：
+1. 正确的用户名和密码可以成功登录。
+2. 错误的密码会提示登录失败。
+3. 连续三次错误登录后，账号会被锁定。
+"""
+
+# 生成测试用例
+response = model.generate_text(prompt=f"根据以下需求生成测试用例：\n{requirement}")
+print(response["result"])
+```
+
+输出测试用例示例：
+- 正确用户名 "test_user"，密码 "password123"，预期结果：登录成功。
+- 用户名 "test_user"，密码 "wrong_password"，预期结果：提示登录失败。
+- 连续输入错误密码三次后，预期结果：账号锁定。
+
+解析：
+- 通过模型生成的测试用例，涵盖了功能测试的核心场景，并能快速扩展至异常处理和边界条件测试。
+
+
+GPT-4 生成测试用例示例：
+
+依赖
+
+```sh
+pip install openai
+pip install pytest
+pip install requests
+```
+
+代码
+
+```py
+import openai
+
+# 设置API密钥
+openai.api_key = "YOUR_API_KEY"
+
+def generate_test_cases(prompt):
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=500
+    )
+    return response.choices[0].text.strip()
+
+# 定义测试用例生成的提示
+prompt = """
+Generate test cases for an e-commerce platform with the following features:
+1. User Registration
+2. User Login
+3. Product Search
+4. Add to Cart
+5. Place Order
+6. Payment
+
+Please provide detailed test cases including steps, expected results, and any necessary data.
+"""
+
+# 生成测试用例
+test_cases = generate_test_cases(prompt)
+print(test_cases)
+```
+
+
+### (2) 测试数据生成
+
+
+大模型能够根据场景需求，快速生成多样化的测试数据，包括边界值、异常值和随机值。
+
+生成银行账户系统的测试数据
+
+目标：
+- 为账户余额字段生成不同类型的测试数据。
+
+```py
+data_requirement = """
+生成用于测试银行账户系统的数据，包括：
+1. 正常值：0 到 100 万之间的金额。
+2. 边界值：负值、0、最大值。
+3. 异常值：空值、非数字字符。
+"""
+
+response = model.generate_text(prompt=f"根据以下需求生成测试数据：\n{data_requirement}")
+print(response["result"])
+```
+
+输出结果：
+
+```sh
+正常值：500, 10000, 999999
+边界值：-1, 0, 1000000
+异常值：None, "abc", 1.5e6
+```
+
+通过模型生成的数据多样性显著提高，能够有效覆盖更多测试场景。
+
+### (3) 自动化脚本生成
+
+大模型通过自然语言理解，将需求描述转化为可执行代码，极大地提高了测试脚本的开发效率。
+
+
+#### 功能测试
+
+
+用测试用例编写自动化测试脚本。
+
+用pytest框架进行功能测试
+
+```py
+import requests
+
+# 基础URL
+BASE_URL = "http://example.com/api"
+
+def test_user_registration():
+    url = f"{BASE_URL}/register"
+    data = {
+        "username": "testuser",
+        "email": "testuser@example.com",
+        "password": "password123"
+    }
+    response = requests.post(url, json=data)
+    assert response.status_code == 201
+    assert response.json()["message"] == "User registered successfully."
+
+def test_user_login():
+    url = f"{BASE_URL}/login"
+    data = {
+        "email": "testuser@example.com",
+        "password": "password123"
+    }
+    response = requests.post(url, json=data)
+    assert response.status_code == 200
+    assert "token" in response.json()
+
+def test_product_search():
+    url = f"{BASE_URL}/search"
+    params = {"query": "laptop"}
+    response = requests.get(url, params=params)
+    assert response.status_code == 200
+    assert len(response.json()["products"]) > 0
+
+def test_add_to_cart():
+    # 假设我们已经有一个有效的用户token
+    token = "VALID_USER_TOKEN"
+    url = f"{BASE_URL}/cart"
+    headers = {"Authorization": f"Bearer {token}"}
+    data = {"product_id": 1, "quantity": 1}
+    response = requests.post(url, json=data, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["message"] == "Product added to cart."
+
+def test_place_order():
+    # 假设我们已经有一个有效的用户token
+    token = "VALID_USER_TOKEN"
+    url = f"{BASE_URL}/order"
+    headers = {"Authorization": f"Bearer {token}"}
+    data = {"cart_id": 1, "payment_method": "credit_card"}
+    response = requests.post(url, json=data, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["message"] == "Order placed successfully."
+```
+
+
+#### 性能测试
+
+大模型生成高并发用户请求，进行负载测试。
+
+```py
+import threading
+import time
+
+def perform_load_test(url, headers, data, num_requests):
+    def send_request():
+        response = requests.post(url, json=data, headers=headers)
+        print(response.status_code, response.json())
+
+    threads = []
+    for _ in range(num_requests):
+        thread = threading.Thread(target=send_request)
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+# 示例负载测试
+url = f"{BASE_URL}/order"
+headers = {"Authorization": "Bearer VALID_USER_TOKEN"}
+data = {"cart_id": 1, "payment_method": "credit_card"}
+
+# 模拟100个并发请求
+perform_load_test(url, headers, data, num_requests=100)
+```
+
+#### UI 测试
+
+“操控”浏览器进行自动化测试
+
+大模型可直接将**需求描述**或**测试用例**转化为具体的执行动作
+-  Selenium 或 Appium 自动化测试脚本。
+-  Browser Use
+
+##### Selenium
+
+登录功能的 Selenium 测试脚本生成
+
+需求：
+- 对登录页面进行自动化测试，包括验证输入框和按钮的基本功能。
+
+生成测试脚本
+
+```py 
+from wenxin_api import TextGeneration
+ 
+# 输入测试需求
+requirement = """
+测试目标：验证登录页面基本功能。
+1. 页面应包含用户名输入框、密码输入框和登录按钮。
+2. 输入正确的用户名和密码后，应成功跳转到首页。
+"""
+
+# 生成 Selenium 脚本
+response = model.generate_text(prompt=f"根据以下需求生成 Selenium 测试脚本：\n{requirement}")
+print(response["result"])
+```
+
+输出: 
+
+```py 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+ 
+# 初始化 WebDriver
+driver = webdriver.Chrome()
+ 
+# 打开登录页面
+driver.get("http://example.com/login")
+ 
+# 验证页面元素
+assert driver.find_element(By.ID, "username")
+assert driver.find_element(By.ID, "password")
+assert driver.find_element(By.ID, "loginButton")
+ 
+# 输入用户名和密码
+driver.find_element(By.ID, "username").send_keys("test_user")
+driver.find_element(By.ID, "password").send_keys("password123")
+ 
+# 点击登录按钮
+driver.find_element(By.ID, "loginButton").click()
+ 
+# 验证跳转到首页
+assert "Homepage" in driver.title
+ 
+driver.quit()
+```
+
+##### Playwright
+
+Playwright 为现代 Web 应用提供可靠的端到端测试。
+
+Playwright 是微软开发的 Web应用 的 **自动化测试框架** 。
+
+selenium 相对于 Playwright 慢很多，因为
+- Playwright 是**异步**实现，但 selenium **同步**，后一个操作必须等待前一个操作。
+- selenium 由相应厂商提驱动，python+驱动执行相当自动化操作，缺点:如果浏览器驱动和浏览器版本不对应，selenium就会报错，而且时刻关注版本问题。
+- Playwright 基于 Node.js 语言开发，不需要再重新下载一个浏览器驱动，相当于已经写好了，仅仅需要安装这个库即可
+
+                        
+原文链接：https://blog.csdn.net/ak_bingbing/article/details/135852038
+
+任何浏览器 • 任何平台 • 一个 API
+- 跨浏览器。 Playwright 支持所有现代渲染引擎，包括 Chromium、WebKit 和 Firefox。
+- 跨平台。 在 Windows、Linux 和 macOS 上进行本地或 CI 测试，无头或有头。
+- 跨语言。 在 TypeScript、JavaScript、Python、.NET、Java 中使用 Playwright API。
+- 测试移动网络。 适用于 Android 的 Google Chrome 和 Mobile Safari 的原生移动模拟。 相同的渲染引擎可以在桌面和云端运行。
+
+
+### (4) 静态代码分析
+
+缺陷预测与静态代码分析
+
+大模型通过学习历史代码和缺陷数据，能够预测可能的缺陷位置，并给出优化建议。
+
+基于代码的缺陷预测 
+
+目标：
+- 分析一段 Python 代码，预测可能存在的安全漏洞。
+
+示例
+
+```py
+code_snippet = """
+def login(username, password):
+    query = "SELECT * FROM users WHERE username = '{}' AND password = '{}'".format(username, password)
+    execute_query(query)
+"""
+ 
+# 使用大模型分析代码
+response = model.generate_text(prompt=f"分析以下代码并指出潜在的安全问题：\n{code_snippet}")
+print(response["result"])
+```
+
+输出结果：
+
+```sh
+- 问题：代码存在 SQL 注入漏洞。
+- 优化建议：使用参数化查询代替字符串拼接。
+```
+
+大模型结合知识库和推理能力，可以高效发现代码中的常见漏洞，提升代码质量。
+
+### (5) 测试报告
+
+测试报告自动化生成
+
+大模型可根据测试结果生成详细的测试报告，包括: **问题统计**、**覆盖率分析**和**改进建议**。
+
+自动生成测试报告
+
+目标：
+- 对测试结果进行分析，并生成适合管理层的测试总结。
+
+```py
+def analyze_test_results(results):
+    prompt = f"""
+Analyze the following test results and provide a summary report including the number of successful tests, failures, and any recommendations for improvement:
+
+{results}
+"""
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=500
+    )
+    return response.choices[0].text.strip()
+
+# 示例测试结果
+test_results = """
+Test User Registration: Success
+Test User Login: Success
+Test Product Search: Success
+Test Add to Cart: Failure (Product not found)
+Test Place Order: Success
+"""
+test_results = """
+通过的测试用例：90
+失败的测试用例：10
+覆盖率：85%
+"""
+
+# 分析测试结果
+report = analyze_test_results(test_results)
+print(report)
+
+```
+
+输出示例：
+
+```sh
+总测试用例数：100
+通过率：90%
+覆盖率分析：当前覆盖率为 85%，建议增加边界条件测试以提高覆盖率。
+改进建议：关注失败用例涉及的模块，特别是登录和支付功能。
+```
+
+### (6) 系统集成
+
+问题
+- 如何将上述代码整合到一个`持续集成`（CI）/`持续交付`（CD）管道中
+- 如何处理和报告测试结果
+
+确保测试过程高效、自动化，并且易于维护。
+
+详见
+- 【2024-06-19】[【AI大模型】在测试中的深度应用与实践案例](https://blog.csdn.net/rjdeng/article/details/139246321)
+
+
+### 测试工具
+
+
+
+
+
+#### Shortest
+
+[Shortest](https://shortest.com/) 一款开源 AI 测试框架，彻底改变了开发者**端到端测试**的方式。
+- github [shortest](https://github.com/anti-work/shortest) 包含演示视频
+
+开发者用简单易懂的**纯英语**编写**测试用例**。Shortest 将这些指令转换成可执行的测试代码。
+
+Shortest 用 Anthropic 的 Claude API 进行准确的解释和执行。
+
+该框架与 GitHub 无缝集成，并利用 Playwright 强大的测试引擎。
+
+Shortest 提供更快、更直观的测试流程，减少了对大量编码知识的需求。
+
+关键特性：
+- 自然语言处理：Shortest 接受用日常英语书写的测试指令。无需学习复杂的测试语法或API。
+- LLM驱动的测试执行：Anthropic Claude API 能够解释自然语言输入，并转换为可靠的可执行测试代码。
+- Playwright 基础：Shortest 建立在 Playwright强大的测试引擎之上，确保测试执行的稳定性和可靠性。
+- GitHub 集成：Shortest 与 GitHub无缝集成，方便管理测试套件和开发者之间的协作。
+- 快速创建测试：开发者可以专注于描述测试场景，Shortest负责将其转换为可执行代码，从而加快测试开发速度。
+
+
+#### Browser Use
+
+网页应用的功能越来越丰富，交互性越来越强。从简单的**信息展示**页面到复杂的**在线办公系统**、**电商平台**，网页应用的测试难度呈指数级增长
+
+传统自动化测试工具在复杂应用面前，显得力不从心。
+
+Browser Use 打破了传统测试工具的局限性，能够快速、准确地模拟用户在浏览器中的各种操作，对网页应用进行全面、深入的测试
+
+Browser Use 运用了一系列先进的**浏览器自动化技术**来实现对浏览器的操控。
+- 通过调用浏览器的开发者工具接口，能够模拟用户的各种操作，如点击、输入、滚动等。
+- 同时，它还可以监控浏览器的各种事件，如页面加载完成、元素出现或消失等。
+
+信息
+- Github：[browser-use](https://github.com/browser-use/browser-use)
+- [官网](https://browser-use.com/)
+- [操作文档](https://docs.browser-use.com/quickstart)
+- 详见站内专题: [agent](agent)
+
+Browser Use
+- 将用户**测试需求**转化为语言模型能够理解的格式，发送给LLM进行处理。
+- LLM 生成相应的**测试步骤**和**操作指令**
+- 再将指令转化为实际的**浏览器操作**。
+
+例如，测试一个复杂的**在线表单填写**功能
+- 用户输入“填写所有必填字段并提交表单”
+- LLM 分析表单中各个字段，并生成相应的填写内容和操作步骤
+- Browser Use 则按照这些步骤，在浏览器中模拟用户的填写和提交操作。
+
+
+Prompt 示例: 演示案例见 [走进Browser Use：领略AI赋能UI自动化测试的魔法魅力](https://mp.weixin.qq.com/s/Jsg4C6jTj7cMX4LTFfDckg)
+- 用谷歌邮箱给我爸爸写一封信，感谢他所做的一切，并将文档保存为PDF
+- 阅读我的简历并找到ML工作，将其保存到文件中，然后在新选项卡中开始申请，如果您需要帮助，请咨询我。
+- 在kayak.com上查找 2024年12月25日至2025年2月2日从苏黎世飞往北京的航班。
+- 查找具有cc-by-sa-4.0 license的模型，并按照在Hugging Face上的最多点赞数进行排序，将前5名保存到文件中。
+
+代码 
+
+```py
+from langchain_openai import ChatOpenAI
+from browser_use import Agent
+import asyncio
+
+llm = ChatOpenAI(model="gpt-4o")
+
+async def main():
+    agent = Agent(
+        task="帮我查找2025年1月12日从巴厘岛飞往阿曼的单程航班，并返回最便宜的选项。",
+        llm=llm,
+    )
+    result = await agent.run()
+    print(result)
+
+asyncio.run(main())
+```
+
+#### workflow use
+
+【2025-5-26】[Workflow Use，开源浏览器工作流自动化工具，RPA 2.0](https://zhuanlan.zhihu.com/p/1908094875066413718)
+
+Workflow Use 是由 Browser Use 开发商开源的**浏览器工作流自动化**工具
+
+Workflow Use 还处于非常早期开发阶段，不建议用于生产环境。但基于Browser User开发团队的过往牛逼的产品能力、开发能力，对Workflow Use的未来值得期待
+
+传统测试自动化工具
+-  LoadRunner、Selenium IDE 都可以通过录屏方式录制脚本，完成测试自动化工作。
+-  AutoHotkey AutoScriptWriter、按键精灵之类的PC自动化工具可以适用于更广的工作流自动化场合。
+
+但传统自动化工具对自然语言理解、图形/语音/视频等多模态的识别及理解并不擅长，因此可适用的场景还是相对受限，必须大量定制。
+
+`RPA`（Robotic Process Automation）、Manus之类的AI自动化工具，虽然在自然语言理解、多模态处理有了长足进步，但执行**速度、成本**都存在很大问题以及大模型幻觉导致的结果的不确定性，要大规模应用于企业工作流自动化场景还较难。
+
+Zapier、n8n、Dify 之类AI工作流解决方案，很适合企业自动化应用场景，但其工作流依赖于有技术背景的人员预先编排。
+
+Workflow Use 可以解决
+- 项目地址：[browser-use](https://github.com/browser-use/) 子功能 [workflow-use](https://github.com/browser-use/workflow-use)
+
+最大的特色
+- 通过一次性录制浏览器操作，就生成可无限运行的确定性工作流程
+
+Workflow Use 核心功能：
+- **一次录制，永久重用** ：录屏一次浏览器交互过程就可无限期重播。
+- 显示，不提示 ：无需花费数小时提示浏览器一遍又一遍地做同样的事情。
+- 结构化和可执行的工作流程 ：将记录转换为确定性、快速且可靠的工作流程，自动从表单中提取变量。
+- 类似人类的交互理解 ：智能地过滤录音中的噪音，以创建有意义的工作流程。
+- 企业级基础 ：具有自我修复和工作流差异等功能，专为未来的可扩展性而构建。
+- 与 LLM Agent 相比，Workflow Use 速度**快10倍**，成本低约90%，很适合企业级高频任务（来源）。
+
+Workflow Use 愿景：
+- 只需向计算机显示一次它需要做的事情，它就会一遍又一遍地执行，无需任何人工干预。
+
+Workflow Use 未来规划：
+- 改进步骤失败时的回退
+- 自我修复，如果失败，代理会自动启动并更新工作流文件
+- 更好地支持步骤
+- 获取前面步骤的输出并将其用作后续步骤的输入
+- 将工作流程公开为 MCP 工具
+- 使用浏览器自动从网站创建工作流程
+- 允许浏览器使用工作流程作为 MCP 工具
+- 使用工作流作为网站缓存层
+
+#### AutoMouser
+
+
+【2025-1-17】[AutoMouser：AI Chrome扩展程序，实时跟踪用户的浏览器操作，自动生成自动化操作脚本](https://mp.weixin.qq.com/s/wWce-aQRajT2ZCV36TSUcA)
+- GitHub 仓库：[AutoMouser](https://github.com/guoriyue/AutoMouser)
+- 功能：实时跟踪用户交互行为，自动生成Selenium测试代码。
+- 技术：基于OpenAI的GPT模型，支持多种XPath生成策略。
+- 应用：适用于自动化测试脚本生成和用户交互行为记录。
+
+AutoMouser是一款Chrome扩展程序，能够智能地跟踪用户的浏览器操作，如点击、拖动、悬停等，并将这些操作转化为结构清晰、易于维护的Python Selenium脚本。通过记录用户的交互行为，AutoMouser简化了自动化测试的创建过程，提高了测试效率。
+
+AutoMouser 核心功能是借助OpenAI的GPT模型，将用户的浏览器操作自动转化为Selenium测试代码。这使得开发者和测试工程师能够快速生成自动化测试脚本，减少了手动编写测试脚本的时间和复杂性。
+
+AutoMouser 主要功能
+- 实时交互跟踪：能实时捕捉用户的浏览器操作，包括点击、输入、滚动等，精准地记录下用户在网页上的各种交互行为。
+- 自动代码生成：借助OpenAI的GPT模型，将记录下来的用户操作自动转化为Selenium测试代码，生成Python Selenium脚本。
+- 智能输入整合：对用户的输入操作进行智能整合，优化代码结构，使生成的测试脚本更加简洁、高效。
+- 窗口大小变化检测：能检测浏览器窗口的大小变化，确保生成的测试代码能够适应不同的窗口尺寸。
+- JSON动作日志导出：支持将用户的交互数据导出为JSON格式的动作日志文件，方便用户对原始数据进行查看、分析和进一步处理。
+- 多种XPath生成策略：采用多种XPath生成策略，能更准确地定位网页元素，提高测试的准确性和可靠性。
+- 代码结构优化：输出的Selenium测试代码结构清晰、整洁，易于阅读和理解，方便开发人员进行后续的开发和维护工作。
+
+
+### 自动化测试应用
+
+【2024-11-04】 [大模型在自动化测试的突破：蚂蚁、华为等头部企业应用实践](https://www.shaqiu.cn/article/J1na9WB7Y0Xp)
+
+蚂蚁集团、中国邮储银行、科大讯飞、华为等4家企业自动化测试领域大模型应用实践
+
+#### 案例1：支付宝小程序基于AI大模型的自动化测试实践
+
+支付宝小程序在质量检测中挑战
+- 传统监控**无法有效识别**业务问题。
+
+蚂蚁集团利用AI大模型技术，开发**智能异常检测**和**链路测试**算法，实现自动化测试。
+
+通过自然语言处理和多模态大模型提升识别业务异常和深度链路问题的准确性。
+
+该实践不仅提高了检测效率，还通过智能动线预测模块，增强了用户体验。
+
+完整内容：
+- [支付宝小程序基于AI大模型的自动化测试实践]()
+
+#### 案例2：中国邮储银行基于大模型的自动化测试脚本智能生成
+
+传统自动化测试脚本编写需要测试人员具备一定编程能力，且耗时耗力，导致脚本编写人力成本大，质量参差不齐。
+
+邮储银行`金牛座`自动化测试系统引入大模型技术，结合**知识库**、录制、**报文解析**、图像识别等技术，针对不同场景提供脚本智能生成功能：
+- **单接口**脚本批量生成：主要用于单接口测试，提供了单接口脚本批量生成功能，有效解决了单接口测试脚本编写量级较大的问题；
+- **多接口**组合场景脚本智能生成：主要用于测试业务流程，针对组合场景脚本，采用 录制+智能分析+辅助编写 方案智能生成脚本；
+- **UI测试脚本**智能生成：借助大模型技术，可以根据简单的用例描述，直接自动生成测试脚本。
+
+
+#### 案例3：科大讯飞基于大模型的自动化测试实践
+
+`接口测试`脚本生成场景，科大讯飞将融合大模型能力，提供**智能用例生成**服务，当前平台主要针对HTTP协议进行接口的智能化测试。
+- **智能用例生成**: 当新增接口用例或将接口定义导入时，会调用智能用例生成服务自动生成接口自动化用例；
+- **UI自动化测试脚本生成**: 用例生成脚本模式，通过用例文本输入引导，结合其他输入数据，生成**UI自动化脚本**。经业务验证，在用例编写规范的情况下，UI自动化脚本生成的采纳率可以达到**50%**以上。
+
+完整内容：
+- [科大讯飞基于大模型的自动化测试实践]()
+
+#### 案例4：华为基于LLM的测试自动化代码生成实践
+
+华为选择大模型辅助测试**自动化代码生成**作为大模型在智能测试领域应用的突破点
+- 首先, 用`SFT`调优方案，落地场景为**老特性防护网补齐**，但存在时间间隔导致无法写新特性；
+- 然后，使用`RAG`方案实现分钟级**新特性编写**；
+- 再次，进一步实现无需写**样例脚本**，直接通过 AW 生成。从整个方案迭代方向看，AI自动生成的比例越来越大。
+
+截止2024年6月底，大模型辅助测试自动化代码生成的应用人数为近3k人，覆盖 60+产品，测试自动化生成的代码量 40+万 行。
+
+完整内容：
+- [华为基于LLM的测试自动化代码生成实践](https://www.shaqiu.cn/zhiku)
+
+
+# 结束

@@ -322,7 +322,8 @@ cd public
 git init
 git add .
 git commit -m "Deploy"
-git push -f git@github.com:lilinji/lilinji.github.io.git main:gh-pages
+#git push -f git@github.com:lilinji/lilinji.github.io.git main:gh-pages
+git push -f origin main
 ```
 
 ### 其他部署方式
