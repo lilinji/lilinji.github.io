@@ -130,7 +130,7 @@ Anthropic 提供案例：
 - 原文 [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - 长时间运行的 AI 代理仍然面临在多个上下文窗口中工作的挑战
 
-<img width="2752" height="1536" alt="image" src="https://github.com/user-attachments/assets/d3f88b3d-39e8-41bb-a036-a3ba1a502481" />
+<img width="auto" height="auto" alt="image" src="https://github.com/user-attachments/assets/d3f88b3d-39e8-41bb-a036-a3ba1a502481" />
 
 
 
