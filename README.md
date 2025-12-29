@@ -99,6 +99,7 @@ chmod +x create_post.sh
 
 # 创建文章
 ./create_post.sh "文章标题" "标签1,标签2"
+./create_post "Model Context Protocol(MCP) 编程极速入门" "GPU,LLM,AI,DeepLearning,Tutorial,AGI,幻觉,强化学习"
 ```
 
 **跨平台** (Python):
