@@ -8,14 +8,14 @@
 
 ## 📚 博客内容
 
-- 📚 **AI技术**: LLM、Agent智能体、RAG  
+- 📚 **AI 技术**: LLM、Agent 智能体、RAG
 - 🐳 **容器技术**: Docker、容器编排、镜像管理
 - ☁️ **OpenStack**: 虚拟机管理、Cinder、Nova、Mistral 等组件
 - 💾 **存储技术**: Ceph、RBD、分布式存储
 - 🐧 **Linux 运维**: 网络工具、系统配置、性能优化
 - 📊 **算法与编程**: 数据结构、算法实现
 
-**文章统计**: 3** 篇技术文章 (2023-2025)
+**文章统计**: 3\*\* 篇技术文章 (2023-2025)
 
 ## 🚀 快速开始
 
@@ -32,6 +32,7 @@
 ```powershell
 choco install hugo-extended
 ```
+
 </details>
 
 <details>
@@ -40,6 +41,7 @@ choco install hugo-extended
 ```bash
 brew install hugo
 ```
+
 </details>
 
 <details>
@@ -50,6 +52,7 @@ brew install hugo
 wget https://github.com/gohugoio/hugo/releases/download/v0.139.3/hugo_extended_0.139.3_linux-amd64.deb
 sudo dpkg -i hugo_extended_0.139.3_linux-amd64.deb
 ```
+
 </details>
 
 ### 克隆项目
@@ -123,7 +126,9 @@ content/posts/2024-12-03-my-post/
 ```markdown
 ![图片描述](image.png)
 ```
+
 # 图片说明 (推荐)
+
 ```markdown
 <figure>
   <img src="image.png" alt="Instance-level contrastive learning">
@@ -133,7 +138,6 @@ content/posts/2024-12-03-my-post/
   </figcaption>
 </figure>
 ```
-
 
 ## 🏗️ 项目结构
 
@@ -162,20 +166,21 @@ lilinji.github.io/
 
 ### 📁 目录说明
 
-| 目录/文件 | 说明 | 是否提交到 Git |
-|----------|------|---------------|
-| `content/` | 文章源文件 | ✅ 是 |
-| `public/` | Hugo 构建输出 | ❌ 否 |
-| `resources/` | Hugo 资源缓存 | ❌ 否 |
-| `themes/` | Hugo 主题 | ✅ 是 |
-| `hugo.yaml` | Hugo 配置 | ✅ 是 |
-| `.gitignore` | Git 忽略规则 | ✅ 是 |
+| 目录/文件    | 说明          | 是否提交到 Git |
+| ------------ | ------------- | -------------- |
+| `content/`   | 文章源文件    | ✅ 是          |
+| `public/`    | Hugo 构建输出 | ❌ 否          |
+| `resources/` | Hugo 资源缓存 | ❌ 否          |
+| `themes/`    | Hugo 主题     | ✅ 是          |
+| `hugo.yaml`  | Hugo 配置     | ✅ 是          |
+| `.gitignore` | Git 忽略规则  | ✅ 是          |
 
 ### 🏷️ Tags 目录说明
 
 > **重要**: `tags/` 目录是 Hugo **自动生成**的分类页面,不是源文件目录。
 
 **工作原理**:
+
 - **源文件**: 在 `content/posts/*/index.md` 的 front matter 中定义 `tags: [...]`
 - **生成位置**: Hugo 构建时自动生成到 `public/tags/`
 - **访问方式**: 通过网站菜单 "Tags" 链接访问
@@ -183,6 +188,7 @@ lilinji.github.io/
 **你不需要手动创建或管理 tags 目录!** Hugo 会自动处理。
 
 **示例**:
+
 ```yaml
 ---
 title: "我的文章"
@@ -191,6 +197,7 @@ tags: ["Docker", "OpenStack", "Ceph"]
 ```
 
 Hugo 会自动创建:
+
 - `/tags/docker/` - Docker 标签页面
 - `/tags/openstack/` - OpenStack 标签页面
 - `/tags/ceph/` - Ceph 标签页面
@@ -204,10 +211,10 @@ Hugo 会自动创建:
 <summary>核心配置项</summary>
 
 ```yaml
-baseURL: 'https://lilinji.github.io/'
-languageCode: 'zh-cn'
+baseURL: "https://lilinji.github.io/"
+languageCode: "zh-cn"
 title: "Ringi's Log"
-theme: 'PaperMod'
+theme: "PaperMod"
 
 params:
   description: "记录云计算、容器技术的学习笔记"
@@ -216,6 +223,7 @@ params:
   ShowCodeCopyButtons: true
   ShowToc: true
 ```
+
 </details>
 
 详细配置请参考 [hugo.yaml](hugo.yaml)
@@ -227,6 +235,7 @@ params:
 使用自动化脚本一键构建:
 
 **Windows**:
+
 ```powershell
 # 基本构建 (自动清理 + 压缩)
 .\build.ps1
@@ -242,6 +251,7 @@ params:
 ```
 
 **Linux/macOS**:
+
 ```bash
 # 添加执行权限 (首次)
 chmod +x build.sh
@@ -257,6 +267,7 @@ chmod +x build.sh
 ```
 
 **脚本功能**:
+
 - ✅ 自动清理缓存 (`--gc`)
 - ✅ 压缩输出文件 (`--minify`)
 - ✅ 验证构建结果
@@ -271,6 +282,8 @@ hugo
 
 # 生成并最小化
 hugo --minify
+# 生成并最小化，启动服务器
+hugo server -D --minify --gc
 ```
 
 ### GitHub Pages 部署
@@ -278,6 +291,7 @@ hugo --minify
 #### 方法 1: 使用部署脚本 (推荐)
 
 **Windows**:
+
 ```powershell
 # 基本部署
 .\deploy.ps1
@@ -287,6 +301,7 @@ hugo --minify
 ```
 
 **Linux/macOS**:
+
 ```bash
 # 添加执行权限 (首次)
 chmod +x deploy.sh
@@ -299,6 +314,7 @@ chmod +x deploy.sh
 ```
 
 **脚本功能**:
+
 - ✅ 自动检查 `public/` 目录
 - ✅ 初始化 Git 仓库 (如需)
 - ✅ 添加所有文件
@@ -332,7 +348,6 @@ git push -f origin main
 - **Vercel**: 导入项目,自动检测 Hugo 配置
 - **自建服务器**: 上传 `public/` 目录到 Web 服务器
 
-
 ### Hugo 命令
 
 ```bash
@@ -364,7 +379,7 @@ hugo --gc
 ```css
 /* assets/css/extended/custom.css */
 :root {
-    --primary: #your-color;
+  --primary: #your-color;
 }
 ```
 
@@ -425,6 +440,6 @@ hugo --gc
 
 **最后更新**: 2025-12-04  
 **文章总数**: ** 篇  
-**主题版本**: PaperMod v7.0
+**主题版本\*\*: PaperMod v7.0
 
 ⭐ 如果这个项目对你有帮助,请给个 Star!
