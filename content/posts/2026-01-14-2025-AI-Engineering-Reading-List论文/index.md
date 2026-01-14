@@ -20,8 +20,6 @@ showToc: true
 tocOpen: false
 ---
 
-# 2025 AI Engineering Reading List 论文
-
 ## Section 1: Frontier LLMs
 
 1. **[<span style="color: rgb(36,91,219); background-color: inherit">GPT1</span>](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf), [<span style="color: rgb(36,91,219); background-color: inherit">GPT2</span>](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf), [<span style="color: rgb(36,91,219); background-color: inherit">GPT3</span>](https://arxiv.org/abs/2005.14165), [<span style="color: rgb(36,91,219); background-color: inherit">Codex</span>](https://arxiv.org/abs/2107.03374), [<span style="color: rgb(36,91,219); background-color: inherit">InstructGPT</span>](https://arxiv.org/abs/2203.02155), [<span style="color: rgb(36,91,219); background-color: inherit">GPT4</span>](https://arxiv.org/abs/2303.08774) papers**. Self explanatory. [**<span style="color: rgb(36,91,219); background-color: inherit">GPT3.5</span>**](https://openai.com/index/chatgpt/), [**<span style="color: rgb(36,91,219); background-color: inherit">4o</span>**](https://openai.com/index/hello-gpt-4o/), [**<span style="color: rgb(36,91,219); background-color: inherit">o1</span>**](https://openai.com/index/introducing-openai-o1-preview/), **[<span style="color: rgb(36,91,219); background-color: inherit">o3</span>](https://openai.com/index/deliberative-alignment/), [<span style="color: rgb(36,91,219); background-color: inherit">GPT4.5</span>](https://www.interconnects.ai/p/gpt-45-not-a-frontier-model)** have launch events and system cards[<span style="color: rgb(36,91,219); background-color: inherit">(2)</span>](https://www.latent.space/p/2025-papers#footnote-2-153615976) instead.
