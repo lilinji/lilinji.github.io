@@ -20,7 +20,11 @@ showToc: true
 tocOpen: false
 ---
 
+![AI Engineering 2025 概览](imgs/illustration-overview.png)
+
 ## Section 1: Frontier LLMs
+
+![Frontier LLMs 发展图谱](imgs/illustration-llm-landscape.png)
 
 1. **[<span style="color: rgb(36,91,219); background-color: inherit">GPT1</span>](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf), [<span style="color: rgb(36,91,219); background-color: inherit">GPT2</span>](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf), [<span style="color: rgb(36,91,219); background-color: inherit">GPT3</span>](https://arxiv.org/abs/2005.14165), [<span style="color: rgb(36,91,219); background-color: inherit">Codex</span>](https://arxiv.org/abs/2107.03374), [<span style="color: rgb(36,91,219); background-color: inherit">InstructGPT</span>](https://arxiv.org/abs/2203.02155), [<span style="color: rgb(36,91,219); background-color: inherit">GPT4</span>](https://arxiv.org/abs/2303.08774) papers**. Self explanatory. [**<span style="color: rgb(36,91,219); background-color: inherit">GPT3.5</span>**](https://openai.com/index/chatgpt/), [**<span style="color: rgb(36,91,219); background-color: inherit">4o</span>**](https://openai.com/index/hello-gpt-4o/), [**<span style="color: rgb(36,91,219); background-color: inherit">o1</span>**](https://openai.com/index/introducing-openai-o1-preview/), **[<span style="color: rgb(36,91,219); background-color: inherit">o3</span>](https://openai.com/index/deliberative-alignment/), [<span style="color: rgb(36,91,219); background-color: inherit">GPT4.5</span>](https://www.interconnects.ai/p/gpt-45-not-a-frontier-model)** have launch events and system cards[<span style="color: rgb(36,91,219); background-color: inherit">(2)</span>](https://www.latent.space/p/2025-papers#footnote-2-153615976) instead.
 
@@ -48,6 +52,8 @@ You can both use and learn a lot from other LLMs, this is a vast topic. Bonus pi
 
 ## Section 2: Benchmarks and Evals
 
+![AI Benchmarks 评估体系](imgs/illustration-benchmarks.png)
+
 1. **[<span style="color: rgb(36,91,219); background-color: inherit">MMLU</span>](https://arxiv.org/abs/2009.03300) paper** - the main **knowledge** benchmark, next to [**<span style="color: rgb(36,91,219); background-color: inherit">GPQA</span>**](https://arxiv.org/abs/2311.12022) and [<span style="color: rgb(36,91,219); background-color: inherit">BIG-Bench</span>](https://arxiv.org/abs/2206.04615). In 2025 frontier labs use [**<span style="color: rgb(36,91,219); background-color: inherit">MMLU Pro</span>**](https://arxiv.org/abs/2406.01574), **[<span style="color: rgb(36,91,219); background-color: inherit">GPQA Diamond</span>](https://arxiv.org/abs/2311.12022), and [<span style="color: rgb(36,91,219); background-color: inherit">BIG-Bench Hard</span>](https://arxiv.org/abs/2210.09261).**
 
 2. [**<span style="color: rgb(36,91,219); background-color: inherit">MRCR</span>**](https://arxiv.org/html/2409.12640v2)[<span style="color: rgb(36,91,219); background-color: inherit">(5)</span>](https://www.latent.space/p/2025-papers#footnote-5-153615976)**&#x20;paper** - evaluating **long context**, [<span style="color: rgb(36,91,219); background-color: inherit">used by OpenAI</span>](https://www.latent.space/p/quasar) over [<span style="color: rgb(36,91,219); background-color: inherit">MuSR</span>](https://arxiv.org/abs/2310.16049), [<span style="color: rgb(36,91,219); background-color: inherit">LongBench</span>](https://arxiv.org/abs/2412.15204), [<span style="color: rgb(36,91,219); background-color: inherit">BABILong</span>](https://arxiv.org/abs/2406.10149), and [<span style="color: rgb(36,91,219); background-color: inherit">RULER</span>](https://www.latent.space/p/gradient). Fixing the overused [<span style="color: rgb(36,91,219); background-color: inherit">Needle in a Haystack</span>](https://github.com/gkamradt/LLMTest_NeedleInAHaystack).
@@ -66,6 +72,8 @@ The bigger picture is that benchmarks saturate increasingly quickly, and there i
 
 ## Section 3: Prompting, ICL & Chain of Thought
 
+![Chain of Thought 推理链](imgs/illustration-prompting-cot.png)
+
 > **\*Note**: The GPT3 paper (“Language Models are Few-Shot Learners”) should already have introduced In-Context Learning (ICL) - a close cousin of prompting. We also consider [<span style="color: rgb(36,91,219); background-color: inherit">prompt injections</span>](https://www.latent.space/i/93381455/what-is-prompt-injection) required knowledge — [<span style="color: rgb(36,91,219); background-color: inherit">Lilian Weng</span>](https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/), [<span style="color: rgb(36,91,219); background-color: inherit">Simon W</span>](https://simonwillison.net/series/prompt-injection/).\*
 
 1. [**<span style="color: rgb(36,91,219); background-color: inherit">The Prompt Report</span>**](https://arxiv.org/abs/2406.06608) **paper** - a survey of prompting papers ([<span style="color: rgb(36,91,219); background-color: inherit">podcast</span>](https://www.latent.space/p/learn-prompting)).
@@ -82,6 +90,8 @@ More survey papers on [<span style="color: rgb(36,91,219); background-color: inh
 
 ## Section 4: Retrieval Augmented Generation
 
+![RAG Pipeline 工作原理](imgs/illustration-rag-pipeline.png)
+
 1. **[<span style="color: rgb(36,91,219); background-color: inherit">Introduction to Information Retrieval</span>](https://nlp.stanford.edu/IR-book/information-retrieval-book.html)&#x20;**- a bit unfair to recommend a book, but we are trying to make the point that RAG is an IR problem and [<span style="color: rgb(36,91,219); background-color: inherit">IR has a 60 year history</span>](https://en.wikipedia.org/wiki/Information_retrieval#History) that includes [<span style="color: rgb(36,91,219); background-color: inherit">TF-IDF</span>](https://en.wikipedia.org/wiki/Tf%E2%80%93idf), [<span style="color: rgb(36,91,219); background-color: inherit">BM25</span>](https://en.wikipedia.org/wiki/Okapi_BM25), [<span style="color: rgb(36,91,219); background-color: inherit">FAISS</span>](https://github.com/facebookresearch/faiss), [<span style="color: rgb(36,91,219); background-color: inherit">HNSW</span>](https://arxiv.org/abs/1603.09320) and other “boring” techniques.
 
 2. **2020 [<span style="color: rgb(36,91,219); background-color: inherit">Meta RAG</span>](https://arxiv.org/abs/2005.11401) paper** - which coined the term. The original authors have started Contextual and have [<span style="color: rgb(36,91,219); background-color: inherit">coined RAG 2.0</span>](https://contextual.ai/introducing-rag2/). Modern “table stakes” for RAG — [<span style="color: rgb(36,91,219); background-color: inherit">HyDE</span>](https://docs.llamaindex.ai/en/stable/optimizing/advanced_retrieval/query_transformations/), [<span style="color: rgb(36,91,219); background-color: inherit">chunking</span>](https://research.trychroma.com/evaluating-chunking), [<span style="color: rgb(36,91,219); background-color: inherit">rerankers</span>](https://cohere.com/blog/rerank-3pt5), [<span style="color: rgb(36,91,219); background-color: inherit">multimodal data</span>](https://www.youtube.com/watch?v=i2vBaFzCEJw) are [<span style="color: rgb(36,91,219); background-color: inherit">better</span>](https://www.youtube.com/watch?v=TRjq7t2Ms5I&t=152s) [<span style="color: rgb(36,91,219); background-color: inherit">presented</span>](https://www.youtube.com/watch?v=FDEmbYPgG-s) [<span style="color: rgb(36,91,219); background-color: inherit">elsewhere</span>](https://www.youtube.com/watch?v=DId2KP8Ykz4).
@@ -95,6 +105,8 @@ More survey papers on [<span style="color: rgb(36,91,219); background-color: inh
 RAG is the bread and butter of AI Engineering at work in 2024, so there are a LOT of industry resources and practical experience you will be expected to have. [<span style="color: rgb(36,91,219); background-color: inherit">LlamaIndex</span>](https://docs.llamaindex.ai/en/stable/understanding/rag/) ([<span style="color: rgb(36,91,219); background-color: inherit">course</span>](https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/)) and [<span style="color: rgb(36,91,219); background-color: inherit">LangChain</span>](https://python.langchain.com/docs/tutorials/rag/) ([<span style="color: rgb(36,91,219); background-color: inherit">video</span>](https://www.youtube.com/watch?v=wd7TZ4w1mSw)) have perhaps invested the most in educational resources. You should also be familiar with the perennial [<span style="color: rgb(36,91,219); background-color: inherit">RAG vs Long Context</span>](https://arxiv.org/abs/2407.16833) debate.
 
 ## Section 5: Agents
+
+![AI Agents 框架](imgs/illustration-agents.png)
 
 1. **[<span style="color: rgb(36,91,219); background-color: inherit">SWE-Bench</span>](https://arxiv.org/abs/2310.06770)&#x20;**([<span style="color: rgb(36,91,219); background-color: inherit">our pod</span>](https://www.latent.space/p/iclr-2024-benchmarks-agents?utm_source=publication-search#%C2%A7section-b-benchmarks)) & [<span style="color: rgb(36,91,219); background-color: inherit">SWE-Lancer</span>](https://openai.com/index/swe-lancer/) - after [<span style="color: rgb(36,91,219); background-color: inherit">adoption by Anthropic</span>](https://www.latent.space/p/claude-sonnet), Devin and [<span style="color: rgb(36,91,219); background-color: inherit">OpenAI</span>](https://openai.com/index/introducing-swe-bench-verified/), probably the highest profile agent benchmark[<span style="color: rgb(36,91,219); background-color: inherit">(6)</span>](https://www.latent.space/p/2025-papers#footnote-6-153615976) today (vs [<span style="color: rgb(36,91,219); background-color: inherit">WebArena</span>](https://github.com/web-arena-x/webarena) or [<span style="color: rgb(36,91,219); background-color: inherit">SWE-Gym</span>](https://x.com/jiayi_pirate/status/1871249410128322856)). Technically a coding benchmark, but more a test of agents than raw LLMs. See also [<span style="color: rgb(36,91,219); background-color: inherit">SWE-Agent</span>](https://arxiv.org/abs/2405.15793), [<span style="color: rgb(36,91,219); background-color: inherit">SWE-Bench Multimodal</span>](https://arxiv.org/abs/2410.03859) and the [<span style="color: rgb(36,91,219); background-color: inherit">Konwinski Prize</span>](https://kprize.ai/). For Tool-Agent-User interaction there is [<span style="color: rgb(36,91,219); background-color: inherit">TauBench</span>](https://arxiv.org/abs/2406.12045) for Airlines and Retail and [<span style="color: rgb(36,91,219); background-color: inherit">GAIA</span>](https://arxiv.org/abs/2311.12983).
 
@@ -110,6 +122,8 @@ We covered many of [<span style="color: rgb(36,91,219); background-color: inheri
 
 ## Section 6: Code Generation
 
+![Code Generation 代码生成](imgs/illustration-codegen.png)
+
 1. **[<span style="color: rgb(36,91,219); background-color: inherit">The Stack paper</span>](https://arxiv.org/abs/2211.15533)&#x20;**- the original open dataset twin of The Pile focused on code, starting a great lineage of open codegen work from [<span style="color: rgb(36,91,219); background-color: inherit">The Stack v2</span>](https://huggingface.co/datasets/bigcode/the-stack-v2) to [<span style="color: rgb(36,91,219); background-color: inherit">StarCoder</span>](https://arxiv.org/abs/2402.19173).
 
 2. **Open Code Model papers** - choose from [<span style="color: rgb(36,91,219); background-color: inherit">DeepSeek-Coder</span>](https://arxiv.org/abs/2401.14196), [<span style="color: rgb(36,91,219); background-color: inherit">Qwen2.5-Coder</span>](https://arxiv.org/abs/2409.12186), or [<span style="color: rgb(36,91,219); background-color: inherit">CodeLlama</span>](https://ai.meta.com/research/publications/code-llama-open-foundation-models-for-code/). Many regard [<span style="color: rgb(36,91,219); background-color: inherit">3.5 Sonnet as the best code model</span>](https://www.latent.space/p/claude-sonnet) but it has no paper.
@@ -123,6 +137,8 @@ We covered many of [<span style="color: rgb(36,91,219); background-color: inheri
 CodeGen is another field where much of the frontier has moved from research to industry and [<span style="color: rgb(36,91,219); background-color: inherit">practical engineering advice on codegen</span>](https://www.youtube.com/watch?v=Ve-akpov78Q) and [<span style="color: rgb(36,91,219); background-color: inherit">code agents like Devin</span>](https://www.youtube.com/watch?v=T7NWjoD_OuY&t=8s) are only found in industry blogposts and talks rather than research papers.
 
 ## Section 7: Vision
+
+![Vision AI 计算机视觉](imgs/illustration-vision.png)
 
 - **Non-LLM Vision work** is still important: e.g. the **[<span style="color: rgb(36,91,219); background-color: inherit">YOLO</span>](https://arxiv.org/abs/1506.02640) paper&#x20;**(now [<span style="color: rgb(36,91,219); background-color: inherit">up to v11</span>](https://github.com/ultralytics/ultralytics), but [<span style="color: rgb(36,91,219); background-color: inherit">mind the lineage</span>](https://news.ycombinator.com/item?id=42352342)), but increasingly transformers like [<span style="color: rgb(36,91,219); background-color: inherit">DETRs Beat YOLOs</span>](https://arxiv.org/abs/2304.08069) too.
 
@@ -140,6 +156,8 @@ OCR is an important subset workhorse functionality of vision, so you may wish to
 
 ## Section 8: Voice
 
+![Voice AI 语音处理](imgs/illustration-voice.png)
+
 - **[<span style="color: rgb(36,91,219); background-color: inherit">Whisper</span>](https://arxiv.org/abs/2212.04356) paper&#x20;**- the successful **ASR&#x20;**&#x6D;odel from Alec Radford. Whisper [<span style="color: rgb(36,91,219); background-color: inherit">v2</span>](https://news.ycombinator.com/item?id=33884716), [<span style="color: rgb(36,91,219); background-color: inherit">v3</span>](https://news.ycombinator.com/item?id=38166965) and [<span style="color: rgb(36,91,219); background-color: inherit">distil-whisper</span>](https://github.com/huggingface/distil-whisper) and [<span style="color: rgb(36,91,219); background-color: inherit">v3 Turbo</span>](https://amgadhasan.substack.com/p/demystifying-openais-new-whisper) are open weights but have no paper.
 
 - **[<span style="color: rgb(36,91,219); background-color: inherit">AudioPaLM</span>](http://audiopalm/) paper&#x20;**- our last look at Google’s voice thoughts before PaLM became Gemini. See also: Meta’s [<span style="color: rgb(36,91,219); background-color: inherit">Llama 3 explorations into speech</span>](https://arxiv.org/abs/2407.21783).
@@ -155,6 +173,8 @@ We do recommend diversifying from the big labs here for now - try Daily, Livekit
 With Gemini 2.0 also being natively voice and vision multimodal, the Voice and Vision modalities are on a clear path to merging in 2025 and beyond.
 
 ## Section 9: Image/Video Diffusion
+
+![Diffusion Models 扩散模型](imgs/illustration-diffusion.png)
 
 - **[<span style="color: rgb(36,91,219); background-color: inherit">Latent Diffusion</span>](https://arxiv.org/abs/2112.10752) paper** - effectively the Stable Diffusion paper. See also [<span style="color: rgb(36,91,219); background-color: inherit">SD2</span>](https://stability.ai/news/stable-diffusion-v2-release), [<span style="color: rgb(36,91,219); background-color: inherit">SDXL</span>](https://arxiv.org/abs/2307.01952), [<span style="color: rgb(36,91,219); background-color: inherit">SD3</span>](https://arxiv.org/abs/2403.03206) papers. These days the team is working on [<span style="color: rgb(36,91,219); background-color: inherit">BFL Flux</span>](https://github.com/black-forest-labs/flux) \[schnell|dev|pro].
 
@@ -175,6 +195,8 @@ We also highly recommend familiarity with **ComfyUI** ([<span style="color: rgb(
 For historical interest: **[<span style="color: rgb(36,91,219); background-color: inherit">DALL-E</span>](https://arxiv.org/abs/2102.12092) / [<span style="color: rgb(36,91,219); background-color: inherit">DALL-E-2</span>](https://arxiv.org/abs/2204.06125) / [<span style="color: rgb(36,91,219); background-color: inherit">DALL-E-3</span>](https://cdn.openai.com/papers/dall-e-3.pdf) paper&#x20;**- OpenAI’s image generation, and **[<span style="color: rgb(36,91,219); background-color: inherit">Imagen</span>](https://arxiv.org/abs/2205.11487) / [<span style="color: rgb(36,91,219); background-color: inherit">Imagen 2</span>](https://deepmind.google/technologies/imagen-2/) / [<span style="color: rgb(36,91,219); background-color: inherit">Imagen 3</span>](https://arxiv.org/abs/2408.07009) paper** - Google’s image gen.
 
 ## Section 10: Finetuning
+
+![Finetuning 模型微调](imgs/illustration-finetuning.png)
 
 - **[<span style="color: rgb(36,91,219); background-color: inherit">LoRA</span>](https://arxiv.org/abs/2106.09685)/[<span style="color: rgb(36,91,219); background-color: inherit">QLoRA</span>](http://arxiv.org/abs/2305.14314) paper** - the de facto way to finetune models cheaply, whether on local models or with 4o ([<span style="color: rgb(36,91,219); background-color: inherit">confirmed on pod</span>](https://www.latent.space/p/cosine)). [<span style="color: rgb(36,91,219); background-color: inherit">FSDP+QLoRA</span>](https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html) is educational.
 
