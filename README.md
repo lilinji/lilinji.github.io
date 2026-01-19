@@ -102,6 +102,19 @@ chmod +x create_post.sh
 ./create_post "Model Context Protocol(MCP) 编程极速入门" "GPU,LLM,AI,DeepLearning,Tutorial,AGI,幻觉,强化学习"
 ```
 
+```
+为这篇文章自动配图，一键完成全部流程，每个章节都要有配图：
+文章: [替换为文章路径]
+风格: [tech/sketch/elegant/minimal/warm/playful/nature/bold/notion]
+
+要求：
+1. 分析文章结构，识别所有章节
+2. 为每个章节生成对应插图
+3. 复制图片到文章的 imgs 目录
+4. 更新文章，插入所有图片引用
+5. 确保覆盖率 100%
+```
+
 **跨平台** (Python):
 
 ```bash
