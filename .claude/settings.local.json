@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(gh repo view:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(dir \"C:\\\\Users\\\\lilinji\\\\Desktop\\\\FlashAttention具有 IO 感知的快速且内存高效的精确注意力研究\\\\images\")",
+      "Bash(copy \"C:\\\\Users\\\\lilinji\\\\Desktop\\\\FlashAttention具有 IO 感知的快速且内存高效的精确注意力研究\\\\images\\\\*\" \"D:\\\\lilinji.github.io\\\\content\\\\posts\\\\2026-01-26-FlashAttention具有IO感知的快速且内存高效的精确注意力研究\\\\images\"\")",
+      "Bash(xcopy:*)",
+      "Bash(powershell -Command \"Copy-Item -Path ''C:\\\\Users\\\\lilinji\\\\Desktop\\\\FlashAttention具有 IO 感知的快速且内存高效的精确注意力研究\\\\images\\\\*'' -Destination ''D:\\\\lilinji.github.io\\\\content\\\\posts\\\\2026-01-26-FlashAttention具有IO感知的快速且内存高效的精确注意力研究\\\\images\\\\'' -Recurse -Force; New-Item -ItemType Directory -Path ''D:\\\\lilinji.github.io\\\\content\\\\posts\\\\2026-01-26-FlashAttention具有IO感知的快速且内存高效的精确注意力研究\\\\images'' -Force\")"
     ]
   }
 }
