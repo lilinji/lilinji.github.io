@@ -28,6 +28,10 @@ Transformer 架构已经成为自然语言处理、计算机视觉等领域的�
 > 论文链接：[FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness](https://arxiv.org/abs/2205.14135)  
 > PDF（本地）：[FlashAttention_Conquering_the_Memory_Wall.pdf](FlashAttention_Conquering_the_Memory_Wall.pdf)
 
+## 音频
+
+<audio controls preload="none" src="flashattention.wav"></audio>
+
 ## 核心问题：GPU 内存层级与 IO 瓶颈
 
 ### GPU 内存架构
