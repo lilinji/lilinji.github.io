@@ -1,0 +1,70 @@
+{{- $page := . -}}
+{{- $scratch := $page.Scratch -}}
+{{- with site.Params.homeInfoParams }}
+<article class="first-entry home-info">
+    {{- if and $page.IsHome (not ($scratch.Get "homeClockRendered")) -}}
+    {{- $scratch.Set "homeClockRendered" true -}}
+    <div class="simple-clock" id="home-simple-clock" aria-label="clock">
+        <span class="clock-time">00:00:00</span>
+    </div>
+    {{- end -}}
+    <header class="entry-header">
+        <h1>{{ .Title | markdownify }}</h1>
+    </header>
+    <div class="entry-content">
+        {{ .Content | markdownify }}
+    </div>
+    <footer class="entry-footer">
+        {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+    </footer>
+</article>
+
+{{- if and $page.IsHome (not ($scratch.Get "homeClockStyleLoaded")) -}}
+{{- $scratch.Set "homeClockStyleLoaded" true -}}
+<style>
+.home-info .simple-clock {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 6px;
+  background: #0f0f0f;
+  border: 1px solid #1f1f1f;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  color: #72ff9a;
+  font-family: "Share Tech Mono", "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px rgba(114, 255, 154, 0.6);
+  margin-bottom: 16px;
+}
+.home-info .simple-clock .clock-time {
+  display: inline-block;
+}
+@media (max-width: 520px) {
+  .home-info .simple-clock {
+    font-size: 22px;
+  }
+}
+</style>
+{{- end -}}
+
+{{- if and $page.IsHome (not ($scratch.Get "homeClockScriptLoaded")) -}}
+{{- $scratch.Set "homeClockScriptLoaded" true -}}
+<script>
+(() => {
+  const clock = document.querySelector("#home-simple-clock .clock-time");
+  if (!clock) return;
+  const pad = (num) => num.toString().padStart(2, "0");
+  const tick = () => {
+    const now = new Date();
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
+    clock.textContent = `${hh}:${mm}:${ss}`;
+  };
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+{{- end -}}
+{{- end -}}
