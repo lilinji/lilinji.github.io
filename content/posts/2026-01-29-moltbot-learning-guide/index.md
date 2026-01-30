@@ -14,13 +14,15 @@ showToc: true
 tocOpen: false
 ---
 
-![](<images/moltbot_hero_infographic.png>)
+![](<images/evolution_stages.png>)
 
 > **适用人群：** AI 工具爱好者、效率提升追求者、开发者、创业者
 > **核心定位**：可落地、全场景、超详细的 Moltbot 实操指南 &#x20;
 > **使用建议：**&#x5EFA;议电脑端打开学习，如果需要快速定位到精确内容，可以使用快捷键 Ctrl +F/Command +F 的形式，搜索关键字/词，查找你想要的内容。
 >
 > **持续更新 Moltbot 的<span style="color: rgb(46,161,33); background-color: inherit">相关介绍，部署方法，玩法案例等内容，</span>永久免费在线查看，欢迎收藏、转发和支持，内容创作不易，请勿直接抄袭搬运。**
+![](<images/moltbot_hero_infographic.png>)
+
 
 # 🤹🏼适用人群
 
