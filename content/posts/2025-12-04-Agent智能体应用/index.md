@@ -21,6 +21,7 @@ tocOpen: false
 
 ## GUI Agent
 
+![AI_Agent_Timeline](<AI_Agent_Timeline.jpg>)
 
 【2024-1-25】这几天agent操控设备成为热点：
 - 智谱昨天推出 glm-pc 1.1，注重长程推理，与年前的autoglm互补，分别占据pc和mobile设备
