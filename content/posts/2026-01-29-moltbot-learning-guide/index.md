@@ -648,6 +648,19 @@ clawdbot dashboard
 
 ⚠️ **注意细节：需要在安全组/防火墙放开 18789 端口，要访问 Web UI 的话，需要域名解析 + HTTPS  证书**
 
+**如果是本地服务器（centos/ubuntu为例）可以用ssh反映射**
+
+```shell
+[lilinji.Ringi] ⮞ ssh -N -L 18789:127.0.0.1:18789 lilinji@172.16.7.33
+The authenticity of host '172.16.7.33 (172.16.7.33)' can't be established.
+ED25519 key fingerprint is SHA256:5OG70uZccmxLOix1dbYa3G38cetqbErzCC29hA/qixo.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '172.16.7.33' (ED25519) to the list of known hosts.
+lilinji@172.16.7.33's password:
+
+```
+
 另外服务器上还需要配置局域网可访问，否则无法成功访问
 
 ```plain&#x20;text
@@ -677,6 +690,11 @@ clawdbot config
 
 ```plain&#x20;text
 clawdbot gateway restart
+```
+再执行下面的命令打开链接：
+
+```plain&#x20;text
+clawdbot dashboard
 ```
 
 ## &#x20;设置 AI 身份与初始偏好
