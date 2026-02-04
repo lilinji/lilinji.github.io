@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# 网络 Bond 配置脚本 v3.1
+# 网络 Bond 配置脚本 v3.2
 # 用途: 在节点上配置 50G bond 和 200G InfiniBand 网络
 #
 # 功能:
@@ -56,7 +56,7 @@ log_dry()   { echo -e "${CYAN}[DRY-RUN]${NC} $1" >&2; }
 # ==================== 帮助信息 ====================
 show_help() {
     cat << EOF
-网络 Bond 配置脚本 v3.1
+网络 Bond 配置脚本 v3.2
 
 用法: $0 [选项]
 
@@ -203,11 +203,43 @@ do_rollback() {
 
 # ==================== 网络检测函数 ====================
 # 注意: 这些函数设置全局变量，不使用 echo 返回值
+#
+# 支持的网卡命名模式 (基于 systemd/udev predictable naming):
+# ==================== 以太网 (Ethernet) ====================
+# 格式: en<type><location>
+#   类型 (type):  o = 板载, s = 热插拔槽, p = PCI
+#   位置 (location): <bus>s<slot>f<function>[n<phys_port>][p<dev_port>][d<dev_id>]
+#
+# 常见模式:
+#   eno1, eno2           - 板载网卡 (BIOS/firmware 编号)
+#   ens1f0, ens1f1       - 热插拔槽网卡 (slot=1, function=0/1)
+#   enp5s0f0, enp5s0f1   - PCI 网卡 (bus=5, slot=0)
+#   enp5s0f0np0          - PCI + 物理端口 (Mellanox ConnectX)
+#   enp195s0f0np0        - 高位 PCI 总线 (常见于大型服务器)
+#   enp<bus>s0f0np0/enp<bus>s0f1np1 - 双端口卡 bond 对
+#
+# 厂商/型号:
+#   Mellanox ConnectX-4/5/6: enp*s0f0np0, enp*s0f1np1
+#   Intel X710/E810:   enp*s0f0, enp*s0f1 或 ens*f0, ens*f1
+#   Broadcom BCM:      enp*s0f0d1, enp*s0f1d1
+#
+# ==================== InfiniBand (IB) ====================
+# 常见模式:
+#   ib0, ib1             - 传统命名
+#   ibp<bus>s<slot>      - PCI 位置 (ibp71s0, ibp72s0)
+#   ibs<slot>            - 槽位命名 (ibs5)
+#   mlx5_ib0             - 驱动命名 (Mellanox mlx5 driver)
+# ===========================================================
 
 detect_bond_ip() {
     log_step "获取当前 bond 接口 IP 地址..."
     
-    BOND_IP=$(ip -4 addr show eth_bond_50g 2>/dev/null | grep -oP 'inet \K[\d.]+/\d+' | head -1)
+    # 尝试多种 bond 接口名称
+    local bond_names=("eth_bond_50g" "bond0" "bond1" "eth_bond")
+    for bond in "${bond_names[@]}"; do
+        BOND_IP=$(ip -4 addr show "$bond" 2>/dev/null | grep -oP 'inet \K[\d.]+/\d+' | head -1)
+        [[ -n "$BOND_IP" ]] && break
+    done
     
     if [[ -z "$BOND_IP" ]]; then
         BOND_IP=$(ip -4 addr | grep -oP 'inet \K172\.16\.\d+\.\d+/\d+' | head -1)
@@ -222,43 +254,104 @@ detect_bond_ip() {
 }
 
 detect_eth_interfaces() {
-    log_step "识别 25G 以太网卡..."
+    log_step "识别 25G/50G 以太网卡..."
     
     ETH1=""
     ETH2=""
     
-    # 方法1: 通过 25G 速度 + 命名模式
-    for nic in $(ls /sys/class/net | grep -Ev '^(lo|docker|vir|br|bond|eth_bond)'); do
+    # 排除项: 虚拟/系统接口
+    local exclude_pattern='^(lo|docker|vir|br|veth|virbr|bond|eth_bond|ib|tun|tap|vxlan|wl|ww)'
+    
+    # ==================== 方法1: 25G/50G 速度 + 智能模式匹配 ====================
+    local nics_25g=()
+    for nic in $(ls /sys/class/net 2>/dev/null | grep -Ev "$exclude_pattern"); do
         local speed=$(cat /sys/class/net/$nic/speed 2>/dev/null || echo 0)
-        if [[ "$speed" == "25000" ]]; then
-            if [[ "$nic" =~ s0f0np0$ ]] && [[ -z "$ETH1" ]]; then
-                ETH1="$nic"
-            elif [[ "$nic" =~ s0f1np1$ ]] && [[ -z "$ETH2" ]]; then
-                ETH2="$nic"
-            fi
+        # 25G = 25000, 50G = 50000 (部分网卡实际显示 25000)
+        if [[ "$speed" == "25000" || "$speed" == "50000" ]]; then
+            nics_25g+=("$nic")
         fi
     done
     
-    # 方法2: 纯模式匹配
+    # 从 25G 网卡中识别配对
+    for nic in "${nics_25g[@]}"; do
+        # Mellanox ConnectX (np0/np1 后缀)
+        if [[ "$nic" =~ f0np0$ ]] && [[ -z "$ETH1" ]]; then
+            ETH1="$nic"
+        elif [[ "$nic" =~ f1np1$ ]] && [[ -z "$ETH2" ]]; then
+            ETH2="$nic"
+        # Intel/Broadcom (f0/f1 后缀)
+        elif [[ "$nic" =~ s0f0$ ]] && [[ -z "$ETH1" ]]; then
+            ETH1="$nic"
+        elif [[ "$nic" =~ s0f1$ ]] && [[ -z "$ETH2" ]]; then
+            ETH2="$nic"
+        fi
+    done
+    
+    # ==================== 方法2: 纯模式匹配 (无速度检测时) ====================
     if [[ -z "$ETH1" ]] || [[ -z "$ETH2" ]]; then
-        for nic in $(ls /sys/class/net); do
-            if [[ "$nic" =~ ^enp.*s0f0np0$ ]] && [[ -z "$ETH1" ]]; then
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -Ev "$exclude_pattern"); do
+            # Mellanox ConnectX 双端口: enp<bus>s0f0np0 / enp<bus>s0f1np1
+            if [[ "$nic" =~ ^enp[0-9]+s0f0np0$ ]] && [[ -z "$ETH1" ]]; then
                 ETH1="$nic"
-            elif [[ "$nic" =~ ^enp.*s0f1np1$ ]] && [[ -z "$ETH2" ]]; then
+            elif [[ "$nic" =~ ^enp[0-9]+s0f1np1$ ]] && [[ -z "$ETH2" ]]; then
+                ETH2="$nic"
+            # Intel X710/E810 双端口: enp<bus>s0f0 / enp<bus>s0f1
+            elif [[ "$nic" =~ ^enp[0-9]+s0f0$ ]] && [[ -z "$ETH1" ]]; then
+                ETH1="$nic"
+            elif [[ "$nic" =~ ^enp[0-9]+s0f1$ ]] && [[ -z "$ETH2" ]]; then
+                ETH2="$nic"
+            # 热插拔槽: ens<slot>f0 / ens<slot>f1
+            elif [[ "$nic" =~ ^ens[0-9]+f0(np[0-9]+)?$ ]] && [[ -z "$ETH1" ]]; then
+                ETH1="$nic"
+            elif [[ "$nic" =~ ^ens[0-9]+f1(np[0-9]+)?$ ]] && [[ -z "$ETH2" ]]; then
                 ETH2="$nic"
             fi
         done
     fi
     
+    # ==================== 方法3: 高位 PCI 总线 (大型服务器) ====================
+    if [[ -z "$ETH1" ]] || [[ -z "$ETH2" ]]; then
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -Ev "$exclude_pattern"); do
+            # 3位数 PCI 总线号: enp195s0f0np0 等
+            if [[ "$nic" =~ ^enp[0-9]{2,3}s0f0np0$ ]] && [[ -z "$ETH1" ]]; then
+                ETH1="$nic"
+            elif [[ "$nic" =~ ^enp[0-9]{2,3}s0f1np1$ ]] && [[ -z "$ETH2" ]]; then
+                ETH2="$nic"
+            elif [[ "$nic" =~ ^enp[0-9]{2,3}s0f0$ ]] && [[ -z "$ETH1" ]]; then
+                ETH1="$nic"
+            elif [[ "$nic" =~ ^enp[0-9]{2,3}s0f1$ ]] && [[ -z "$ETH2" ]]; then
+                ETH2="$nic"
+            fi
+        done
+    fi
+    
+    # ==================== 方法4: 通用模式 (d1 设备端口后缀) ====================
+    if [[ -z "$ETH1" ]] || [[ -z "$ETH2" ]]; then
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -Ev "$exclude_pattern"); do
+            # Broadcom: enp*s0f0d1 / enp*s0f1d1
+            if [[ "$nic" =~ ^enp[0-9]+s0f0d[0-9]+$ ]] && [[ -z "$ETH1" ]]; then
+                ETH1="$nic"
+            elif [[ "$nic" =~ ^enp[0-9]+s0f1d[0-9]+$ ]] && [[ -z "$ETH2" ]]; then
+                ETH2="$nic"
+            fi
+        done
+    fi
+    
+    # ==================== 手动选择 ====================
     if [[ -z "$ETH1" ]] || [[ -z "$ETH2" ]]; then
         log_warn "无法自动识别两块以太网卡"
         log_info "可用网络接口:"
-        for nic in $(ls /sys/class/net | grep -Ev '^(lo|docker|vir|br|bond|eth_bond|ib)'); do
+        echo "" >&2
+        printf "  %-25s %-10s %-10s\n" "接口" "速度(Mb)" "状态" >&2
+        printf "  %-25s %-10s %-10s\n" "---" "---" "---" >&2
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -Ev "$exclude_pattern"); do
             local speed=$(cat /sys/class/net/$nic/speed 2>/dev/null || echo "NA")
-            echo "  - $nic (${speed}Mb)" >&2
+            local state=$(cat /sys/class/net/$nic/operstate 2>/dev/null || echo "unknown")
+            printf "  %-25s %-10s %-10s\n" "$nic" "$speed" "$state" >&2
         done
-        read -p "请输入第一块网卡: " ETH1
-        read -p "请输入第二块网卡: " ETH2
+        echo "" >&2
+        read -p "请输入第一块网卡 (Slave1): " ETH1
+        read -p "请输入第二块网卡 (Slave2): " ETH2
     fi
     
     log_info "Eth1: $ETH1"
@@ -268,11 +361,56 @@ detect_eth_interfaces() {
 detect_ib_interface() {
     log_step "识别 InfiniBand 网卡..."
     
-    IB_IFACE=$(ls /sys/class/net 2>/dev/null | grep -E '^ib' | head -1)
+    IB_IFACE=""
     
+    # 排除项
+    local exclude_pattern='^(lo|docker|vir|br|bond|eth_bond|en|em|eth)'
+    
+    # ==================== 方法1: 标准 IB 命名 ====================
+    # ib0, ib1 等传统命名
+    for nic in $(ls /sys/class/net 2>/dev/null | grep -E '^ib[0-9]+$'); do
+        IB_IFACE="$nic"
+        break
+    done
+    
+    # ==================== 方法2: PCI 位置命名 ====================
+    # ibp<bus>s<slot> (例: ibp71s0, ibp72s0)
+    if [[ -z "$IB_IFACE" ]]; then
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -E '^ibp[0-9]+s[0-9]+$'); do
+            IB_IFACE="$nic"
+            break
+        done
+    fi
+    
+    # ==================== 方法3: 槽位命名 ====================
+    # ibs<slot> (例: ibs5)
+    if [[ -z "$IB_IFACE" ]]; then
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -E '^ibs[0-9]+$'); do
+            IB_IFACE="$nic"
+            break
+        done
+    fi
+    
+    # ==================== 方法4: 任何 ib 前缀 ====================
+    if [[ -z "$IB_IFACE" ]]; then
+        IB_IFACE=$(ls /sys/class/net 2>/dev/null | grep -E '^ib' | head -1)
+    fi
+    
+    # ==================== 方法5: Mellanox mlx5 驱动命名 ====================
+    if [[ -z "$IB_IFACE" ]]; then
+        IB_IFACE=$(ls /sys/class/net 2>/dev/null | grep -E '^mlx5_ib' | head -1)
+    fi
+    
+    # ==================== 手动选择 ====================
     if [[ -z "$IB_IFACE" ]]; then
         log_warn "无法自动识别 InfiniBand 网卡"
-        ls /sys/class/net >&2
+        log_info "可用网络接口:"
+        echo "" >&2
+        for nic in $(ls /sys/class/net 2>/dev/null | grep -Ev "$exclude_pattern"); do
+            local state=$(cat /sys/class/net/$nic/operstate 2>/dev/null || echo "unknown")
+            echo "  - $nic ($state)" >&2
+        done
+        echo "" >&2
         read -p "请输入 IB 网卡名称: " IB_IFACE
     fi
     
@@ -284,8 +422,14 @@ detect_ib_ip() {
     
     IB_IP=$(ip -4 addr show "$IB_IFACE" 2>/dev/null | grep -oP 'inet \K[\d.]+/\d+' | head -1)
     
+    # 尝试 192.168.8.x 网段
     if [[ -z "$IB_IP" ]]; then
         IB_IP=$(ip -4 addr | grep -oP 'inet \K192\.168\.8\.\d+/\d+' | head -1)
+    fi
+    
+    # 尝试 10.0.x.x 网段 (某些集群使用)
+    if [[ -z "$IB_IP" ]]; then
+        IB_IP=$(ip -4 addr | grep -oP 'inet \K10\.0\.\d+\.\d+/\d+' | head -1)
     fi
     
     if [[ -z "$IB_IP" ]]; then
