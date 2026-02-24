@@ -9,6 +9,14 @@ description: First-time setup flow for baoyu-article-illustrator preferences
 
 When no EXTEND.md is found, guide user through preference setup.
 
+**⛔ BLOCKING OPERATION**: This setup MUST complete before ANY other workflow steps. Do NOT:
+- Ask about reference images
+- Ask about content/article
+- Ask about type or style preferences
+- Proceed to content analysis
+
+ONLY ask the questions in this setup flow, save EXTEND.md, then continue.
+
 ## Setup Flow
 
 ```
