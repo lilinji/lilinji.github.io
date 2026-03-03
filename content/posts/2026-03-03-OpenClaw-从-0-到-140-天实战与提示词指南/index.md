@@ -13,6 +13,7 @@ tocOpen: false
 ---
 
 # OpenClaw 从 0 到 1：40 天实战与提示词指南
+![https://github.com/puaclaw](images/image.png)
 
 ![](images/OpenClaw养成记，从0开始！安装后必看！（40天实战经验+含角色提示词）-image-9.png)
 
