@@ -14,7 +14,7 @@ tocOpen: false
 
 > 原文来源：[dashen_wang](https://x.com/dashen_wang/article/2038516811533365743/media/2038516567491887104)
 
-![](Pasted image 20260330183253.png)
+{{< figure src="20260330183253.png" alt="穷人没教育，寒门无贵子" >}}
 
 ## 一、那条消息让我愣了整整三秒
 
