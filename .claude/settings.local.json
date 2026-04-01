@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(cp /root/.claude/skills/obsidian-to-lark/SKILL.md /c/Users/lilinji/.claude/skills/obsidian-to-lark/)",
+      "Bash(cp /root/.claude/skills/obsidian-to-lark/scripts/sync.js /c/Users/lilinji/.claude/skills/obsidian-to-lark/scripts/)",
+      "Bash(cp /root/.claude/skills/obsidian-to-lark/evals/evals.json /c/Users/lilinji/.claude/skills/obsidian-to-lark/evals/)",
+      "Bash(echo $HOME)",
+      "Read(//d/lilinji.github.io/$HOME/.claude/skills/**)",
+      "Read(//d//**)",
+      "Read(//proc/**)",
+      "Read(//d/Obsidian//**)",
+      "Read(//d/Obsidian/lilinji//**)",
+      "Bash(npm install:*)",
+      "Bash(npm list:*)",
+      "Bash(npm root:*)",
+      "Bash(PATH=\"/c/Users/lilinji/AppData/Roaming/npm:$PATH\" node /c/Users/lilinji/.claude/skills/obsidian-to-lark/scripts/sync.js \"/d/Obsidian/lilinji/Clippings/Kubernetes Gateway API 网关选型全景对比.md\")",
+      "Bash(cmd.exe /c \"lark-cli auth status\")",
+      "Bash(cmd.exe /c \"C:\\\\Users\\\\lilinji\\\\AppData\\\\Roaming\\\\npm\\\\lark-cli.cmd auth status\" 2>&1)",
+      "Bash(obsidian read:*)",
+      "Bash(obsidian:*)"
+    ]
+  }
+}
