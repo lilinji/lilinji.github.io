@@ -1,0 +1,556 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>姚金刚 - 个人介绍</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: #FFFFFF;
+        }
+        
+        .slide-title {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .content-area {
+            position: absolute;
+            top: 180px;
+            bottom: 100px;
+            left: 15%;
+            right: 15%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* 首页特殊样式 */
+        .slide-cover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* 尾页特殊样式 */
+        .slide-end {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        /* 页面指示器 */
+        .page-indicator {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+        
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d1d5db;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .indicator-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        /* 数据卡片样式 */
+        .data-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+        
+        /* 时间线样式 */
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% + 10px);
+            background: #e5e7eb;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面指示器 -->
+    <div class="page-indicator" id="pageIndicator"></div>
+
+    <!-- 第1页：封面 -->
+    <div class="slide slide-cover" data-slide="0">
+        <div class="text-center text-white animate-fadeInUp">
+            <h1 class="text-6xl font-bold mb-6">姚金刚</h1>
+            <p class="text-2xl mb-8 opacity-90">AI创业者 · 营销专家 · 内容创作者</p>
+            <div class="flex justify-center space-x-8 text-lg opacity-80">
+                <span>猎河科技创始人</span>
+                <span>|</span>
+                <span>老姚日记博主</span>
+                <span>|</span>
+                <span>前上市公司高管</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2页：个人概述 -->
+    <div class="slide" data-slide="1">
+        <h2 class="slide-title">关于我</h2>
+        <div class="content-area">
+            <div class="grid grid-cols-2 gap-8 w-full">
+                <div class="data-card">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">核心身份</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">▸</span>
+                            <span>猎河科技创始人，AI产品用户超1000万</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">▸</span>
+                            <span>老姚日记独立博主，分享AI、成长、营销洞察</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">▸</span>
+                            <span>12年互联网营销管理经验，操盘预算超10亿</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="data-card">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-800">专业领域</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center p-4 bg-white rounded-lg">
+                            <div class="text-3xl font-bold text-purple-600">AI</div>
+                            <div class="text-sm text-gray-600 mt-1">人工智能落地</div>
+                        </div>
+                        <div class="text-center p-4 bg-white rounded-lg">
+                            <div class="text-3xl font-bold text-purple-600">营销</div>
+                            <div class="text-sm text-gray-600 mt-1">增长与管理</div>
+                        </div>
+                        <div class="text-center p-4 bg-white rounded-lg">
+                            <div class="text-3xl font-bold text-purple-600">教育</div>
+                            <div class="text-sm text-gray-600 mt-1">知识分享</div>
+                        </div>
+                        <div class="text-center p-4 bg-white rounded-lg">
+                            <div class="text-3xl font-bold text-purple-600">创业</div>
+                            <div class="text-sm text-gray-600 mt-1">商业创新</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3页：职业历程 -->
+    <div class="slide" data-slide="2">
+        <h2 class="slide-title">职业历程</h2>
+        <div class="content-area">
+            <div class="w-full max-w-4xl">
+                <div class="timeline-item animate-fadeInUp">
+                    <div class="font-bold text-xl text-gray-800 mb-2">2011-2020 · 职场积累期</div>
+                    <div class="text-gray-600">
+                        <p class="mb-2">历经三家头部教育科技公司，担任市场营销管理核心岗位</p>
+                        <div class="flex flex-wrap gap-3 mt-3">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">中赫集团（德智教育&amp;千品网）</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">好未来（学而思网校）</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">猿辅导（猿编程）</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item animate-fadeInUp" style="animation-delay: 0.2s">
+                    <div class="font-bold text-xl text-gray-800 mb-2">2019-2023 · 创业探索期</div>
+                    <div class="text-gray-600">
+                        <p class="mb-2">创立猎河科技，带领团队探索多个项目</p>
+                        <p class="mb-2">成立第二年员工超200人，营收过亿</p>
+                        <p>经历双减、疫情等挑战，完成多次业务转型</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item animate-fadeInUp" style="animation-delay: 0.4s">
+                    <div class="font-bold text-xl text-gray-800 mb-2">2023-至今 · AI转型期</div>
+                    <div class="text-gray-600">
+                        <p class="mb-2">全面转型AI相关业务和产品</p>
+                        <p class="mb-2">AI工具产品用户量突破1000万</p>
+                        <p>在AI获客、AI工具、AI课程等领域取得显著成果</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4页：核心成就 -->
+    <div class="slide" data-slide="3">
+        <h2 class="slide-title">核心成就</h2>
+        <div class="content-area">
+            <div class="grid grid-cols-3 gap-6 w-full">
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-purple-600 mb-3">10亿+</div>
+                    <div class="text-gray-700 font-semibold mb-2">营销预算操盘</div>
+                    <div class="text-sm text-gray-500">12年互联网营销管理经验积累</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-purple-600 mb-3">1000万+</div>
+                    <div class="text-gray-700 font-semibold mb-2">AI产品用户</div>
+                    <div class="text-sm text-gray-500">2024年AI转型成果</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold text-purple-600 mb-3">2次</div>
+                    <div class="text-gray-700 font-semibold mb-2">1-20亿增长</div>
+                    <div class="text-sm text-gray-500">带领团队实现规模化增长</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-6 w-full mt-12">
+                <div class="data-card">
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">专业输出</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>• 出版4本营销类专业书籍</li>
+                        <li>• 担任多家公司营销咨询顾问</li>
+                        <li>• 老姚日记博客持续内容创作</li>
+                    </ul>
+                </div>
+                <div class="data-card">
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">创业成果</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li>• 猎河科技创始人</li>
+                        <li>• 成立第二年营收过亿</li>
+                        <li>• 团队规模超200人</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5页：AI业务布局 -->
+    <div class="slide" data-slide="4">
+        <h2 class="slide-title">AI业务布局</h2>
+        <div class="content-area">
+            <div class="text-center mb-8">
+                <p class="text-xl text-gray-600">从2023年开始全面转型AI领域，已在多个细分赛道取得突破</p>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-8 w-full">
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
+                    <div class="text-3xl mb-4">🚀</div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">AI获客</h3>
+                    <p class="text-gray-600">基于AI技术的精准获客系统，大幅提升营销效率和转化率</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6">
+                    <div class="text-3xl mb-4">🛠️</div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">AI工具</h3>
+                    <p class="text-gray-600">开发多款AI工具产品，累计服务用户超过1000万</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6">
+                    <div class="text-3xl mb-4">📚</div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">AI课程</h3>
+                    <p class="text-gray-600">打造体系化AI课程，帮助更多人掌握AI应用能力</p>
+                </div>
+            </div>
+            
+            <div class="mt-10 p-6 bg-gray-50 rounded-xl">
+                <h4 class="font-bold text-lg mb-3 text-gray-800">组织AI落地经验</h4>
+                <p class="text-gray-600 leading-relaxed">
+                    深度思考并实践"如何推动组织AI落地"，不仅在理论层面有独到见解，
+                    更在实际操作中积累了丰富经验。通过系统化的方法论，帮助团队提升AI能力，
+                    显著提高了公司整体效率和竞争力。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6页：内容创作 -->
+    <div class="slide" data-slide="5">
+        <h2 class="slide-title">内容创作与分享</h2>
+        <div class="content-area">
+            <div class="grid grid-cols-2 gap-8 w-full">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800">老姚日记</h3>
+                    <div class="bg-gray-50 rounded-xl p-6 mb-4">
+                        <p class="text-gray-600 mb-4">独立博客 www.laoyao.cn</p>
+                        <p class="text-gray-700 leading-relaxed">
+                            持续分享关于AI、健康、教育、成长、营销等主题的深度思考。
+                            通过文字记录创业历程、行业洞察和人生感悟。
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <span class="w-2 h-2 bg-purple-600 rounded-full mr-3"></span>
+                            <span class="text-gray-700">AI与组织效率提升</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-2 h-2 bg-purple-600 rounded-full mr-3"></span>
+                            <span class="text-gray-700">创业五年深度复盘</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-2 h-2 bg-purple-600 rounded-full mr-3"></span>
+                            <span class="text-gray-700">营销增长方法论</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800">核心观点</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-600">
+                            <p class="font-semibold text-gray-800 mb-2">模型越强，提示词越重要</p>
+                            <p class="text-sm text-gray-600">强大的AI模型需要更精准的提示词引导</p>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-600">
+                            <p class="font-semibold text-gray-800 mb-2">组织的第一任务是合法赚钱</p>
+                            <p class="text-sm text-gray-600">创造增量价值是持续赚钱的前提</p>
+                        </div>
+                        <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-600">
+                            <p class="font-semibold text-gray-800 mb-2">AI+自媒体是未来主流</p>
+                            <p class="text-sm text-gray-600">AI带来的效率提升将改变内容创作格局</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7页：联系方式 -->
+    <div class="slide slide-end" data-slide="6">
+        <div class="text-center text-white">
+            <h2 class="text-5xl font-bold mb-8">与我联系</h2>
+            
+            <div class="space-y-6 mb-12">
+                <div class="text-xl">
+                    <p class="mb-2 opacity-90">📝 博客：www.laoyao.cn</p>
+                    <p class="mb-2 opacity-90">📊 飞书周报：定期分享行业洞察</p>
+                    <p class="opacity-90">💬 微信公众号：关注获取最新动态</p>
+                </div>
+            </div>
+            
+            <div class="bg-white bg-opacity-20 rounded-xl p-8 max-w-2xl mx-auto backdrop-blur-sm">
+                <p class="text-lg mb-4">开放合作机会</p>
+                <div class="flex justify-center space-x-8 text-sm opacity-90">
+                    <span>AI项目合作</span>
+                    <span>|</span>
+                    <span>营销咨询</span>
+                    <span>|</span>
+                    <span>内容分享</span>
+                </div>
+            </div>
+            
+            <p class="mt-12 text-sm opacity-70">感谢您的关注 · 期待与您的交流</p>
+        </div>
+    </div>
+
+    <script>
+        // PPT导航系统
+        class PPTNavigator {
+            constructor() {
+                this.currentSlide = 0;
+                this.totalSlides = document.querySelectorAll('.slide').length;
+                this.isScrolling = false;
+                this.touchStartY = 0;
+                this.initializeIndicators();
+                this.initializeNavigation();
+            }
+            
+            initializeIndicators() {
+                const indicatorContainer = document.getElementById('pageIndicator');
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'indicator-dot';
+                    if (i === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => this.navigateToSlide(i));
+                    indicatorContainer.appendChild(dot);
+                }
+            }
+            
+            initializeNavigation() {
+                // 鼠标滚轮事件
+                let scrollTimeout;
+                window.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    if (this.isScrolling) return;
+                    
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        if (e.deltaY > 0 && this.currentSlide < this.totalSlides - 1) {
+                            this.navigateToSlide(this.currentSlide + 1);
+                        } else if (e.deltaY < 0 && this.currentSlide > 0) {
+                            this.navigateToSlide(this.currentSlide - 1);
+                        }
+                    }, 50);
+                }, { passive: false });
+                
+                // 键盘事件
+                window.addEventListener('keydown', (e) => {
+                    if (this.isScrolling) return;
+                    
+                    switch(e.key) {
+                        case 'ArrowDown':
+                        case 'PageDown':
+                            if (this.currentSlide < this.totalSlides - 1) {
+                                this.navigateToSlide(this.currentSlide + 1);
+                            }
+                            break;
+                        case 'ArrowUp':
+                        case 'PageUp':
+                            if (this.currentSlide > 0) {
+                                this.navigateToSlide(this.currentSlide - 1);
+                            }
+                            break;
+                        case 'Home':
+                            this.navigateToSlide(0);
+                            break;
+                        case 'End':
+                            this.navigateToSlide(this.totalSlides - 1);
+                            break;
+                    }
+                });
+                
+                // 触摸事件（移动端）
+                window.addEventListener('touchstart', (e) => {
+                    this.touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                window.addEventListener('touchend', (e) => {
+                    if (this.isScrolling) return;
+                    
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diff = this.touchStartY - touchEndY;
+                    
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0 && this.currentSlide < this.totalSlides - 1) {
+                            this.navigateToSlide(this.currentSlide + 1);
+                        } else if (diff < 0 && this.currentSlide > 0) {
+                            this.navigateToSlide(this.currentSlide - 1);
+                        }
+                    }
+                }, { passive: true });
+            }
+            
+            navigateToSlide(slideIndex) {
+                if (slideIndex < 0 || slideIndex >= this.totalSlides || this.isScrolling) {
+                    return;
+                }
+                
+                this.isScrolling = true;
+                this.currentSlide = slideIndex;
+                
+                // 滚动到目标页面
+                const targetSlide = document.querySelector(`[data-slide="${slideIndex}"]`);
+                targetSlide.scrollIntoView({ behavior: 'smooth' });
+                
+                // 更新指示器
+                document.querySelectorAll('.indicator-dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === slideIndex);
+                });
+                
+                // 重置滚动状态
+                setTimeout(() => {
+                    this.isScrolling = false;
+                }, 800);
+            }
+        }
+        
+        // 初始化PPT导航
+        document.addEventListener('DOMContentLoaded', () => {
+            new PPTNavigator();
+            
+            // 添加进入动画
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const animatedElements = entry.target.querySelectorAll('.animate-fadeInUp');
+                        animatedElements.forEach((el, index) => {
+                            setTimeout(() => {
+                                el.style.opacity = '1';
+                                el.style.transform = 'translateY(0)';
+                            }, index * 100);
+                        });
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.slide').forEach(slide => {
+                observer.observe(slide);
+            });
+        });
+    </script>
+
+
+</body></html>
