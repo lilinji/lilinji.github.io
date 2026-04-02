@@ -21,7 +21,12 @@
       "Bash(cmd.exe /c \"lark-cli auth status\")",
       "Bash(cmd.exe /c \"C:\\\\Users\\\\lilinji\\\\AppData\\\\Roaming\\\\npm\\\\lark-cli.cmd auth status\" 2>&1)",
       "Bash(obsidian read:*)",
-      "Bash(obsidian:*)"
+      "Bash(obsidian:*)",
+      "Bash(.create_post.ps1 \"姚金刚提示词合集\" \"AI\")",
+      "Bash(powershell.exe -Command \"cd D:\\\\lilinji.github.io; .\\\\create_post.ps1 '姚金刚提示词合集' 'AI'\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
