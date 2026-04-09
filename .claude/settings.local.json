@@ -26,7 +26,22 @@
       "Bash(powershell.exe -Command \"cd D:\\\\lilinji.github.io; .\\\\create_post.ps1 '姚金刚提示词合集' 'AI'\")",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(cp agents/*.md \"C:\\\\Users\\\\lilinji\\\\.claude\\\\agents/\")",
+      "Bash(cp rules/*.md \"C:\\\\Users\\\\lilinji\\\\.claude\\\\rules/\")",
+      "Bash(cp commands/*.md \"C:\\\\Users\\\\lilinji\\\\.claude\\\\commands/\")",
+      "Bash(cp -r hooks \"C:\\\\Users\\\\lilinji\\\\.claude/\")",
+      "Bash(cp -r contexts \"C:\\\\Users\\\\lilinji\\\\.claude/\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\lilinji\\\\.claude\\\\hooks\\\\memory-persistence\" \"C:\\\\Users\\\\lilinji\\\\.claude\\\\hooks\\\\strategic-compact\")",
+      "Bash(cp \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\everything-claude-code\\\\hooks\\\\memory-persistence\"/*.sh \"C:\\\\Users\\\\lilinji\\\\.claude\\\\hooks\\\\memory-persistence/\")",
+      "Bash(cp \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\everything-claude-code\\\\hooks\\\\strategic-compact\"/*.sh \"C:\\\\Users\\\\lilinji\\\\.claude\\\\hooks\\\\strategic-compact/\")",
+      "Bash(chmod +x \"C:\\\\Users\\\\lilinji\\\\.claude\\\\hooks\\\\memory-persistence\"/*.sh \"C:\\\\Users\\\\lilinji\\\\.claude\\\\hooks\\\\strategic-compact\"/*.sh)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\continuous-learning\")",
+      "Bash(cp -r \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\everything-claude-code\\\\skills\\\\continuous-learning\"/* \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\continuous-learning/\")",
+      "Bash(cp -r \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\everything-claude-code\\\\skills\\\\strategic-compact\" \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills/\")",
+      "Bash(chmod +x \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\continuous-learning\"/*.sh \"C:\\\\Users\\\\lilinji\\\\.claude\\\\skills\\\\strategic-compact\"/*.sh)",
+      "Skill(update-config)",
+      "Bash(cd:*)"
     ]
   }
 }
