@@ -75,6 +75,68 @@ hugo server -D
 # 访问 http://localhost:1313
 ```
 
+## 📝 Obsidian 到博客迁移工具
+
+### Obsidian to Blog Skill
+
+使用 Claude Code 的 `obsidian-to-blog` skill 可以一键将 Obsidian Vault 中的文章迁移到博客。
+
+**功能特性：**
+- ✅ 自动转换 frontmatter 格式
+- ✅ 下载并本地化文章图片到 `images/` 目录
+- ✅ 转换 Wiki 链接为标准 Markdown 链接
+- ✅ 智能扩展标签（clippings → AI相关、翻译等）
+- ✅ 支持批量迁移
+- ✅ 增量同步（跳过已迁移文件）
+- ✅ 支持代码文件迁移
+- ✅ SEO 增强（自动添加描述、原文引用）
+- ✅ 迁移预览模式（dry-run）
+
+**使用方式：**
+
+在 Claude Code 中直接告诉它要迁移的文章：
+
+```bash
+# 迁移单个文章
+帮我迁移这篇文章到博客：/Users/ringi/Documents/Obsidian Vault/Clippings/xxx.md
+
+# 迁移 obsidian:// URL
+帮我迁移这个 obsidian://open?vault=Obsidian%20Vault&file=Clippings/xxx.md
+
+# 批量迁移
+帮我批量迁移 Clippings 文件夹中的所有文章
+
+# 预览模式（不实际写入）
+预览迁移这个文章（dry-run）：/path/to/article.md
+```
+
+**迁移后的结构：**
+
+```
+content/posts/2026-04-11-文章标题/
+├── index.md          ← 转换后的文章
+└── images/          ← 下载的图片（相对路径引用）
+    ├── image1.jpg
+    └── image2.png
+```
+
+**图片处理：**
+- 外部图片自动下载到文章的 `images/` 子目录
+- Markdown 中的图片引用自动更新为相对路径
+- 使用 md5(url) 重命名避免冲突
+
+**标签转换示例：**
+
+| Obsidian 标签 | 博客标签 |
+|--------------|---------|
+| clippings | AI相关, 翻译 |
+| AI | AI相关 |
+| 技术 | 技术 |
+
+**配置文件：** `~/.claude/skills/obsidian-to-blog/config.json`
+
+---
+
 ## 📝 写作指南
 
 ### 创建新文章
