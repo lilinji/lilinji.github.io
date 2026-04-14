@@ -50,7 +50,12 @@
       "Bash(cp -r commands/* \"C:\\\\Users\\\\lilinji\\\\.claude\\\\commands/\")",
       "Bash(cp -r contexts/* \"C:\\\\Users\\\\lilinji\\\\.claude\\\\contexts/\")",
       "Bash(bash install.sh --target claude --dry-run typescript)",
-      "Bash(bash install.sh --target claude typescript)"
+      "Bash(bash install.sh --target claude typescript)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/ringi/lilinji.github.io/**)",
+      "Bash(done)",
+      "Bash(ls:*)"
     ]
   }
 }
