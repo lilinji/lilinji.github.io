@@ -12,10 +12,11 @@ showToc: true
 tocOpen: false
 description: Anthropic上周发了一篇博文，标题不长，信息量极大。核心观点只有一句话：别上来就选最复杂的架构。从最简单的能跑通的模式开始，看它在哪里卡住，再升级。这篇文章拆解了五种多Agent协作的主流模式——每种怎么运作、什么时候用、会在哪里翻车。如果你正在用龙虾、Hermes、Cla...
 slug: 轻松掌握Anthropic官方给的五种"多Agent协作"模式
+source: https://x.com/kkawsb/status/2043883512168886387?s=46
 
 ---
 
-![Image](https://pbs.twimg.com/media/HF1UdpDasAIvpS5?format=jpg&name=large)
+![Image](8526273a0268.jpg)
 
 Anthropic上周发了一篇博文，标题不长，信息量极大。
 

@@ -16,7 +16,7 @@ source: https://x.com/intuitiveml/status/2043545596699750791?s=46
 
 ---
 
-![Image](images/20d46f7ccf95.jpg)
+![Image](20d46f7ccf95.jpg)
 
 99% of our production code is written by AI. Last Tuesday, we shipped a new feature at 10 AM, A/B tested it by noon, and killed it by 3 PM because the data said no. We shipped a better version at 5 PM. Three months ago, a cycle like that would have taken six weeks.
 
@@ -30,7 +30,7 @@ We arrived at that conclusion on our own. We didn't have a name for it.
 
 ## AI-First Is Not the Same as Using AI
 
-![Image](images/2ce111eb0e26.jpg)
+![Image](d572ef57ee15.jpg)
 
 Most companies bolt AI onto their existing process. An engineer opens Cursor. A PM drafts specs with ChatGPT. QA experiments with AI test generation. The workflow stays the same. Efficiency goes up 10 to 20 percent. Nothing structurally changes.
 
@@ -70,7 +70,7 @@ Three systems needed AI running through them: how we design product, how we impl
 
 ## The Bold Decision: Unifying the Architecture
 
-![Image](images/d572ef57ee15.jpg)
+![Image](2ce111eb0e26.jpg)
 
 I had to fix the codebase first.
 
@@ -128,7 +128,7 @@ The system deduplicates. If an open issue covers the same error pattern, it upda
 
 When an engineer pushes a fix, the same pipeline handles it. Three Claude review passes evaluate the PR. CI validates. The six-phase deploy pipeline promotes through dev and prod with testing at each stage. After deployment, the triage engine re-checks CloudWatch. If the original errors are resolved, the Linear ticket auto-closes.
 
-![Image](images/f24c82fcf781.jpg)
+![Image](f24c82fcf781.jpg)
 
 Each tool handles one phase. No tool tries to do everything. The daily cycle creates a self-healing loop where errors are detected, triaged, fixed, and verified with minimal manual intervention.
 
@@ -144,7 +144,7 @@ Sentry reports structured exceptions across all services, merged with CloudWatch
 
 ## How a Feature Moves from Idea to Production
 
-![Image](images/1634a723c77f.jpg)
+![Image](1634a723c77f.jpg)
 
 **New Feature Path**
 
@@ -169,7 +169,7 @@ Both paths use the same pipeline. One system. One standard.
 
 ## The Results
 
-![Image](images/a66c2f198972.jpg)
+![Image](a66c2f198972.jpg)
 
 Over 14 days, we averaged three to eight production deployments per day. Under our old model, that entire two-week period would have produced not even a single release to production.
 

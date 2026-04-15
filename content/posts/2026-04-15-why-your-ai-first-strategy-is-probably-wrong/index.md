@@ -1,5 +1,6 @@
 ---
 title: 为什么你的“AI 优先”策略很可能错了
+source: https://x.com/intuitiveml/status/2043545596699750791?s=46
 author:
   - "[[@intuitiveml]]"
 published: 2026-04-13
@@ -7,6 +8,7 @@ created: 2026-04-15
 description: 99% of our production code is written by AI. Last Tuesday, we shipped a new feature at 10 AM, A/B tested it by noon, and killed it by 3 PM b...
 tags:
   - clippings
+migrated: "2026-04-14T23:24:49.058Z"
 ---
 ![Image](https://pbs.twimg.com/media/HFwEJl_bEAAPyc8?format=jpg&name=large)
 
