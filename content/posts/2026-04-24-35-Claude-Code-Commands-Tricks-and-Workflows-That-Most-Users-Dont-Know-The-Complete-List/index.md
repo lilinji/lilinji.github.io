@@ -10,6 +10,7 @@ tags:
 author: [eng_khairallah1]
 showToc: true
 tocOpen: false
+source: "https://x.com/eng_khairallah1/status/2046519525907317043"
 ---
 
 # 35 个大多数用户不知道的 Claude Code 命令、技巧与工作流 —— 完整清单
@@ -223,3 +224,5 @@ UI 看起来有问题？不要写一段文字描述。截图。用 Ctrl+V 粘贴
 **希望这对你有用，Khairallah** **❤️**
 
 ---
+
+> **来源**: [https://x.com/eng_khairallah1/status/2046519525907317043](https://x.com/eng_khairallah1/status/2046519525907317043)

@@ -5,7 +5,7 @@ draft: false
 tags:
   - AI相关
   - 翻译
-author: [lxfater
+author: Linjilee
 showToc: true
 tocOpen: false
 source: "https://x.com/lxfater/status/2044781079660482801?s=46"

@@ -57,5 +57,6 @@
       "Bash(done)",
       "Bash(ls:*)"
     ]
-  }
+  },
+  "enabledPlugins": {}
 }
