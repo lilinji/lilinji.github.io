@@ -1,0 +1,634 @@
+---
+title: LLM训练推理加速框架+部署
+date: 2026-04-26T21:30:20+08:00
+draft: false
+tags:
+  - AI相关
+  - 技术
+  - 翻译
+author: Ringi Lee
+showToc: true
+tocOpen: false
+slug: LLM训练推理加速框架+部署
+
+---
+
+
+
+LLM推理框架+部署模块打造了全方位的大模型推理加速与部署生态，整合21+高性能推理引擎和部署平台。**顶级加速框架**：**vLLM伯克利**（业界标杆）、**SGLang**（超越TensorRT-LLM性能）、**LMDeploy书生**（工业级部署）、**DeepSpeed-MII**（微软推理优化）等。**便捷部署工具**：**Ollama**（本地模型管理）、**LM Studio**（图形化界面）、**FastChat+vLLM**（分布式服务）、**Xinference**（多模型统一接口）、**OpenLLM**（云端部署）等。**API网关服务**：**LiteLLM**（100+ LLM APIs统一格式）、**One-API**（接口管理分发）、**Xi-API**等。**托管平台**包括**Together AI**、**Replicate**、**SiliconFlow硅基流动**等。配套**Huggingface Accelerate**、**llama-cpp-python**等底层加速库，以及**Jan.ai**、**LocalAI**、**text-generation-webui**等用户友好界面，实现从本地部署到云端服务的全场景覆盖。
+
+- [self-llm/datawhale大模型使用指南(含训练)](https://github.com/datawhalechina/self-llm/blob/master/models/Qwen2.5/05-Qwen2.5-7B-Instruct%20Lora%20.ipynb)
+- [Together AI – The AI Acceleration Cloud - Fast Inference, Fine-Tuning & Training](https://www.together.ai/)
+- [Replicate: Build, train, and deploy AI models](https://replicate.com/)
+-----------------------------------------------------------
+
+1. 2.LLM训练推理加速框架+部署.md
+2. 0.FastChat-分布式部署不加速，需要配合vllm
+3. 0.LM Studio
+4. 0.OpenLLM
+5. 0.Xorbits Inference：模型推理
+6. 0.Xorbits Inference：模型推理/issue解决
+7. 0.litellm
+8. 0.ollama
+9. 0.one-api|Xi-api
+10. 1.Jan.ai
+11. 1.LocalAI
+12. 1.Replicate大模型托管平台
+13. 1.SiliconFlow (北京硅基流动)
+14. 1.text-generation-webui
+15. 2.DeepSpeed-MII
+16. 2.SGLang
+17. 2.fluxgym
+18. 2.huggingface-accelerate
+19. 2.llama-cpp-python
+20. 2.lmdeploy-书生浦源
+21. 2.vLLM-伯克利加速库
+22. gpustack
+
+
+
+# 0.FastChat-分布式部署不加速，需要配合vllm
+
+#### 简介
+FastChat是一个开放平台，用于训练、服务和评估基于大型语言模型的聊天机器人。它为Chatbot Arena提供支持，可处理大量聊天请求并编制在线LLM Elo排行榜。网上较成熟的Langchain - Chatchat项目也基于FastChat对接大模型。该项目可解决部分无OpenAI类似API接口大模型的部署问题。
+
+#### 核心功能
+- **模型训练与评估**：提供最先进模型（如Vicuna、MT - Bench）的训练和评估代码。
+- **分布式多模型服务**：具备Web UI和OpenAI兼容的RESTful API的分布式多模型服务系统。
+- **推理加速**：可使用vllm加快推理速度。
+
+#### 技术原理
+文中未明确提及具体技术原理，但涉及到启动controller、model_worker（包括普通模式和vllm模式）和openai_api_server等组件协同工作。controller负责请求调度，model_worker负责加载和运行模型，openai_api_server提供OpenAI兼容的API服务。
+
+#### 应用场景
+- **大模型部署**：在没有OpenAI接口的大型模型部署中使用，实现模型的本地部署和调用。
+- **聊天机器人开发**：用于训练、服务和评估基于大型语言模型的聊天机器人。 
+
+
+- [lm-sys/FastChat: An open platform for training, serving, and evaluating large language models. Release repo for Vicuna and Chatbot Arena.](https://github.com/lm-sys/FastChat/tree/main)
+- [本地化部署大模型方案二：fastchat+llm(vllm)-CSDN博客](https://blog.csdn.net/huiguo_/article/details/135766850)
+
+------------------------------------------------------------
+
+# 0.LM Studio
+
+#### 简介
+LM Studio是一款可用于发现、下载和运行本地大语言模型（LLM）的桌面应用程序。它支持多种架构模型，可离线运行，保护用户数据隐私。0.3.0版本对功能进行了改进、深化和简化，新增了与文档交互、OpenAI 结构化输出 API 支持等功能。
+
+![0.3.0-screen.png](762cc19a888f.png)
+
+#### 核心功能
+- **模型管理**：可从 Hugging Face 下载兼容模型文件，管理本地模型和配置。
+- **聊天交互**：提供聊天界面，支持与本地文档交互，使用 RAG 技术处理长文档。
+- **API 支持**：支持 OpenAI 结构化输出 API，可实现可靠的 JSON 输出。
+- **个性化设置**：提供多种 UI 主题，自动配置加载参数，也支持手动自定义。
+- **网络服务**：可在网络上提供服务，支持多设备访问。
+- **其他功能**：支持文件夹管理聊天记录、多版本生成、GPU 自动检测与卸载等。
+
+#### 技术原理
+- **模型运行**：基于 llama.cpp 项目，支持运行多种架构的 GGUF 模型。
+- **RAG 技术**：当处理长文档时，采用检索增强生成技术，提取相关内容供模型参考。
+- **自动配置**：根据硬件情况自动配置 LLM 加载和推理参数。
+- **API 支持**：支持 OpenAI 基于 JSON 模式的 API，实现可靠的 JSON 输出。
+
+#### 应用场景
+- **个人使用**：用户可在本地离线运行模型，保护隐私，进行日常聊天、文档问答等。
+- **开发测试**：开发者可利用其 OpenAI 兼容的本地服务器进行开发测试，支持多种开发功能。
+- **项目协作**：可通过网络服务，在多设备上使用，支持多人协作项目。 
+
+
+- [LM Studio - Discover, download, and run local LLMs](https://lmstudio.ai/)
+- [LM Studio](https://github.com/lmstudio-ai)
+- [LM Studio 手册](https://lmstudio.ai/blog/lmstudio-v0.3.0)
+
+------------------------------------------------------------
+
+# 0.OpenLLM
+
+#### 简介
+OpenLLM 让开发者能通过单个命令将开源大语言模型（如 Llama 3.3、Qwen2.5 等）或自定义模型作为兼容 OpenAI 的 API 运行。它具有内置聊天 UI、先进推理后端，支持通过 Docker、Kubernetes 和 BentoCloud 进行企业级云部署。openllm - models 是 OpenLLM 的默认模型仓库，提供多种模型版本及相关信息，也支持添加自定义模型仓库。
+
+#### 核心功能
+1. **模型服务**：使用 `openllm serve` 命令启动本地 LLM 服务器，提供 OpenAI 兼容 API。
+2. **模型管理**：支持模型列表查看、仓库更新、模型信息查看，可添加默认仓库模型和自定义仓库。
+3. **聊天交互**：提供 CLI 聊天和 Web 聊天 UI 两种交互方式。
+4. **云部署**：支持通过 BentoML 和 BentoCloud 进行云部署。
+
+#### 技术原理
+OpenLLM 借助 BentoML 进行生产级模型服务，利用 vllm - project/vllm 作为生产级 LLM 后端，以实现高效推理。其将模型封装为 Bento，利用 BentoML 管理和部署模型，通过提供 OpenAI 兼容 API，方便用户使用不同框架和工具与之交互。
+
+#### 应用场景
+1. **本地开发测试**：开发者可在本地启动 LLM 服务器，使用 OpenAI 兼容 API 进行开发和测试。
+2. **企业级云部署**：通过 BentoCloud 进行云部署，利用其优化的基础设施实现模型的自动扩展、编排和监控。
+3. **模型研究**：研究人员可使用 OpenLLM 管理和运行不同的开源模型，进行实验和研究。 
+
+
+- [bentoml/OpenLLM: Run any open-source LLMs, such as Llama 3.1, Gemma, as OpenAI compatible API endpoint in the cloud.](https://github.com/bentoml/OpenLLM)
+- [bentoml/openllm-models](https://github.com/bentoml/openllm-models)
+
+------------------------------------------------------------
+
+# 0.Xorbits Inference：模型推理
+
+#### 简介
+Xorbits Inference（Xinference）是一个强大且通用的分布式推理框架，用于服务语言、语音识别和多模态模型。用户能通过单个命令轻松部署自己的或内置的前沿模型，支持在云、本地甚至笔记本电脑上运行推理，为研究者、开发者和数据科学家提供便利。
+
+#### 核心功能
+- **模型部署简化**：通过一个命令完成大语言、语音识别、多模态等模型的部署。
+- **内置前沿模型**：提供众多中英文前沿大语言模型及其他类型模型，列表持续更新。
+- **异构硬件利用**：借助 ggml 同时使用 GPU 和 CPU 进行推理，降低延迟、提高吞吐。
+- **灵活接口调用**：提供 OpenAI 兼容的 RESTful API、RPC、命令行、web UI 等多种接口。
+- **分布式部署**：支持分布式部署，通过资源调度器按需调度模型到不同机器。
+- **三方库集成**：与 LangChain、LlamaIndex、Dify、Chatbox 等流行三方库无缝对接。
+
+#### 技术原理
+运用 Xinference 团队维护的新 llama.cpp Python 绑定 Xllamacpp 支持连续批处理；采用分布式推理技术让模型跨工作节点运行；增强 VLLM 实现多个副本间共享 KV 缓存；支持 Transformers 引擎的连续批处理；支持苹果硅芯片的 MLX 后端等。通过这些技术优化模型推理过程，提升性能和效率。
+
+#### 应用场景
+- **研究领域**：研究者可利用其部署和测试各种前沿模型，探索 AI 技术的新应用。
+- **开发场景**：开发者能借助其快速搭建基于大语言模型等的应用，如聊天机器人、智能客服等。
+- **数据科学**：数据科学家可使用其进行数据处理和模型训练，挖掘数据价值。 
+- **企业应用**：企业可利用其部署自己的模型，满足特定业务需求，如金融领域的风险评估、医疗领域的辅助诊断等。 
+
+
+- [xorbitsai/inference: Replace OpenAI GPT with another LLM in your app by changing a single line of code. Xinference gives you the freedom to use any LLM you need. With Xinference, you're empowered to run inference with any open-source language models, speech recognition models, and multimodal models, whether in the cloud, on-premises, or even on your laptop.](https://github.com/xorbitsai/inference)
+- [inference/README_zh_CN.md at main · xorbitsai/inference](https://github.com/xorbitsai/inference/blob/main/README_zh_CN.md#%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2)
+- [内置模型 — Xinference](https://inference.readthedocs.io/zh-cn/latest/models/builtin/index.html)
+- [嵌入模型 — Xinference](https://inference.readthedocs.io/zh-cn/latest/models/builtin/embedding/index.html)
+
+------------------------------------------------------------
+
+## issue
+
+- ['bge-reranker-v2-minicpm-layerwise 无法报错使用，其他reranker模型没有相关问题 · Issue #2217 · xorbitsai/inference](https://github.com/xorbitsai/inference/issues/2217)
+- [启动qwen2.5 14B vllm int8 版本ValueError: [address=0.0.0.0:37961, pid=352437] Marlin does not support weight_bits = uint8b128. Only types = [] are supported (for group_size = 128, min_capability = 70, zp = False) · Issue #2350 · xorbitsai/inference](https://github.com/xorbitsai/inference/issues/2350)
+- [SGlang部署qwen2.5失败Exception: Capture cuda graph failed: BatchPrefillWithPagedKVCache failed with error code no kernel image is available for execution on the device · Issue #2351 · xorbitsai/inference](https://github.com/xorbitsai/inference/issues/2351)
+
+------------------------------------------------------------
+
+# 0.litellm
+
+#### 简介
+LiteLLM是一个可调用100多个大语言模型（LLMs）的工具，支持以OpenAI的输入/输出格式调用，能将输入转换为不同提供商的端点，具有重试/回退逻辑、花费跟踪和预算设置等功能，可通过代理服务器或Python SDK使用。
+#### 核心功能
+- **多模型调用**：支持调用100+种大语言模型，使用OpenAI输入/输出格式。
+- **输入转换**：将输入转换为不同提供商的完成、嵌入和图像生成端点。
+- **重试/回退**：具备跨多个部署（如Azure/OpenAI）的重试和回退逻辑。
+- **花费跟踪**：跟踪项目花费并设置预算。
+- **日志记录**：可将LLM的输入/输出数据发送到多个日志工具。
+#### 技术原理
+通过将用户输入的OpenAI格式请求，根据不同大语言模型提供商的接口规范进行转换，发送到相应的完成、嵌入和图像生成等端点，接收响应后统一为OpenAI格式输出。同时，在请求失败时按预设逻辑进行重试或切换部署，利用预定义回调函数实现日志记录和花费跟踪。
+#### 应用场景
+- **Gen AI和ML平台团队**：使用LiteLLM代理服务器统一访问多个LLM，进行使用跟踪和设置护栏。
+- **开发人员**：在Python代码中使用LiteLLM SDK调用不同LLM开发项目。 
+
+
+- [BerriAI/litellm: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - [Bedrock, Azure, OpenAI, VertexAI, Cohere, Anthropic, Sagemaker, HuggingFace, Replicate, Groq]](https://github.com/BerriAI/litellm)
+- [LiteLLM - Getting Started | liteLLM](https://docs.litellm.ai/docs/)
+
+------------------------------------------------------------
+
+# 0.ollama
+
+#### 简介
+Ollama是一个轻量级、可扩展的框架，用于在本地机器上构建和运行语言模型。它提供简单API来创建、运行和管理模型，其官网的模型库包含DeepSeek - R1、Gemma 3、Qwen3等多种模型，支持多模态模型使用，还有丰富的社区集成和工具。
+
+![Snipaste_2025-07-19_14-04-20.png](8ffee80ffc13.png)
+
+#### 核心功能
+- **模型管理**：可创建、拉取、删除、复制模型，支持从GGUF、Safetensors等格式导入模型，还能自定义模型和提示。
+- **模型交互**：能运行模型进行对话、多模态交互，支持多参数输入和显示模型信息等。
+- **API支持**：具备REST API用于运行和管理模型。
+- **社区集成**：有大量Web、桌面、云、终端、数据库等方面的集成工具和应用。
+
+#### 技术原理
+Ollama基于llama.cpp等项目，利用Go语言开发。在模型运行上，支持多种大语言模型架构，通过Modelfile配置模型参数和系统消息；在交互方面，通过API与模型通信，实现对话、推理等功能；在数据处理上，支持多模态数据输入，利用相关算法进行解析和处理。
+
+#### 应用场景
+- **日常对话**：如聊天机器人，通过运行模型实现与用户的自然对话。
+- **内容生成**：总结文件内容、生成代码、进行文本翻译等。
+- **多模态交互**：识别图片内容、处理图像相关的问题。
+- **企业应用**：如文档处理、智能客服、数据分析等。
+- **开发辅助**：辅助代码编写、调试和优化。 
+
+
+- [ollama官网-模型下载](https://ollama.com/library)
+- [ollama/ollama: Get up and running with Llama 3.1, Mistral, Gemma 2, and other large language models.](https://github.com/ollama/ollama)
+
+------------------------------------------------------------
+
+# 0.one-api|Xi-api
+
+#### 简介
+主要涉及两个项目相关内容。一是 One API，它是一个大语言模型（LLM）API 管理与分发系统，版本为 v0.6.11-preview.6，支持多种登录方式，当前有官方演示站但不对外服务；二是 xi-ai，使用标准 OpenAI 接口协议，支持 280 + 模型，具备按量计费、极速对话、明细透明等特点。
+#### 核心功能
+- One API：对不同提供商的 LLM API 进行管理和分发。
+- xi-ai：提供标准 OpenAI 接口协议访问多种模型，支持按量付费使用，具备稳定运营、明细可查等服务特性。
+#### 技术原理
+- One API：作为 API 管理和分发系统，可能运用了代理、路由等技术，将不同来源的 LLM API 进行整合和调配，方便用户管理和使用。
+- xi-ai：采用先进技术架构保障 API 服务的稳定性和高可用性，使用标准 OpenAI 接口协议实现与多种模型的对接。
+#### 应用场景
+- One API：适用于需要管理和使用多个 LLM API 的开发者和企业，便于统一管理和调用不同的 API。
+- xi-ai：适用于各类需要使用大语言模型的场景，如聊天应用开发、智能客服、内容生成等，可帮助开发者快速接入多种模型。 
+
+
+- [One API演示](https://openai.justsong.cn/)
+- [one-api: OpenAI 接口管理 & 分发系统，支持 Azure、Anthropic Claude、Google PaLM 2 & Gemini、智谱 ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360 智脑以及腾讯混元，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用. OpenAI key management & redistribution system, using a single API for all LLMs, and features an English UI.](https://github.com/songquanpeng/one-api)
+- [Xi-Api](https://api.xi-ai.cn/)
+
+------------------------------------------------------------
+
+# 1.Jan.ai
+
+#### 简介
+Jan是一个开源的ChatGPT替代方案，旨在实现在用户本地计算机上100%离线运行大型语言模型（LLMs）。它致力于将任何个人电脑转变为一个AI计算平台，提供高度隐私和控制的用户体验。
+
+#### 核心功能
+- 离线运行: 无需互联网连接即可在本地设备上运行AI模型。
+- 多引擎支持: 支持多种AI推理引擎，如llama.cpp和TensorRT-LLM，提供灵活的后端选择。
+- 广泛硬件兼容性: 能够在多种硬件架构上运行，从个人电脑到多GPU集群，兼容Intel、M1/M2/M3/M4芯片以及Windows、macOS和Linux操作系统。
+
+#### 技术原理
+Jan的核心技术原理在于其对多种高性能AI推理引擎的集成和封装，以实现本地化、高效的LLM运行。
+- llama.cpp: 利用llama.cpp项目，Jan能够将基于Transformer架构的LLMs（如Llama系列）优化为可在CPU上高效运行，极大降低了对高端GPU的依赖，实现了在消费级硬件上的离线推理。其原理包括量化（Quantization）技术，将模型权重从浮点数转换为低精度整数，从而减少内存占用和计算量。
+- TensorRT-LLM: 对于NVIDIA GPU用户，Jan通过集成TensorRT-LLM利用GPU的并行计算能力，进一步加速LLM的推理速度。TensorRT-LLM通过图优化、内核融合和量化等技术，为LLM推理提供极致性能。
+- 跨平台兼容性: 项目采用通用架构设计，可能基于Electron或Tauri等框架构建桌面应用，以实现一次开发，多平台部署，并封装上述推理引擎，提供统一的用户界面。
+
+#### 应用场景
+- 个人AI助手: 用户可以在自己的设备上运行私有AI助手，进行文本生成、代码辅助、内容创作等，确保数据隐私。
+- 研究与开发: 开发者和研究人员可以利用Jan在本地进行LLM模型的测试、微调和实验，无需依赖云服务，降低成本并提高迭代效率。
+- 教育与学习: 学生和教育工作者可以在没有网络连接的情况下，使用AI进行学习辅导、编程练习或知识查询。
+- 数据敏感环境: 对于处理敏感数据或需要严格数据主权的企业和个人，Jan提供了在完全受控的本地环境中运行AI的能力。
+
+
+
+- [janhq/jan: Jan is an open source alternative to ChatGPT that runs 100% offline on your computer. Multiple engine support (llama.cpp, TensorRT-LLM)](https://github.com/janhq/jan)
+
+------------------------------------------------------------
+
+# 1.LocalAI
+
+#### 简介
+LocalAI 是免费开源的 OpenAI 替代方案，作为本地推理的 REST API，可实现本地运行大语言模型、生成图像和音频等功能，支持多种模型架构，能在消费级硬件上运行，可本地或内部部署。
+
+![Snipaste_2025-07-19_14-05-01.png](https://free.picui.cn/free/2025/07/19/687b359bd1a8d.png)
+
+#### 核心功能
+- **模型推理**：支持多种模型家族和架构，可运行大语言模型进行文本生成。
+- **多媒体生成**：具备文本转语音、语音转文本、图像生成等功能。
+- **功能调用**：支持函数调用、嵌入服务等。
+- **Web 界面**：集成 WebUI，方便用户交互。
+
+#### 技术原理
+LocalAI 基于多种开源库实现功能，如使用 `llama.cpp`、`gpt4all.cpp` 进行文本生成，`whisper.cpp` 进行音频转录，Stable Diffusion 进行图像生成等。它通过兼容 OpenAI 的 API 规范，实现与现有系统的无缝对接。
+
+#### 应用场景
+- **本地开发测试**：在本地环境进行 AI 应用的开发和测试，无需依赖外部 API。
+- **隐私敏感场景**：处理敏感数据时，确保数据不出本地，保障隐私安全。
+- **个人项目**：个人开发者在消费级硬件上构建 AI 应用。
+- **企业内部应用**：企业内部部署，满足特定业务需求，如智能客服、文档处理等。 
+
+
+- [Quickstart | LocalAI documentation](https://localai.io/basics/getting_started/)
+- [mudler/LocalAI: :robot: The free, Open Source OpenAI alternative. Self-hosted, community-driven and local-first. Drop-in replacement for OpenAI running on consumer-grade hardware. No GPU required. Runs gguf, transformers, diffusers and many more models architectures. It allows to generate Text, Audio, Video, Images. Also with voice cloning capabilities.](https://github.com/mudler/LocalAI)
+
+------------------------------------------------------------
+
+# 1.Replicate大模型托管平台
+
+#### 简介
+Replicate 是一个可通过 API 运行 AI 的平台。平台提供数千个模型，支持运行、微调模型及部署自定义模型。有文本嵌入、图像嵌入、多模态嵌入等多种嵌入模型，可用于搜索、推荐和聚类；还有语言模型，可用于对话、问答、文本生成等任务。
+
+#### 核心功能
+- **运行模型**：社区已发布数千个可用于生产的模型，用户可通过一行代码运行。
+- **微调模型**：用户能使用自己的数据改进模型，以创建更适合特定任务的新模型。
+- **部署自定义模型**：用户可使用 Cog 部署自己的自定义模型，Cog 负责生成 API 服务器并将其部署到云端。
+- **自动扩展**：根据流量自动调整规模，按使用时长计费。
+
+#### 技术原理
+Replicate 利用 Cog 这一开源工具对机器学习模型进行打包，生成 API 服务器并部署到云端集群。在模型运行方面，对于嵌入模型，如 Multilingual E5、CLIP、ImageBind 等，通过生成向量表示来捕获文本、图像等的语义信息；语言模型则通过大规模数据训练，理解和生成自然语言。
+
+#### 应用场景
+- **搜索与推荐**：利用嵌入模型的向量表示进行语义搜索和推荐。
+- **对话与问答**：使用语言模型构建聊天机器人、智能客服等进行对话和提供问题答案。
+- **文本生成与总结**：借助语言模型实现文本的自动生成和长文本总结。
+- **图像相关应用**：如使用图像嵌入模型进行图像相似性搜索、聚类，以及使用图像生成模型生成特定风格的图像。 
+
+
+- [Replicate — Run AI with an API](https://replicate.com/)
+- [Get embeddings – Replicate](https://replicate.com/collections/embedding-models)
+- [Use a language model – Replicate](https://replicate.com/collections/language-models)
+
+------------------------------------------------------------
+
+# 1.SiliconFlow (北京硅基流动)
+#### 简介
+硅基流动是高速推理的一站式AI云服务平台，拥有全场景产品矩阵，可支撑AI应用全流程落地。平台提供开箱即用的大模型API、模型微调与部署托管服务、高效能模型推理加速服务及私有化部署方案，还具有多模态模型能力，覆盖多场景。
+
+#### 核心功能
+- 提供大模型API服务，覆盖多场景，按量计费。
+- 支持模型微调与托管，无需关注底层资源与运维。
+- 提供高效能模型推理加速服务，提升响应速度与处理性能。
+- 提供企业级私有化部署方案，解决模型性能优化、部署与运维痛点。
+
+#### 技术原理
+依托核心推理加速引擎，对模型性能进行优化，针对不同类型模型（如语言、生图、语音等）进行针对性加速，以实现高速推理和高性价比。
+
+#### 应用场景
+- 互联网：提供内容生成与个性化推荐服务。
+- 教育：提供智能教学助手，规划个性化学习路径。
+- 政务：提供生成式AI解决方案，实现国产化部署。
+- 智算中心：赋能算力资源调度与优化。
+- AI硬件：解决端、云协同的延时痛点。 
+
+
+- [SiliconFlow, Accelerate AGI to Benefit Humanity](https://siliconflow.cn/zh-cn/)
+
+------------------------------------------------------------
+
+# 1.text-generation-webui
+
+
+#### 简介
+Text generation web UI 是一个基于 Gradio 的大语言模型 Web 界面，旨在成为文本生成领域的 stable-diffusion-webui。它支持多种本地文本生成后端，具有离线、隐私保护、功能丰富等特点。
+
+#### 核心功能
+- **多后端支持**：支持 llama.cpp、Transformers、ExLlamaV3 等多种本地文本生成后端。
+- **便捷设置**：提供便携式构建和一键安装两种方式。
+- **离线隐私**：100% 离线运行，无遥测、外部资源或远程更新请求。
+- **文件处理**：支持上传文本、PDF、.docx 文档并进行内容交流。
+- **网络搜索**：可选择使用大语言模型生成的查询进行网络搜索。
+- **多模式交互**：具备指令跟随、聊天等多种交互模式。
+- **灵活生成**：支持多种采样参数和生成选项，可在 UI 中切换模型。
+- **API 兼容**：提供与 OpenAI 兼容的 API，支持工具调用。
+- **扩展支持**：支持扩展，有众多内置和用户贡献的扩展。
+
+#### 技术原理
+该项目基于 Gradio 构建 Web 界面，利用多种文本生成后端技术，如 llama.cpp 用于高效推理、Transformers 进行模型加载和生成、ExLlamaV3 实现高性能计算。通过自动提示格式化（Jinja2 模板）简化用户输入，使用采样参数和生成选项控制文本生成过程。在模型加载方面，支持多种精度（如 4 位、8 位、bf16）和加速技术（如 Flash Attention 2、torch.compile）以提高性能。
+
+#### 应用场景
+- **自然语言处理研究**：为研究人员提供便捷的模型测试和实验环境。
+- **智能客服**：用于构建基于大语言模型的智能客服系统。
+- **内容创作**：辅助文案撰写、故事创作等内容创作工作。
+- **教育领域**：作为教学工具，帮助学生理解和应用大语言模型。 
+
+
+- [oobabooga/text-generation-webui: A Gradio web UI for Large Language Models.](https://github.com/oobabooga/text-generation-webui)
+
+------------------------------------------------------------
+
+# 2.DeepSpeed-MII
+
+
+#### 简介
+DeepSpeed 是一个易于使用的深度学习优化软件套件，为训练和推理提供前所未有的规模和速度。它助力了 MT - 530B 和 BLOOM 等强大语言模型，涵盖训练、推理、压缩等功能支柱，还有面向科学领域的 DeepSpeed4Science 计划。同时，其 MII 项目让数据科学家轻松实现低延迟、高吞吐量推理。
+
+#### 核心功能
+- **训练**：支持数十亿或数万亿参数的密集或稀疏模型训练，能高效扩展到数千个 GPU，可在资源受限的 GPU 系统上训练。
+- **推理**：实现前所未有的低延迟和高吞吐量，可在大规模下进行推理，降低成本。
+- **压缩**：提供易于使用和灵活组合的压缩技术，减少推理延迟和模型大小。
+- **DeepSpeed4Science**：通过 AI 系统技术创新构建独特功能，助力解决科学难题。
+
+#### 技术原理
+- **训练**：采用 ZeRO、3D - 并行、DeepSpeed - MoE、ZeRO - Infinity 等创新技术，提升大规模深度学习训练的效率和易用性。
+- **推理**：结合张量、管道、专家和 ZeRO 并行等并行技术，搭配高性能自定义推理内核、通信优化和异构内存技术。
+- **压缩**：包含 ZeroQuant 和 XTC 等最先进的压缩创新技术。
+
+#### 应用场景
+- **大规模语言模型训练与推理**：如 MT - 530B、BLOOM 等。
+- **资源受限的 GPU 系统**：在资源有限的情况下进行训练和推理。
+- **科学研究领域**：借助 DeepSpeed4Science 帮助解决科学难题。 
+
+
+- [DeepSpeed-MII推理加速](https://github.com/microsoft/DeepSpeed-MII)
+- [deepspeedai/DeepSpeed: DeepSpeed is a deep learning optimization library that makes distributed training and inference easy, efficient, and effective.](https://github.com/deepspeedai/DeepSpeed)
+
+------------------------------------------------------------
+
+# 2.SGLang
+
+#### 简介
+SGLang 是用于大语言模型和视觉语言模型的高性能服务框架，通过后端运行时和前端语言协同设计，使与模型的交互更快、更可控。它获 a16z 第三批开源人工智能资助，在生产环境中每日处理数万亿 token，被众多企业和机构采用。
+
+#### 核心功能
+- **高效后端运行时**：提供包括 RadixAttention 前缀缓存、零开销 CPU 调度器、预填充 - 解码分离等多种高效服务机制。
+- **灵活前端语言**：为大语言模型应用编程提供直观接口，支持链式生成调用、高级提示等。
+- **广泛模型支持**：支持多种生成模型、嵌入模型和奖励模型，且易于集成新模型。
+
+#### 技术原理
+SGLang 借鉴多个开源大语言模型服务引擎的设计，利用 FlashInfer 的高性能注意力 CUDA 内核，集成受 gpt - fast 启发的 torch.compile。还引入 RadixAttention 实现自动 KV 缓存重用，以及压缩状态机实现快速约束解码，其批调度器用 Python 实现，扩展性好。 
+
+#### 应用场景
+- **AI 产品服务**：为各类 AI 产品提供高效的模型服务，如 LMSYS Chatbot Arena 用其支持部分模型。
+- **研究实验**：助力研究机构开展大语言模型和视觉语言模型的相关研究，实现更快迭代。 
+
+
+- [sgl-project/sglang: SGLang is a fast serving framework for large language models and vision language models.](https://github.com/sgl-project/sglang)
+- [Achieving Faster Open-Source Llama3 Serving with SGLang Runtime (vs. TensorRT-LLM, vLLM) | LMSYS Org](https://lmsys.org/blog/2024-07-25-sglang-llama3/)
+
+------------------------------------------------------------
+
+# 2.fluxgym
+
+#### 简介
+Flux Gym是一个用于训练FLUX LoRA的简易Web UI，支持低显存（12GB/16GB/20GB）。前端基于AI - Toolkit的WebUI，后端由Kohya脚本驱动，通过高级选项卡支持Kohya sd - scripts的全部功能。支持多种模型，模型在训练时自动下载，可通过编辑models.yaml文件添加更多模型。
+
+#### 核心功能
+- **训练功能**：支持低显存下训练FLUX LoRA，可选择多种模型，模型自动下载。
+- **图像管理**：可上传图像并添加标题，也支持上传标题文件。
+- **样本图像生成**：可配置自动生成样本图像，支持高级标志控制图像生成过程。
+- **发布功能**：可将训练好的LoRA发布到Huggingface。
+- **高级配置**：通过高级选项卡支持Kohya sd - scripts的全部功能。
+
+#### 技术原理
+前端采用Gradio UI，后端使用Kohya脚本进行训练。通过解析Kohya sd - scripts的启动标志自动构建高级选项卡，实现对脚本的全面控制。利用Docker支持容器化部署，可自动下载模型，支持通过编辑配置文件扩展支持的模型列表。
+
+#### 应用场景
+- **本地模型训练**：用户可在本地使用低显存设备训练FLUX LoRA。
+- **模型共享**：将训练好的LoRA模型发布到Huggingface进行共享。
+- **模型研究**：研究人员可通过编辑配置文件添加不同模型进行实验。 
+
+
+- [cocktailpeanut/fluxgym: Dead simple FLUX LoRA training UI with LOW VRAM support](https://github.com/cocktailpeanut/fluxgym)
+
+------------------------------------------------------------
+
+# 2.huggingface-accelerate
+
+#### 简介
+Hugging Face的Accelerate库专为PyTorch用户设计，可让用户在不改变大部分代码的情况下，将标准PyTorch训练脚本运行在各种单节点或分布式节点设置上，支持CPU、GPU、TPU及混合精度训练。
+
+#### 核心功能
+- **代码简化**：只需添加少量代码，就能使标准PyTorch训练脚本支持多种设备和分布式训练。
+- **CLI工具**：提供命令行工具，可快速配置和测试训练环境。
+- **多方式启动**：支持使用MPI进行多CPU运行、使用DeepSpeed进行GPU训练，还能在笔记本中启动训练。
+- **模型保存**：提供保存模型的方法。
+
+#### 技术原理
+Accelerate抽象了与多GPU、TPU、混合精度训练相关的样板代码，通过 `Accelerator` 类处理设备放置、梯度反向传播等操作。用户可通过 `accelerate config` 配置训练环境，也可在代码中使用插件（如 `DeepSpeedPlugin`）进行更细致的设置。
+
+#### 应用场景
+- **模型开发与调试**：可在本地机器上调试代码，无需修改即可在训练环境中运行。
+- **分布式训练**：支持多GPU、多CPU、TPU等分布式训练场景。
+- **使用特定框架训练**：与DeepSpeed等框架集成，进行GPU训练。
+- **笔记本训练**：适用于在Colab或Kaggle等笔记本中启动训练。 
+
+
+- [huggingface/accelerate: 🚀 A simple way to launch, train, and use PyTorch models on almost any device and distributed configuration, automatic mixed precision (including fp8), and easy-to-configure FSDP and DeepSpeed support](https://github.com/huggingface/accelerate)
+
+------------------------------------------------------------
+
+# 2.llama-cpp-python
+
+#### 简介
+`llama-cpp-python` 是 `llama.cpp` 库的 Python 绑定包，提供低级别 C API 访问、高级 Python API、OpenAI 兼容 API、与 LangChain 和 LlamaIndex 兼容等功能。支持多种硬件加速后端，可用于文本完成、聊天完成、生成嵌入等任务。
+
+#### 核心功能
+- **多类型 API 支持**：提供低级别 C API 访问、高级 Python API、OpenAI 兼容 API。
+- **多框架兼容**：与 LangChain、LlamaIndex 兼容。
+- **多种任务支持**：文本完成、聊天完成、JSON 和 JSON 模式约束、函数调用、多模态处理、推测解码、生成嵌入等。
+- **Web 服务器**：提供 OpenAI 兼容的 Web 服务器，具备本地 Copilot 替代、函数调用支持、视觉 API 支持和多模型支持等特性。
+
+#### 技术原理
+- **绑定技术**：低级别 API 通过 `ctypes` 直接绑定 `llama.cpp` 提供的 C API；高级 API 基于低级别 API 封装，提供更简单的管理接口。
+- **硬件加速**：支持多种硬件加速后端，如 OpenBLAS、CUDA、Metal 等，通过设置 `CMAKE_ARGS` 环境变量或 `--config-settings` 标志进行配置。
+- **模型处理**：使用 `llama.cpp` 从源构建模型，或通过 `from_pretrained` 方法从 Hugging Face Hub 下载模型。
+
+#### 应用场景
+- **自然语言处理**：文本生成、聊天机器人、问答系统等。
+- **开发替代**：作为 OpenAI API 的本地替代方案，用于开发应用程序。
+- **多模态处理**：处理包含文本和图像的多模态输入，如图像描述。
+- **代码辅助**：作为本地 Copilot 替代，辅助代码编写。 
+
+
+- [abetlen/llama-cpp-python: Python bindings for llama.cpp](https://github.com/abetlen/llama-cpp-python)
+
+------------------------------------------------------------
+
+# 2.lmdeploy-书生浦源
+
+#### 简介
+LMDeploy 是由 MMRazor 和 MMDeploy 团队开发的用于大语言模型（LLM）压缩、部署和服务的工具包。具备高效推理、有效量化、轻松部署分布式服务器、交互式推理模式和优秀兼容性等核心特性，支持多种大语言模型和视觉语言模型。
+
+#### 核心功能
+1. 高效推理：通过持久批处理、分块 KV 缓存等特性，实现比 vLLM 高 1.8 倍的请求吞吐量。
+2. 有效量化：支持仅权重和 K/V 量化，4 位推理性能比 FP16 高 2.4 倍。
+3. 轻松部署分布式服务器：借助请求分发服务，实现多模型服务在多机多卡上的高效部署。
+4. 交互式推理模式：在多轮对话中缓存注意力的 K/V，避免重复处理历史会话。
+5. 优秀兼容性：支持 KV 缓存量化、AWQ 和自动前缀缓存同时使用。
+
+#### 技术原理
+LMDeploy 通过引入持久批处理、分块 KV 缓存、动态拆分与融合、张量并行、高性能 CUDA 内核等技术实现高效推理；支持权重和 K/V 量化，通过 OpenCompass 评估确保量化质量；利用请求分发服务实现多机多卡的多模型服务部署；在多轮对话中缓存注意力的 K/V 来记住对话历史。
+
+#### 应用场景
+1. 大语言模型和视觉语言模型的推理部署。
+2. 多模型服务在多机多卡上的分布式部署。
+3. 多轮对话场景，如聊天机器人等。 
+
+
+- [InternLM/lmdeploy: LMDeploy is a toolkit for compressing, deploying, and serving LLMs.](https://github.com/InternLM/lmdeploy)
+
+------------------------------------------------------------
+
+# 2.vLLM-伯克利加速库
+
+#### 简介
+vLLM 是一个用于大语言模型推理和服务的高效库，具有高吞吐量和内存效率的特点。它能与众多流行的 Hugging Face 模型无缝集成，支持 NVIDIA 和 AMD GPU，提供了灵活且易用的大语言模型推理和服务解决方案。
+
+#### 核心功能
+- **高效推理**：具备先进的服务吞吐量，采用 PagedAttention 高效管理注意力键值内存，支持连续批量处理请求。
+- **灵活使用**：与 Hugging Face 模型无缝集成，支持多种解码算法实现高吞吐量服务，支持张量并行分布式推理、流式输出，拥有 OpenAI 兼容的 API 服务器。
+- **模型支持**：支持众多架构的 Hugging Face 模型，如 Aquila、Baichuan、BLOOM 等。
+- **量化支持**：支持 GPTQ、AWQ、SqueezeLLM、FP8 KV Cache 等量化方式。
+- **实验特性**：支持前缀缓存、多 LoRA。
+
+#### 技术原理
+- **PagedAttention**：用于高效管理注意力键值内存，提升内存使用效率。
+- **CUDA/HIP 图**：实现快速的模型执行。
+- **优化 CUDA 内核**：提高计算效率。
+
+#### 应用场景
+- **大语言模型推理服务**：为各种大语言模型提供高效的推理和服务。
+- **分布式推理**：利用张量并行进行分布式推理。
+- **API 服务**：通过 OpenAI 兼容的 API 服务器为外部提供服务。 
+
+
+- [1.伯克利大学vLLM](https://github.com/vllm-project/vllm)
+
+
+
+## GPUStack是一个开源的GPU集群管理器
+GPUStack是一个开源的GPU集群管理器，专为AI模型运行而设计。它提供广泛的硬件兼容性，支持在Apple MacBook、Windows PC和Linux等多种操作系统上运行不同品牌的GPU，旨在简化AI工作负载的GPU资源管理。
+
+#### 核心功能
+*   **GPU资源管理：** 高效调度和管理GPU集群资源，确保AI模型运行所需计算力的分配。
+*   **AI模型运行支持：** 提供环境以部署和执行各种AI模型。
+*   **跨平台兼容性：** 兼容多种操作系统（macOS、Windows、Linux）及不同厂商的GPU硬件。
+*   **开源生态：** 作为开源项目，促进社区协作和功能扩展。
+
+#### 技术原理
+GPUStack的核心技术原理围绕着**异构计算资源管理**和**分布式系统调度**。它可能采用**容器化技术**（如Docker或Kubernetes）来封装AI应用及其依赖，实现环境隔离和可移植性。通过**资源抽象层**实现对不同GPU硬件（NVIDIA、AMD等）的统一管理和调度，屏蔽底层硬件差异。其集群管理能力可能基于**微服务架构**，通过API接口进行资源申请、任务提交和状态监控，实现GPU资源的动态分配和回收，确保AI工作负载的高效运行和资源利用率最大化。
+
+#### 应用场景
+*   **AI模型训练与推理：** 为深度学习模型训练和高性能推理任务提供稳定的GPU集群环境。
+*   **学术研究与教育：** 大学和研究机构可利用其搭建实验平台，进行AI算法开发和教学。
+*   **企业级AI基础设施：** 企业可以构建私有或混合云AI平台，满足大规模AI业务需求。
+*   **个人开发者与爱好者：** 提供便捷的本地GPU资源管理方案，简化AI开发流程。
+
+## xLLM – 京东智能推理框架
+
+
+xLLM 是京东开源的一款高效智能推理框架，专门为大语言模型（LLM）的推理优化设计。该框架致力于提升推理性能，并针对国产芯片进行深度优化，支持端云一体化部署，旨在为各种LLM应用提供稳定、高效的推理服务。其核心采用服务-引擎分离架构，将请求调度与容错等服务逻辑与运算优化等引擎逻辑解耦。
+
+#### 核心功能
+*   **持续批处理（Continuous Batching）**: 实现动态批处理策略，无需等待批次完全填满即可开始处理，有效降低推理延迟并提高吞吐量。
+*   **前缀缓存优化（Prefix Cache Optimization）**: 支持基于MurmurHash的前缀缓存匹配机制，采用LRU（最近最少使用）淘汰策略，显著提升缓存命中率和匹配效率，减少重复计算。
+*   **解耦的Placement Driver (PD) 架构**: 通过将元数据（如实例信息、配置、状态等）存储在 etcd 中，实现了PD服务的解耦，增强了系统的可扩展性、可靠性和弹性。
+*   **多模型与多租户支持**: 能够高效管理和调度多个LLM模型，并支持多租户共享计算资源，满足不同业务和用户的需求。
+*   **国产芯片优化**: 针对国产硬件平台进行深度适配和性能调优，充分发挥本土算力优势。
+
+#### 技术原理
+xLLM 的技术原理围绕其服务-引擎分离架构及一系列优化机制展开：
+*   **服务-引擎分离架构**: 框架将推理请求的生命周期管理（如请求接收、调度、负载均衡、容错处理）抽象为服务层，而底层具体的计算加速、内存管理和模型执行等核心推理逻辑则由引擎层负责。这种解耦设计提升了系统的模块化、可维护性和伸缩性。
+*   **持续批处理机制**: 不同于传统的静态批处理，xLLM 采用动态的持续批处理算法。它允许新的请求在推理过程中随时加入正在执行的批次，避免了因等待批次填满而造成的计算资源空闲和延迟增加。这通过精细的调度器对 GPU 显存和计算时间进行高效管理，确保了高并发场景下的资源利用率和低延迟。
+*   **前缀缓存与LRU淘汰**: 在处理连续对话或有重复前缀的请求时，xLLM 利用前缀缓存存储已计算的KV Cache。通过对输入序列前缀进行MurmurHash计算并与缓存中的键进行匹配，若命中则直接复用已计算的KV Cache，避免重复计算。LRU淘汰策略确保缓存中始终保留最可能被再次利用的前缀数据。
+*   **PD解耦与etcd**: xLLM 的Placement Driver (PD) 服务负责集群管理和资源调度。通过将实例、模型、服务配置等关键元数据持久化到分布式键值存储系统etcd中，PD服务本身变为无状态或弱状态服务，提高了系统的容灾能力。即使部分PD节点发生故障，只要etcd集群正常，系统仍能快速恢复并提供服务，确保了高可用性。
+
+#### 应用场景
+*   **企业级大模型推理服务平台**: 为企业内部或对外提供高效、稳定的LLM推理API服务，支持多业务线和多租户共享模型资源。
+*   **边缘侧AI部署**: 结合其端云一体部署能力和对国产芯片的优化，适用于在边缘设备（如智能终端、机器人、物联网设备等）上运行轻量级或特定LLM模型进行实时推理。
+*   **智能客服与对话系统**: 支撑高并发的在线智能客服、智能问答、聊天机器人等应用，提供低延迟的语言理解和生成能力。
+*   **内容生成与辅助创作**: 用于新闻稿撰写、营销文案生成、代码辅助、创意写作等场景，加速内容生产流程。
+*   **个性化推荐与搜索**: 结合LLM的语义理解能力，为用户提供更精准、个性化的商品推荐、信息检索和内容筛选服务。
+
+
+*  项目官网：https://xllm.readthedocs.io/
+*  GitHub仓库：https://github.com/jd-opensource
+
+<!-- ai-compass-weekly-highlight-sync:start weekly_report_20260416_150700.md::2.5 -->
+------------------------------------------------------------
+
+## 谷歌 Gemma 4 本地部署指南，手机、Mac、OpenClaw免费用
+
+> 周报归档：第 34 期 · 条目 2.5 · 2026-04-16 · [回看原周报](../weeklyHighlights/34.md)
+> 原始周报文件：`weekly_report_20260416_150700.md`
+
+这是谷歌开源大模型Gemma 4的本地部署指南，涵盖手机、Mac及OpenClaw的部署方法。该模型在开源榜排名第三，具备优异的数学、编程能力，支持免费商用，能让用户免API额度、零成本本地使用，保障数据隐私。
+
+#### 2.5.1 核心功能
+1. 多设备本地部署：支持在手机、Mac设备上部署运行，满足不同场景的本地使用需求。
+2. 多模态交互：支持文本对话、图片识别分析、语音转录翻译等多模态任务处理。
+3. 工具扩展调用：支持通过Agent Skills调用外部工具，拓展模型能力边界。
+4. 免费商用：基于Apache2.0协议，可免费用于商业场景，降低使用成本。
+5. 高性能推理：适配苹果MLX框架，在Mac上可实现推理速度翻倍。
+
+#### 2.5.2 技术原理
+Gemma 4采用Transformer架构，支持MoE（混合专家）模型结构，26B MoE版本可在资源充足时实现高效推理。原生支持function calling，可直接对接AI Agent；依托苹果MLX框架，针对Mac设备的硬件特性做了底层优化，实现推理加速。本地部署时，通过Ollama作为模型运行容器，提供轻量化的模型管理与推理环境，OpenClaw则作为网关实现模型的Web UI调用与扩展能力集成。
+
+#### 2.5.3 应用场景
+1. 个人日常办公：普通职场人可在本地部署E2B版本，处理文档摘要、基础翻译、日常对话等轻量级任务，无需依赖云端API。
+2. 专业技术研发：开发人员可部署高规格版本，借助其编程能力辅助代码编写、调试，通过function calling对接开发工具链。
+3. 移动场景使用：商务人士在无网络环境下，可通过手机部署的模型处理邮件分析、语音转录等工作，保障数据安全。
+4. 教育辅助学习：学生可利用模型的数学、知识问答能力，在本地完成作业答疑、知识点梳理，避免数据上传云端。
+
+------------------------------------------------------------
