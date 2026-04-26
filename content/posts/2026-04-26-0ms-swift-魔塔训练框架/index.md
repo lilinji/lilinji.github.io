@@ -1,5 +1,5 @@
 ---
-title: 0.ms-swift-魔塔训练框架
+title: 大模型训练框架
 date: 2026-04-26T18:57:25+08:00
 draft: false
 tags:
