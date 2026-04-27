@@ -1,0 +1,2937 @@
+---
+title: Agent
+date: 2026-04-27T21:34:55+08:00
+draft: false
+tags:
+  - AI相关
+  - 技术
+  - 翻译
+  - 产品
+author: Ringi Lee
+showToc: true
+tocOpen: false
+slug: Agent
+
+---
+
+# Agent+WorkFlow
+
+Agent模块构建了涵盖25+个前沿框架的智能体技术生态，专注于自主决策、工具调用和任务执行的AI智能体系统。该模块系统性地整理了AutoGPT自主AI智能体、LangGraph状态机智能体、CrewAI协作智能体框架、Microsoft AutoGen多智能体对话、MetaGPT多智能体软件公司等核心技术栈，以及AgentGPT浏览器智能体、BabyAGI任务驱动智能体、SuperAGI开源智能体平台等创新解决方案。
+
+技术特色涵盖了任务规划与分解、工具调用与集成、记忆管理与学习、多智能体协作等核心能力，详细解析了ReAct推理框架、思维链（CoT）、工具学习（Tool Learning）、强化学习优化等关键技术机制。模块深入介绍了智能体架构设计（感知-决策-执行循环）、状态管理机制、工具生态集成（API、数据库、文件系统、网络爬虫）、安全控制策略等工程实践，以及与LLM的深度集成和优化方案。内容包括代码生成智能体、数据分析智能体、内容创作智能体、客户服务智能体等典型应用场景的架构设计，以及性能监控、错误恢复、资源管理、成本控制等运维实践，帮助开发者构建具备自主学习和决策能力的智能体系统，实现复杂任务的自动化处理和智能化解决方案。
+
+- [机器之心SOTA！Agent模型](https://sota.jiqizhixin.com/agent-ranks)
+- [0.SWE-bench权威测评](https://www.swebench.com/#verified)
+
+-----------------------------------------------------------
+
+
+
+# Agent项目合集+论文
+
+- [e2b-dev/awesome-ai-agents: agent项目合集](https://github.com/e2b-dev/awesome-ai-agents)
+- [Awesome AI Agents 合集大全](https://github.com/e2b-dev/awesome-ai-agents?tab=readme-ov-file)
+- [awesome-ai-agent: AI Agent 领域相关开源资料（openmanus、langmanus、langchain、langgraph、metagpt、magma等），精选文章，分析，产品动态](https://github.com/skyming/awesome-ai-agent)
+- [awesome-foundation-agents 论文](https://github.com/FoundationAgents/awesome-foundation-agents)
+
+------------------------------------------------------------
+
+
+# 1.agentscope
+
+#### 简介
+AgentScope 是一个面向智能体编程，用于构建大语言模型应用的平台。它具有对开发者透明、支持模型无关开发、“乐高式”智能体构建、面向多智能体、原生分布式/并行化、高度可定制、开发者友好等特点。平台持续更新功能，目前新版本正在开发中。
+
+#### 核心功能
+- **智能体构建**：支持显式构建用户和助手的对话应用、多智能体对话，提供多种类型智能体，如对话智能体、ReAct 智能体等。
+- **工具集成**：支持 Tools API，可添加内置工具，连接 MCP Server。
+- **结构化输出**：使用 Pydantic 的 BaseModel 轻松指定和切换结构化输出。
+- **工作流编排**：可构建各种类型的智能体工作流，如 Routing、并行化等。
+- **分布式与并行化**：原生支持分布式智能体应用，支持自动并行化和中心化编排。
+- **追踪和监控**：提供本地可视化和监控工具 AgentScope Studio，方便追踪工具调用、模型 API 调用和 Token 使用情况。
+
+#### 技术原理
+AgentScope 基于面向智能体编程思想，通过模块化设计，将智能体、工具、提示等组件独立开发，开发者可按需组合使用。在模型适配方面，通过统一的接口封装不同 LLM API，实现一次编程适配多种模型。分布式和并行化则借助原生支持的分布式架构和自动并行化机制，提高应用性能。同时，利用钩子函数、Tools API 等技术增强平台的可扩展性和灵活性。
+
+#### 应用场景
+- **对话应用开发**：构建用户和助手的对话应用，实现多智能体对话。
+- **智能工具集成**：集成各种工具，如执行 Python 代码、连接 MCP Server 等，为智能体提供更多能力。
+- **工作流自动化**：编排智能体工作流，实现任务的自动化处理，如路由任务、并行执行任务等。
+- **研究与开发**：作为研究平台，支持开发者进行智能体编程的研究和实验。 
+
+
+- [agentscope: Start building LLM-empowered multi-agent applications in an easier way.](https://github.com/modelscope/agentscope/tree/main)
+- [agentscope example](https://github.com/modelscope/agentscope/tree/app)
+- [agentscope-游戏实战](https://github.com/modelscope/agentscope/blob/main/README_ZH.md)
+- [AgentScope Doc 文档](https://doc.agentscope.io/zh_CN/)
+- [AgentScope Studio](https://agentscope.io/workstation)
+
+------------------------------------------------------------
+
+# 1.modelscope-agent
+
+#### 简介
+ModelScope-Agent是一个可定制且可扩展的Agent框架，旨在连接ModelScope平台中的各种模型与外部世界。它为单个智能体提供了强大的能力，使其能够进行角色扮演、调用大型语言模型（LLM）、使用工具、进行规划和管理记忆，从而实现复杂任务的处理。
+
+#### 核心功能
+*   **角色扮演 (Role-playing)：** 智能体可以根据预设的角色或任务需求扮演不同的角色。
+*   **LLM调用 (LLM Calling)：** 能够与大型语言模型进行交互，利用其强大的生成和理解能力。
+*   **工具使用 (Tool Usage)：** 智能体具备调用外部工具和API的能力，扩展其功能边界。
+*   **规划 (Planning)：** 能够对复杂任务进行分解和规划，制定执行步骤。
+*   **记忆 (Memory)：** 具备记忆功能，可以存储和回顾历史信息，支持上下文理解和持续学习。
+*   **多智能体协作 (Multi-Agent Collaboration)：** 支持构建和协调多个智能体共同完成任务。
+
+#### 技术原理
+ModelScope-Agent的技术原理核心在于其模块化的Agent架构，通过整合以下关键组件实现智能体能力：
+*   **LLM集成：** 作为智能体的“大脑”，提供语言理解、生成和推理的核心能力。
+*   **工具管理：** 实现了工具的注册、调用和结果解析机制，使智能体能与外部系统（如数据API、数据库、特定模型等）交互。
+*   **规划器 (Planner)：** 基于任务需求和当前环境，智能体通过规划器生成一系列行动步骤。
+*   **记忆模块：** 用于存储短期和长期信息，包括对话历史、任务进度、工具使用记录等，以便智能体进行上下文理解和决策。
+*   **统一接口：** 提供统一的接口，便于ModelScope内外部模型的集成与调用。
+
+#### 应用场景
+*   **智能问答与聊天机器人：** 构建具备深度理解和复杂交互能力的聊天机器人。
+*   **数据科学与分析：** 自动化数据处理、模型训练和结果分析流程。
+*   **自动化工作流：** 实现跨多个系统和工具的自动化任务执行。
+*   **代码生成与开发辅助：** 辅助开发者进行代码编写、调试和优化。
+*   **智能体系统构建：** 搭建具备自主学习和决策能力的多智能体协作系统。
+*   **个性化推荐系统：** 基于用户行为和偏好进行智能推荐。
+*   **移动应用开发：** 集成AI能力到Android等移动应用中。
+
+
+- [modelscope/modelscope-agent: ModelScope-Agent: An agent framework connecting models in ModelScope with the world](https://github.com/modelscope/modelscope-agent)
+- [modelscope/modelscope-agent: ModelScope-Agent: An agent framework connecting models in ModelScope with the world](https://github.com/modelscope/modelscope-agent?tab=readme-ov-file)
+- [modelscope-agent/README_CN.md at master · modelscope/modelscope-agent](https://github.com/modelscope/modelscope-agent/blob/master/README_CN.md)
+
+------------------------------------------------------------
+
+## 1.魔塔-demo
+
+- [通义千问-72B-对话-Demo · 创空间](https://modelscope.cn/studios/qwen/Qwen-72B-Chat-Demo/summary)
+- [Agent创建专用 · 魔塔创空间](https://www.modelscope.cn/studios/modelscope/AgentFabric/summary)
+- [魔搭Agent大本营 · 魔搭社区](https://modelscope.cn/brand/view/agent)
+
+------------------------------------------------------------
+
+## 魔塔agent应用文档
+
+- [魔搭社区](https://www.modelscope.cn/brand/view/AgentScope?branch=0&tree=0)
+- [魔搭Agent大本营 · 魔搭社区](https://www.modelscope.cn/brand/view/agent)
+
+------------------------------------------------------------
+
+# 1.Agently
+
+#### 简介
+Agently是一个开源的AI Agent原生应用开发框架，具有快速开始、表达轻松、插件增强、开源开放等特点。它适配多种模型，提供丰富的请求指令和功能，可用于构建不同领域的Agent示例，支持多轮对话及运行时数据管理。
+
+![Snipaste_2025-07-19_14-14-00.png](6b03cb710fab.png)
+
+#### 核心功能
+1. **模型适配**：支持OpenAI GPT、Google Gemini、百度文心一言、智谱GLM等多种商用模型API，方便开发者切换模型。
+2. **请求指令丰富**：提供基础请求指令，如`.general()`、`.role()`、`.input()`等，可灵活构造请求。
+3. **结构化输出**：通过Output输出结构表达语法格式，可获得对应结构的生成结果。
+4. **高级Prompt构造**：支持行动流提示、分支逻辑判断、自我批判修正、确保关键信息纯净度等高级技巧。
+5. **流式输出与事件监听**：大部分适配模型支持流式输出，可通过事件监听处理器接收和处理流式数据。
+6. **多轮对话管理**：通过Session能力增强插件，自动持续记录会话消息列，支持多轮对话。
+7. **运行时数据管理**：管理主要请求运行时数据、Agent实例运行时数据及其长时固化存储。
+
+#### 技术原理
+1. **模型适配原理**：框架通过封装不同模型的API请求方式，实现业务流程代码和模型适配之间的依赖解耦，开发者可按说明配置并放心切换模型。
+2. **请求处理原理**：将Agent实例与模型的一次主要请求交互视作原子节点，通过`.start()`命令触发，多个原子节点可串联。在请求过程中，会根据指令将数据存储到运行时数据中，经框架核心逻辑整理后发起模型请求。
+3. **流式输出原理**：框架在请求逻辑中对流式输出的数据块进行清洗，通过`response:delta`事件抛出仅包含增量文本块的数据，开发者可通过事件监听处理器接收和处理。
+4. **运行时数据管理原理**：Agent实例运行时数据分为主要请求运行时数据、Agent实例运行时数据及其长时固化存储，不同类型数据有不同的生命周期和管理方式，通过插件对运行时数据进行交互和管理。
+
+#### 应用场景
+1. **信息查询与解答**：如根据自然语言生成SQL的提数小帮手Agent、自带搜索技能的少儿教师Agent等，可帮助用户查询信息并解答问题。
+2. **营销文案生成**：根据图片以及文案样例生成广告文案的营销Agent，满足营销场景需求。
+3. **角色扮演**：根据用户简单输入，自动创建人设，并能够在多个状态间切换的角色扮演Agent，用于角色扮演游戏等场景。
+4. **多轮对话交互**：在聊天机器人、智能客服等场景中，支持多轮对话，结合用户历史对话记录提供更精准的回复。
+5. **代码开发辅助**：在代码逻辑中寻求Agent的支持，如基于长文本生成问答对、让Agent完成仅有注释的函数指定的任务等。
+6. **游戏场景应用**：为游戏中的NPC提供行动选项和演出台词，增强游戏的交互性和趣味性。 
+
+
+- [Agently AI应用开发框架](https://agently.cn/)
+- [AgentEra/Agently: [GenAI Application Development Framework] 🚀 Build GenAI application quick and easy 💬 Easy to interact with GenAI agent in code using structure data and chained-calls syntax 🧩 Use Agently Workflow to manage complex GenAI working logic 🔀 Switch to any model without rewrite application code](https://github.com/AgentEra/Agently)
+- [【开发教程】Agently AI Agent原生应用开发框架Show Case - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/7178289)
+- [手把手入门教程 - Agently AI应用开发框架](https://agently.cn/guides/agentic_request/guide.html)
+
+------------------------------------------------------------
+
+## Agently案例大全
+
+包括Agently项目的playground、SQL生成器示例；Agently Daily News Collector项目，这是一个基于大语言模型（LLM）的自动每日新闻收集工作流展示项目；以及translation-agent项目，它是使用Agently开发框架实现的单块翻译工作流的复制品，具备可轻松切换模型、清晰表达工作流、可编辑提示文件优化指令等特点。
+
+
+- [案例大全Agently/playground](https://github.com/Maplemx/Agently/tree/main/playground)
+- [SQL生成：基于给定的数据库元数据信息，根据自然语言输入生成查询SQL](https://github.com/Maplemx/Agently/blob/main/playground/sql_generator.ipynb)
+- [全自动高质量新闻汇总报告生成器：分栏目检索、整理、汇总并撰写推荐语](https://github.com/AgentEra/Agently-Daily-News-Collector/tree/main)
+- [新闻汇总报告生成器AgentEra/Agently-Daily-News-Collector: An open-source LLM based automatically daily news collecting workflow showcase powered by Agently AI application development framework.](https://github.com/AgentEra/Agently-Daily-News-Collector/tree/main?tab=readme-ov-file)
+- [翻译工作流项目](https://github.com/Maplemx/translation-agent/tree/main/src/translation_agent_Agently)
+
+------------------------------------------------------------
+
+## Agently飞桨案例支持
+
+这些项目主要基于Agently框架展开，涉及多个不同应用领域。有利用Agently和ERNIE模型结合SunoV3音乐生成，为用户提供创作国庆主题歌曲的平台；有借助Agently实现历史类问题的智能问答、问题库生成及趣味问答游戏；还有基于Agently框架搭载文心大模型，构建游戏IP孵化平台，可快速生成并定制游戏角色。
+
+- [快来用Agently设定属于你的游戏IP - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8314352?channelType=0&channel=0)
+- [【趣味项目】基于文心大模型的AI陪玩诗牌游戏 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8225964?channelType=0&channel=0)
+- [你的专属Agently的皮肤问题咨询助手 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8298950?channelType=0&channel=0)
+- [打造你的AI小伙伴！不满意？找Agently大法师来施魔法 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8312560?channelType=0&channel=0)
+- [基于Agently的访谈式分类器——以哈利波特分院帽为例 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8107181?channelType=0&channel=0)
+- [基于文心和Agently的英语提升助手 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8106044?channelType=0&channel=0)
+- [【国韵新声】基于Agently和SunoAI智能谱写国庆辉煌乐章 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8329947?channelType=0&channel=0)
+- [【智史引擎】基于Agently工作流的历史智慧问答助手 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8325790?channelType=0&channel=0)
+- [【月满华章】基于Agently的中秋节文化探索与智慧互动平台 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8301377?channelType=0&channel=0)
+- [【开发教程】Agently AI Agent原生应用开发框架Show Case - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/7178289?channelType=0&channel=0)
+- [【国韵新声】基于Agently和SunoAI智能谱写国庆辉煌乐章 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8329947)
+- [【月满华章】基于Agently的中秋节文化探索与智慧互动平台 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/8301377)
+
+------------------------------------------------------------
+
+# 1.Camel-Owl
+
+#### 简介
+CAMEL - AI是一个致力于探索智能体缩放定律的开源社区，开发了世界首个多智能体系统框架。旗下的OWL框架基于CAMEL - AI构建，是前沿的多智能体协作框架，可推动任务自动化。CAMEL - AI旨在通过大规模研究智能体，深入了解其行为、能力和潜在风险，支持多种类型的智能体、任务、提示、模型和模拟环境。
+
+![Snipaste_2025-07-19_14-13-14.png](15b8a3d851e7.png)
+
+#### 核心功能
+- **数据生成**：实现思维链（CoT）数据生成、自指令（Self - Instruct）指令生成、源到合成（Source2Synth）多跳问答生成等，生成高质量数据。
+- **任务自动化**：通过角色扮演和多智能体协作的工作流（Workforce）解决任务，利用检索增强生成（RAG）管道提升自动化效率。
+- **世界模拟**：如OASIS可模拟百万级智能体的社交互动，研究复杂社会现象。
+- **多工具集成**：支持在线搜索、多模态处理、浏览器自动化、文档解析、代码执行等，拥有丰富的工具包。
+
+#### 技术原理
+- **可进化性**：多智能体系统通过生成数据和与环境交互不断进化，可由强化学习或监督学习驱动。
+- **可扩展性**：设计支持数百万智能体的系统，确保大规模下的高效协调、通信和资源管理。
+- **状态性**：智能体维护有状态的内存，便于进行多步交互和处理复杂任务。
+- **代码即提示**：代码和注释作为智能体的提示，要求编写清晰可读。
+
+#### 应用场景
+- **科研领域**：研究智能体的行为、能力和潜在风险，探索多智能体系统的前沿研究。
+- **数据生成**：为模型训练生成高质量的合成数据。
+- **任务自动化**：实现各种任务的自动化处理，如股票价格查询、代码调试等。
+- **世界模拟**：模拟社交平台上的用户行为，研究信息传播、群体极化等社会现象。 
+
+
+- [camel-ai/owl: 🦉 OWL: Optimized Workforce Learning for General Multi-Agent Assistance in Real-World Task Automation](https://github.com/camel-ai/owl)
+- [camel-ai/camel: 🐫 CAMEL: The first and the best multi-agent framework. Finding the Scaling Law of Agents. https://www.camel-ai.org](https://github.com/camel-ai/camel)
+- [CAMEL-AI Finding the Scaling Laws of Agents](https://www.camel-ai.org/)
+- [Welcome to CAMEL’s documentation! — CAMEL 0.2.43 documentation](https://docs.camel-ai.org/)
+
+------------------------------------------------------------
+
+# 1.OpenHands
+
+#### 简介
+OpenHands 是 All Hands AI 推出的一个开源人工智能软件开发智能代理项目，前身为 OpenDevin，旨在提供一个 Devin 的开源替代方案。它通过直观简洁的交互界面，允许用户使用自然语言执行各种软件开发任务，致力于“少写代码，多出成果”（Code Less, Make More）。该项目在 GitHub 上拥有庞大的社区和贡献者，并遵循 MIT 许可证，强调代理技术应开放而非被少数公司控制。
+
+#### 核心功能
+*   **自然语言交互式开发：** 用户可以通过自然语言指令进行项目克隆、代码修改、命令执行、API 调用和代码提交等软件开发任务。
+*   **全栈开发自动化：** 具备从问题理解到代码实现、测试、部署等全生命周期的自动化能力。
+*   **基准性能卓越：** 在 SWE-bench、多语言 Multi-SWE-bench 以及无污染的 LiveSWEBench 等多种软件开发代理基准测试中表现出色。
+*   **多语言和环境支持：** 支持跨8种编程语言进行开发任务。
+*   **高度兼容性：** 兼容多种大型语言模型（LLM）提供商。
+
+#### 技术原理
+OpenHands 的核心技术原理是基于人工智能驱动的智能代理（AI-powered intelligent agent）。它利用大型语言模型（LLMs）的强大自然语言理解和生成能力，将用户的自然语言指令转化为可执行的软件开发操作。通过与开发环境（如终端、代码编辑器、版本控制系统）的深度集成，该代理能够模拟人类开发者的行为，执行代码生成、调试、测试和部署等复杂任务。其设计理念强调模块化和可扩展性，支持不同 LLM 的接入，并能够理解和响应来自不同编程语言的需求，实现自动化工作流。
+
+#### 应用场景
+*   **自动化软件开发：** 协助或自动完成重复性、繁琐的编码、调试和测试任务，提升开发效率。
+*   **开发者辅助工具：** 作为个人开发者的智能助手，快速生成代码片段、解决编程问题或执行环境配置。
+*   **DevOps流程优化：** 自动化CI/CD流程中的代码检查、部署和维护环节。
+*   **教育与研究：** 作为学习和研究AI代理在软件工程领域应用的平台，探索未来软件开发模式。
+*   **跨语言开发：** 帮助开发者在不熟悉特定编程语言的情况下，完成代码修改或功能实现。
+
+
+- [All-Hands-AI/OpenHands: 🙌 OpenHands: Code Less, Make More](https://github.com/All-Hands-AI/OpenHands)
+
+------------------------------------------------------------
+
+
+##  JoyAgent-JDGenie – 京东开源的通用多智能体系统
+
+#### 简介
+JoyAgent-JDGenie是京东开源的首个高完成度、轻量化通用多智能体产品。作为一个完整的端到端智能体系统，它无需二次开发即可直接使用，旨在提供强大的多智能体协作能力，并为开发者提供快速构建智能应用的工具。该项目在GAIA基准测试中表现优异，准确率达到75.15%，位居行业前列。
+
+![Snipaste_2025-07-24_20-13-12.png](65d71220a01f.png)
+
+![Snipaste_2025-07-24_20-13-36.png](a7bb29e6100e.png)
+
+![Snipaste_2025-07-24_20-13-19.png](573204e59d02.png)
+
+#### 核心功能
+JoyAgent-JDGenie的核心功能在于其通用的多智能体协作框架，能够处理多种复杂任务。它支持开箱即用，能够快速部署，并提供了端到端的产品级解决方案。具体功能包括但不限于生成报告、构建智能客服系统、实现自动化任务以及进行复杂数据分析。
+
+#### 技术原理
+JoyAgent-JDGenie是基于多智能体（Multi-Agent）技术构建的。它利用协同工作的多个AI智能体来分解和解决复杂问题。该系统通过集成先进的AI算法，实现了高效的任务处理和决策能力。其高性能在GAIA基准测试中得到验证，表明其在复杂推理和问题解决方面具备强大的潜力。作为一个开源框架，它提供了高度的灵活性和可扩展性，支持算法优化和本地化扩展。
+
+#### 应用场景
+JoyAgent-JDGenie具有广泛的应用场景，主要包括：
+*   **智能客服**：构建智能化的客户服务系统，自动处理用户查询和问题。
+*   **自动化报告生成**：自动收集、分析数据并生成各类报告。
+*   **复杂数据分析**：处理和分析海量数据，提取有价值的信息和洞察。
+*   **企业级智能应用开发**：作为底层框架，支撑企业快速开发各类定制化的智能应用。
+
+
+* GitHub仓库：：https://github.com/jd-opensource/joyagent-jdgenie
+
+
+## OxyGent 京东多智能体协作框架
+
+#### 简介
+OxyGent是由京东开源的一款先进的Python框架，旨在帮助开发者快速构建生产级智能系统。它通过将工具、模型和智能体统一成模块化的Oxy组件，提供透明且端到端的多智能体系统构建、运行和演进能力，使其无缝且高度可扩展。
+
+![京东.png](33cbc734a017.png)
+
+#### 核心功能
+*   **高效开发**：提供标准化智能体和工具构建，简化开发流程。
+*   **智能协作**：支持动态多智能体规划和团队协作式并行执行。
+*   **弹性架构**：实现在分布式环境下的可扩展工作流编排。
+*   **持续演进**：支持系统持续迭代和优化。
+*   **可扩展性**：具备动态工具发现与检索、子智能体委托及分层支持能力。
+*   **内存管理**：提供细粒度的会话内存管理。
+*   **LLM模型集成**：支持LLM模型集成与提示词模板化。
+
+#### 技术原理
+OxyGent的核心技术原理围绕多智能体协作展开，它构建了一个统一的框架，将大型语言模型（LLM）、工具和智能体进行集成与协调。其主要技术点包括：
+*   **模块化智能体设计**：将智能体（Agent）、工具（Tool）和模型（Model）抽象为可插拔的模块，实现组件的高度复用和灵活组合。
+*   **动态规划与编排**：通过动态多智能体规划机制，实现复杂任务的分解、分配和协作，支持工作流的分布式部署和执行。
+*   **层次化结构**：支持子智能体委托（Sub-agent delegation）和层次化结构，允许构建更复杂、具备分层决策能力的智能系统。
+*   **内存与上下文管理**：内置细粒度的会话记忆管理机制，确保智能体在长时间交互中维持上下文一致性。
+*   **LLM集成与提示工程**：提供便捷的LLM模型接入接口和提示词模板化功能，优化大模型在多智能体系统中的表现。
+*   **并行执行**：支持基于团队的并行执行，提升系统处理效率和响应速度。
+
+#### 应用场景
+OxyGent作为多智能体智能系统开发框架，其应用场景广泛，包括但不限于：
+*   **智能客服与虚拟助手**：构建能够处理复杂查询、多轮对话和任务执行的智能客服系统。
+*   **自动化业务流程**：在企业级应用中实现跨部门、跨系统的复杂业务流程自动化，如智能采购、智能供应链管理等。
+*   **内容生成与创作**：结合不同智能体协作，实现多模态内容的自动化生成，如报告撰写、创意文案、代码生成等。
+*   **决策支持系统**：为复杂决策提供智能辅助，通过多个智能体分析不同维度数据并提出综合建议。
+*   **研发与测试自动化**：构建自动化研发辅助工具或测试平台，提升软件开发效率和质量。
+*   **智能控制与优化**：在工业自动化、智能城市等领域，实现多智能体协同的系统优化和控制。
+
+
+项目官网：https://oxygent.jd.com/
+GitHub仓库：https://github.com/jd-opensource/OxyGent
+
+# 1.OpenManus
+
+#### 简介
+OpenManus是由MetaGPT团队开发的开源项目，可在无邀请码情况下实现各种想法。同时，OpenManus - RL由UIUC和OpenManus的研究人员合作开发，致力于基于强化学习（如GRPO）的大语言模型（LLM）智能体调优方法，会公开探索方向和结果，欢迎社区贡献。
+
+#### 核心功能
+- **模型调优**：提供基于强化学习的调优方法，如GRPO、PPO等，用于定制智能体行为。
+- **数据收集**：连接专业推理模型收集智能体轨迹数据。
+- **基准测试**：在多个智能体基准测试上评估框架性能。
+
+#### 技术原理
+- **推理模型**：评估GPT - O1、Deepseek - R1、QwQ - 32B等模型，为下游优化和训练提供依据。
+- **策略探索**：采用树状思维、图状思维、深度优先搜索决策树、蒙特卡罗树搜索等策略增强规划效率和推理鲁棒性。
+- **奖励建模**：训练智能体奖励模型，使用基于格式和结果的奖励策略。
+- **集成框架**：集成Verl、TinyZero等强化学习调优框架。
+
+#### 应用场景
+- **智能问答**：处理多任务问答和思维链推理。
+- **对话交互**：实现工具增强的对话。
+- **电商购物**：在WebShop等电商环境中进行测试和应用。 
+
+
+- [OpenManus/OpenManus-RL: A live stream development of RL tunning for LLM agents](https://github.com/OpenManus/OpenManus-RL)
+- [mannaandpoem/OpenManus: No fortress, purely open ground. OpenManus is Coming.](https://github.com/mannaandpoem/OpenManus)
+
+------------------------------------------------------------
+
+## Langmanus
+#### 简介
+LangManus 是一个社区驱动的 AI 自动化框架，基于开源社区构建，旨在将语言模型与网页搜索、爬虫和 Python 代码执行等专业工具结合，实现复杂任务自动化。
+
+#### 核心功能
+- **LLM 集成**：支持 Qwen 等开源模型，具备 OpenAI 兼容 API 接口和多层级 LLM 系统。
+- **搜索与检索**：通过 Tavily API 进行网页搜索，结合 Jina 实现神经搜索和高级内容提取。
+- **Python 集成**：内置 Python REPL 和代码执行环境，支持包管理。
+- **工作流管理**：提供工作流图可视化、多智能体编排、任务委派和监控功能。
+
+#### 技术原理
+LangManus 实现了分层多智能体系统，由协调器、规划器、监督器等多个智能体协作完成任务。系统采用模板引擎处理智能体提示，根据不同任务类型调用不同的语言模型，并通过配置环境变量进行定制。
+
+
+- [Darwin-lfl/langmanus: A community-driven AI automation framework that builds upon the incredible work of the open source community. Our goal is to combine language models with specialized tools for tasks like web search, crawling, and Python code execution, while giving back to the community that made this possible.](https://github.com/Darwin-lfl/langmanus?tab=readme-ov-file)
+
+------------------------------------------------------------
+
+# 1.PocketFlow 轻量LLM框架
+
+#### 简介
+PocketFlow是一个仅100行代码的轻量级大语言模型（LLM）框架，具有零依赖、无供应商锁定的特点。它以图为核心抽象，可实现如（多）智能体、工作流、检索增强生成（RAG）等流行设计模式，支持通过智能体编码范式开发复杂的LLM应用。
+
+#### 核心功能
+- **轻量级实现**：仅100行代码，包含LLM框架核心抽象，避免冗余。
+- **多样设计模式支持**：支持（多）智能体、工作流、RAG、Map Reduce等设计模式。
+- **智能体编码**：便于AI智能体协助人类构建复杂LLM应用。
+- **节点与流程管理**：通过节点处理简单任务，流程连接节点，共享存储实现节点间通信。
+
+#### 技术原理
+PocketFlow将LLM工作流建模为图和共享存储的组合。其中，节点负责处理简单的LLM任务，流程通过动作（有标签的边）连接节点，共享存储用于节点间通信。在此基础上，可实现多种设计模式，且不提供内置实用工具，避免供应商特定API的硬编码，提高灵活性和可维护性。
+
+#### 应用场景
+- **聊天机器人开发**：如网站聊天机器人，实现24/7客户支持。
+- **内容处理**：如YouTube视频总结、简历结构化数据提取。
+- **代码生成与优化**：生成测试用例、实现解决方案并迭代改进代码。
+- **智能决策辅助**：如研究智能体，可搜索网络并回答问题。 
+
+
+- [The-Pocket/PocketFlow: Pocket Flow: 100-line LLM framework. Let Agents build Agents!](https://github.com/The-Pocket/PocketFlow)
+- [Agentic Coding | Pocket Flow](https://the-pocket.github.io/PocketFlow/guide.html)
+- [Home | Pocket Flow](https://the-pocket.github.io/PocketFlow/)
+
+------------------------------------------------------------
+
+## PocketFlow一些讲解
+主要围绕PocketFlow展开，它是一个仅100行代码实现的LLM框架，旨在解决现有LLM框架臃肿、依赖项多等问题。介绍了其核心概念Node、Flow与Shared Store，还给出了多个实践示例，如问答、聊天、旅行顾问聊天及Web Search Agent等，虽易用性不足，但灵活性高。
+
+
+- [详解：PocketFlow这个极简的AI工作流开发框架？ - 知乎](https://www.zhihu.com/question/1898055391348238271/answer/1898075972873491235)
+- [“Pocket Flow，一个仅用 100 行代码实现的 LLM 框架” - 知乎](https://zhuanlan.zhihu.com/p/1904143875557291118)
+- [使用PocketFlow构建Web Search Agent - 知乎](https://zhuanlan.zhihu.com/p/1905644630256617311)
+
+------------------------------------------------------------
+
+# 1.Refact-AI-Agent
+
+#### 简介
+Refact.ai 是一款开源的 AI 软件工程智能体 (AI Agent)，旨在作为 GitHub Copilot 的替代方案。它能够端到端地处理工程任务，深入理解代码库，并与开发者的工具、数据库和浏览器集成，以自动化复杂的多步骤任务，从而提升开发效率和代码质量。
+
+#### 核心功能
+*   **代码自动补全与生成**: 提供上下文感知的代码建议和自动补全。
+*   **代码分析与重构**: 执行代码分析，识别潜在问题，并支持代码重构。
+*   **错误与缺陷修复**: 辅助识别并修复代码中的错误和缺陷。
+*   **端到端工程任务自动化**: 能够规划、执行并迭代复杂的软件工程任务。
+*   **工作流适应性**: 适应开发者的工作流程，提供即时协助。
+*   **多工具集成**: 与开发工具、数据库和浏览器无缝集成。
+
+#### 技术原理
+Refact.ai 的核心基于先进的 AI Agent 架构，该架构可能利用了大型语言模型 (LLMs) 对代码的深层语义理解能力。其技术原理包括：
+*   **代码语义理解**: 通过训练在海量代码数据上的模型，实现对代码逻辑、结构和上下文的深度解析。
+*   **多模态感知**: 能够追踪光标位置，感知用户当前的工作状态和意图。
+*   **任务规划与执行**: 采用 AI Agent 范式，能够将复杂工程任务分解为可执行的子任务，并进行规划、执行及结果验证。
+*   **集成与交互层**: 构建了与各类开发工具 (如 VS Code, JetBrains)、数据库和浏览器进行数据交换和操作的接口层。
+*   **自适应学习**: 可能包含持续学习机制，以适应特定代码库和开发者的编码习惯，提供更个性化的协助。
+
+#### 应用场景
+*   **软件开发与编程**: 作为开发者的智能副驾驶，提供代码自动补全、错误检查和代码生成。
+*   **代码审查与质量保证**: 辅助进行代码分析，提升代码质量，减少人工审查负担。
+*   **自动化测试与调试**: 辅助生成测试用例，识别并修复程序错误。
+*   **遗留代码维护**: 帮助开发者快速理解和修改现有复杂或陌生的代码库。
+*   **工程任务自动化**: 自动化如重构大型代码块、实现特定功能模块等端到端的工程任务。
+
+- [smallcloudai/refact: AI Agent that handles engineering tasks end-to-end: integrates with developers’ tools, plans, executes, and iterates until it achieves a successful result.](https://github.com/smallcloudai/refact)
+
+------------------------------------------------------------
+
+# 1.SWE-agent
+
+#### 简介
+SWE-agent是由普林斯顿大学研究团队开发的一个开源AI软件工程代理工具。它旨在利用大型语言模型（如GPT-4）的能力，自动接收GitHub上的问题报告（issue），并尝试自主修复代码，最终生成拉取请求（pull request）。该项目在提高软件开发效率方面展现了显著潜力。
+
+![Snipaste_2025-07-19_14-17-10.png](87abbd95b257.png)
+
+#### 核心功能
+*   **自动问题修复：** 接收GitHub issue，并自动化地识别、分析和修复代码中的错误。
+*   **生成拉取请求：** 在修复完成后，自动创建并提交包含修复代码的拉取请求。
+*   **高效性能：** 在SWE-bench评估数据集上，能够以高效率（例如，在1分钟内解决部分问题）解决GitHub issue，达到了领域内的最新水平（State-of-the-Art）。
+*   **网络安全应用：** 可用于攻击性网络安全或竞争性编程挑战，例如EnIGMA项目已在多个网络安全基准测试中取得先进结果。
+
+#### 技术原理
+SWE-agent的核心技术原理是利用**大型语言模型（LLM）**作为其智能驱动。它赋予LLM自主操作和与代码库、开发环境交互的能力。
+1.  **任务理解与规划：** LLM接收GitHub issue的描述，并通过其自然语言理解能力解析问题，并制定修复问题的策略和步骤。
+2.  **代码库交互：** 代理能够在代码库中导航、阅读、编辑文件，并执行测试、编译等操作，这通常涉及到与文件系统和命令行工具的交互。
+3.  **自主代理执行：** LLM作为控制器，驱动代理在环境中执行一系列编程动作，如代码修改、调试、测试运行等，直到问题被解决。
+4.  **结果验证与反馈：** 代理会运行测试用例来验证修复的正确性。如果测试失败，LLM可能会重新评估并调整修复策略，形成一个迭代的反馈循环。
+5.  **模型选择：** 支持使用GPT-4或其他多种大型语言模型作为后端，提供了灵活性和可扩展性。
+
+#### 应用场景
+*   **自动化软件维护：** 自动处理开源项目或企业内部项目中的日常bug报告和小型功能请求，减轻开发人员负担。
+*   **持续集成/持续部署 (CI/CD) 流程增强：** 作为CI/CD流程的一部分，自动识别并修复引入的回归错误，提高开发效率和代码质量。
+*   **网络安全渗透测试：** 用于自动化地发现和修复代码中的安全漏洞（如EnIGMA项目所示）。
+*   **编程教育与辅助：** 作为编程学习工具，帮助学生理解和解决代码问题。
+*   **竞争性编程：** 辅助参与竞争性编程挑战，快速解决编程难题。
+
+- [SWE-agent/SWE-agent: SWE-agent takes a GitHub issue and tries to automatically fix it, using your LM of choice. It can also be employed for offensive cybersecurity or competitive coding challenges. [NeurIPS 2024]](https://github.com/SWE-agent/SWE-agent)
+
+------------------------------------------------------------
+
+# 1.cooragent
+
+#### 简介
+Cooragent是一个AI智能体协作社区，支持用户用一句话创建强大的智能体，并与其他智能体协作完成复杂任务。它有两种任务模式（智能体工厂和智能体工作流）和三种工作流模式（启动、优化、生产），还提供CLI工具，方便开发者快速构建、编辑和删除智能体。
+
+#### 核心功能
+1. **自动创建智能体**：在智能体工厂模式下，根据用户描述生成智能体；在智能体工作流模式下，自动分析任务并选择合适智能体协作。
+2. **高效构建工作流**：提供三种工作流模式，自动分析需求、选择智能体和构建工作流，用户可手动或用自然语言命令优化。
+3. **CLI工具支持**：开发者可通过CLI工具快速创建、编辑、删除智能体，使用一组智能体协作完成复杂任务。
+4. **集成MCP服务**：通过模型上下文协议（MCP）集成外部服务和工具，增强智能体功能。
+
+#### 技术原理
+- 系统通过Planner模块，在智能体构建时根据用户需求选择合适工具、自动打磨Prompt；在工作流构建中结合智能体专长规划任务步骤和顺序。利用APE和Absolute - Zero - Reasoner等框架，根据用户自然语言命令调整智能体的Prompt、工具等操作参数。
+
+#### 应用场景
+1. **股票分析**：创建股票分析专家智能体，分析股票趋势、预测股价并提供买卖建议。
+2. **旅行规划**：使用多个智能体协作，完成旅行规划、信息获取、报告生成和文件保存等任务。
+3. **导航规划**：创建导航智能体，利用地图工具规划路线。 
+
+
+- [LeapLabTHU/cooragent](https://github.com/LeapLabTHU/cooragent)
+
+------------------------------------------------------------
+# 1.agent-zero
+
+#### 简介
+Agent Zero (A0) 是一个自进化、工具构建型的AI框架，旨在成为一个透明、易读、可理解、可定制和交互式的AI工具。它不同于预先定义的AI系统，能够随着用户的使用而有机地成长和学习。作为一个下一代AI助手，Agent Zero被设计为免费、开源且完全可定制，旨在将无限的AI能力带给所有人。
+
+#### 核心功能
+*   **自适应进化与学习：** Agent Zero的核心能力在于其能够随着使用而自主进化和学习，不断适应和增强自身功能。
+*   **工具构建与集成：** 该框架支持AI自主构建和工程化自身的能力，实现工具的创建与集成。
+*   **任务执行：** 能够利用用户的电脑资源来执行并完成各种指定的任务。
+*   **高度可定制性：** 提供全面的定制能力，允许用户根据具体需求调整和塑造AI行为。
+*   **交互式操作：** 提供直观的交互界面，使用户能够轻松地与AI进行互动和指导。
+
+#### 技术原理
+Agent Zero的实现可能基于以下技术原理：
+*   **自修改与自适应算法：** 采用先进的AI算法，使其能够根据运行时数据和用户反馈动态修改自身行为和学习模型，实现能力的迭代优化。
+*   **元学习（Meta-Learning）/终身学习：** 可能集成元学习或终身学习机制，使AI能够从过往经验中学习如何学习，从而加速新任务的适应和知识积累。
+*   **虚拟化与沙盒环境：** 作为在“自身虚拟计算机”中运行的AI助手，可能利用虚拟化或沙盒技术，提供一个隔离且安全的执行环境，便于管理和控制AI的行为。
+*   **动态工具注册与调用：** 具备识别、学习并动态调用外部工具或内部模块的能力，以扩展其解决问题的范畴。
+*   **可解释AI（XAI）设计：** 强调透明、易读和可理解性，可能在架构中融入可解释AI的设计原则，提供决策过程的洞察。
+
+#### 应用场景
+*   **个性化智能助理：** 作为高度可定制的AI助手，可根据个人或企业需求提供专属的自动化服务和任务执行。
+*   **自动化工作流程：** 在办公自动化、数据处理、软件开发等领域，实现复杂任务的自动化和优化。
+*   **教育与研究：** 作为一个透明和可理解的AI框架，可用于AI教育、实验和研究，帮助开发者和研究人员深入理解AI的运作机制。
+*   **AI能力扩展与集成：** 为开发者提供一个平台，快速构建、部署和货币化AI代理，扩展现有系统的AI能力。
+*   **本地化AI解决方案：** 由于其强调利用本地计算机资源执行任务，适用于需要离线或本地部署的AI解决方案，保护数据隐私。
+
+[agent-zero](https://github.com/frdel/agent-zero)
+
+------------------------------------------------------------
+
+# Coze Studio – 字节开源的AI Agent开发平台
+
+#### 简介
+
+Coze Studio（扣子空间）是一个由字节跳动开发并开源的一站式AI Agent开发平台。它提供可视化的工具，旨在简化AI Agent的创建、调试和部署过程，让用户无需编写代码即可快速构建和发布智能体，并支持将其部署到多种平台。
+
+#### 核心功能
+
+*   **可视化工作流构建：** 提供拖放节点的可视化画布，用于快速构建和编排复杂的业务逻辑或任务流程。
+*   **Agent与应用开发：** 支持无代码方式开发AI Agent和应用程序，简化开发门槛。
+*   **资源管理与集成：** 统一管理工作流、插件、数据库、知识库和变量等资源，并提供丰富的SDKs（如Python、JavaScript、Java） facilitating seamless integration.
+*   **多平台发布：** 支持将构建的AI Agent和应用发布到不同的平台。
+*   **专家Agent生态：** 提供预设或可定制的领域专家Agent，如用户研究专家、金融分析助手、舆情分析专家等，满足特定业务需求。
+*   **智能任务拆解与工具调用：** Agent能够自动分析需求，拆解任务，并自主调用外部工具生成完整报告或完成复杂工作。
+
+#### 技术原理
+
+Coze Studio的核心技术原理在于其**可视化编程范式**与**模块化Agent架构**。它通过提供图形化的界面和可拖拽的节点，将复杂的AI逻辑和数据流抽象化，使得用户能够以非代码的方式构建AI Agent的工作流程。平台底层支持对**插件、知识库、数据库和变量**等多种资源的灵活管理和调用，实现Agent能力的扩展。此外，Coze Studio还提供了多种语言的SDKs，便于开发者通过API接口与平台进行交互和集成，将AI能力嵌入到现有应用中。其Agent设计理念强调任务的**自动化分析与执行**，通过内部逻辑编排和外部工具调用，实现复杂任务的自主完成。
+
+![Snipaste_2025-07-29_19-29-37.png](a45e6260e35e.png)
+
+#### 应用场景
+
+*   **智能客服与对话机器人：** 快速构建企业内部或对外服务的智能客服，实现自动化问答和客户支持。
+*   **数据分析与报告生成：** 开发能够自动分析特定领域数据（如市场调研、金融数据）并生成专业报告的Agent。
+*   **内容创作与优化：** 用于生成SEO优化文章、营销文案等内容，提高内容生产效率。
+*   **教育与研究助手：** 构建辅助学习、资料检索、论文撰写等方面的智能助手。
+*   **业务流程自动化：** 将AI Agent应用于企业内部流程，如自动化任务分配、数据处理、信息汇总等，提升运营效率。
+*   **行业专家系统：** 针对特定垂直领域（如医疗、法律、金融）开发具备专业知识和能力的AI Agent，提供专业咨询或辅助决策。
+
+
+Github仓库：https://github.com/coze-dev/coze-studio
+
+
+# Coze Loop – 字节Coze推出的AI Agent开发与调试平台
+
+#### 简介
+CozeLoop 是一个旨在简化与 Coze 平台交互的开发工具，通过提供多语言 SDK (如 Python、Go 和 JavaScript) 来帮助开发者构建、管理和监控基于 Coze 平台的 AI 应用。它专注于提升开发者在处理 AI 交互流程中的效率和可观测性。
+
+![Snipaste_2025-07-29_19-29-11.png](5ae1ec2518da.png)
+
+#### 核心功能
+*   **报告追踪 (Report Trace)**：允许开发者记录和报告 AI 应用的运行轨迹和关键事件，便于调试和性能分析。
+*   **获取和格式化提示词 (Get and Format Prompt)**：提供从 CozeLoop 平台获取预定义或动态提示词（Prompt），并根据需要进行格式化的能力，简化 AI 模型输入准备工作。
+*   **多语言支持**：提供 Python、Go、JavaScript 等多种主流编程语言的 SDK，便于不同技术栈的开发者集成。
+
+#### 技术原理
+CozeLoop 的技术原理主要基于客户端-服务端的交互模式。
+*   **SDK 设计**：CozeLoop 为不同编程语言提供了轻量级的客户端开发工具包（SDK），这些 SDK 封装了与 CozeLoop 平台后端服务进行通信的 API 接口。
+*   **分布式追踪 (Distributed Tracing)**：通过 SDK 提供的 `StartSpan` 和 `SetInput/SetOutput/Finish` 等方法，实现对 AI 交互流程中各个环节的追踪数据采集和上报，类似于 OpenTelemetry 等分布式追踪系统，用于监控和诊断。
+*   **API 接口层**：SDK 通过 HTTP/RPC 等协议与 CozeLoop 后端服务进行通信，执行如提示词获取和追踪数据上传等操作。
+*   **提示词管理**：后端平台负责存储和管理提示词模板，SDK 负责通过 `GetPrompt` 和 `PromptFormat` 方法根据业务逻辑获取并填充变量，生成最终的提示词。
+
+#### 应用场景
+*   **AI 应用开发**：开发者可以使用 CozeLoop SDK 快速将 AI 能力集成到现有的应用中，如构建智能客服、内容生成、自动化工作流等。
+*   **AI Agent 监控与调试**：通过报告追踪功能，对复杂的 AI Agent 的决策路径和执行过程进行可视化监控和故障排查。
+*   **提示词工程管理**：集中管理和版本控制提示词，便于团队协作和迭代优化 AI 模型的输入。
+*   **跨平台集成**：利用不同语言的 SDK，在多种技术环境中（如后端服务、前端应用、数据分析脚本等）无缝对接 Coze 平台。
+
+
+
+* Github仓库：https://github.com/coze-dev/cozeloop
+* 官网地址：https://www.coze.cn/loop
+
+# 2.Agent TARS-字节
+
+#### 简介
+Agent TARS 是一个开源的多模态智能体，旨在通过视觉解释网页、无缝集成命令行和文件系统来革新 GUI 交互。该项目提供了快速启动指南，包括环境设置、模型和搜索提供商配置等步骤，同时支持人机交互和任务共享。UI-TARS-desktop 是基于 UI-TARS（视觉语言模型）的 GUI 智能体应用程序，于 2025 年 4 月 17 日发布了 v0.1.0 版本，重新设计了智能体 UI。
+
+#### 核心功能
+- **多模态交互**：通过视觉解释网页，实现与命令行和文件系统的无缝集成。
+- **任务执行**：根据用户输入的指令完成规划、搜索、分析和报告生成等任务。
+- **人机交互**：支持在任务执行过程中通过输入框与智能体进行交互。
+- **任务共享**：支持将任务线程以本地 HTML 文件或远程服务器 URL 的形式共享给他人。
+
+#### 技术原理
+Agent TARS 通过多模态感知技术视觉解释网页，利用自然语言处理技术理解用户指令并进行任务规划。它通过 MCP 与浏览器连接，实现对网页的操作和数据获取。同时，它支持多种模型和搜索提供商，用户可以根据需求进行配置和测试。
+
+#### 应用场景
+- **信息检索与分析**：帮助用户快速获取和分析网页上的信息，如获取 ProductHunt 上最受欢迎的项目并进行深入分析。
+- **报告生成**：根据用户的需求生成详细的研究报告。
+- **人机协作**：在任务执行过程中，用户可以随时干预和调整智能体的工作方向。
+- **知识共享**：用户可以将完成的任务线程分享给他人，促进知识交流和协作。 
+
+
+- [Agent TARS - Open-source Multimodal AI Agent](https://agent-tars.com/doc/quick-start)
+- [bytedance/UI-TARS-desktop: A GUI Agent application based on UI-TARS(Vision-Language Model) that allows you to control your computer using natural language.](https://github.com/bytedance/UI-TARS-desktop)
+
+------------------------------------------------------------
+
+# 2.Agent-Squad亚马逊
+
+#### 简介
+Agent Squad（原名Multi-Agent Orchestrator）是由AWS Labs开发的一款灵活、轻量级开源框架，旨在管理和协调多个AI智能体，以处理和优化复杂的对话及任务。它提供了一套强大的工具，用于编排不同类型的AI智能体，实现智能路由和上下文维护，从而构建高效、协同的AI解决方案。
+
+#### 核心功能
+*   **多智能体编排与管理：** 灵活、轻量级地协调和管理多个AI智能体，支持不同类型智能体的集成。
+*   **智能查询路由与上下文维护：** 能够智能地路由用户查询，并在整个交互过程中维护对话上下文，确保连贯性。
+*   **团队协作（SupervisorAgent）：** 引入SupervisorAgent，实现多专业智能体之间的复杂团队协调，支持“智能体即工具”架构，允许主导智能体并行协调团队。
+*   **预构建组件与定制化：** 提供预构建组件以实现快速部署，同时支持轻松集成自定义智能体和对话消息存储解决方案。
+*   **与AWS Bedrock等服务的集成：** 可与AWS Bedrock的LLM代理（支持Converse API）和Lex Bot代理等服务集成，展示了其广泛的兼容性。
+
+#### 技术原理
+Agent Squad 的核心技术原理在于其**多智能体编排（Multi-Agent Orchestration）**架构。它通过实现**智能路由算法**来分配和引导用户请求到最合适的AI智能体，确保高效处理。**上下文管理机制**是其关键组成部分，允许系统在跨多个智能体和交互中保持对话的连贯性和历史信息。
+
+此外，该框架引入了**SupervisorAgent**，它遵循一种**“智能体即工具”（Agent-as-Tools）**的设计范式。在这种范式下，主导智能体能够将复杂的任务分解，并将子任务委托给其他专业智能体并行执行，最终整合结果。这种架构促进了**模块化和协同工作**，使得复杂的AI应用能够通过组合不同的AI能力来实现。框架还支持与Amazon Bedrock等云服务中的大型语言模型（LLM）代理和Lex Bot等服务进行**API集成**，利用其强大的对话和生成能力。
+
+#### 应用场景
+*   **复杂客户服务与支持：** 处理多轮、复杂的用户咨询，通过协调不同专业客服智能体（如产品查询、技术支持、订单管理）提供全面解决方案。
+*   **智能助理与对话系统：** 构建能够处理多领域请求的智能助理，例如日程管理、信息检索和任务执行，通过不同智能体分工协作。
+*   **企业内部流程自动化：** 自动化涉及多个部门或系统的复杂工作流程，例如通过协调审批、数据录入和报告生成智能体来加速业务流程。
+*   **教育与培训：** 创建交互式学习平台，其中不同的智能体可以提供定制化的教学内容、答疑解惑和进度评估。
+*   **研发与知识管理：** 辅助科研人员进行文献检索、数据分析和报告撰写，通过协调专注于不同研究领域的智能体来加速知识发现和管理。
+
+
+- [awslabs/agent-squad: Flexible and powerful framework for managing multiple AI agents and handling complex conversations](https://github.com/awslabs/agent-squad)
+- [awslabs.github.io](https://awslabs.github.io/agent-squad/)
+
+------------------------------------------------------------
+
+# 2.AgentGPT
+
+#### 简介
+AgentGPT 是一个可在浏览器中配置和部署自主 AI 代理的工具。用户能自定义 AI 名称并为其设定目标，AI 会思考任务、执行任务并从结果中学习以达成目标。
+
+#### 核心功能
+- 配置和部署自主 AI 代理。
+- 允许用户自定义 AI 名称并设定目标。
+- AI 可自主思考任务、执行任务并从结果中学习。
+
+#### 技术原理
+采用 create - t3 - app + FastAPI - template 进行引导，运用 Nextjs 13 + Typescript + FastAPI 框架，借助 Next - Auth.js 进行身份验证，使用 Prisma 与 SQLModel 作为 ORM，以 Planetscale 为数据库，利用 TailwindCSS + HeadlessUI 进行样式设计，通过 Zod + Pydantic 进行模式验证，采用 Langchain 作为大语言模型工具。
+
+#### 应用场景
+适用于需要自主 AI 代理执行特定任务、达成特定目标的场景，如自动化数据处理、信息收集等。 
+
+
+- [reworkd/AgentGPT: 🤖 Assemble, configure, and deploy autonomous AI Agents in your browser.](https://github.com/reworkd/AgentGPT)
+
+------------------------------------------------------------
+
+# 2.Agentless
+
+#### 简介
+OpenAutoCoder-Agentless 是一种创新的、无需代理（Agentless）的方法，旨在自动化解决软件开发问题。它通过简化的三阶段流程来处理每个问题，旨在提高效率并降低成本。根据LinkedIn上的介绍，它能够以大约0.34美元的成本解决SWE-bench Lite上27.3%的GitHub问题。
+
+#### 核心功能
+*   **自动化问题解决：** 核心功能是自动识别并解决软件开发中遇到的问题，包括GitHub上的各类issue。
+*   **三阶段处理流程：** 采用一套简洁的三阶段流程来系统性地解决问题，提高了自动化解决的效率和准确性。
+
+#### 技术原理
+Agentless 的技术核心在于其“无代理”架构，这意味着它可能不依赖于传统的、需要迭代和多步交互的AI代理模式，而是通过更直接、高效的算法或模型来处理问题。虽然具体细节未完全披露，但其能解决SWE-bench Lite上的问题，暗示了其可能集成了代码理解、错误诊断、代码生成/修改以及自动化测试验证的能力。这种方法可能侧重于一次性或少数次迭代的解决方案生成，以降低资源消耗并加速问题解决过程。
+
+#### 应用场景
+*   **自动化软件维护：** 可用于自动修复软件bug，处理GitHub等平台上的issue。
+*   **提高开发效率：** 协助开发者自动完成部分重复性或标准化的编码任务。
+*   **降低研发成本：** 通过自动化解决问题，减少人工干预和资源投入。
+*   **教育与研究：** 作为自动化软件工程工具的实践案例或研究平台。
+
+- [OpenAutoCoder/Agentless: Agentless🐱: an agentless approach to automatically solve software development problems](https://github.com/OpenAutoCoder/Agentless)
+
+------------------------------------------------------------
+
+# 2.AutoGPT
+
+#### 简介
+主要介绍了AutoGPT和AutoGen相关内容。AutoGPT是强大的平台，可创建、部署和管理连续AI智能体，实现复杂工作流自动化，有前端和服务器，具备多种功能；AutoGen提供通用多智能体对话框架，能创建可定制、可对话的智能体，集成大语言模型、工具和人类，实现多智能体聊天自动化。
+#### 核心功能
+- **AutoGPT**：提供前端界面，有智能体构建器、工作流管理、部署控制等功能；服务器包含源码、基础设施和市场；有预配置智能体库，支持监控和分析。
+- **AutoGen**：提供多智能体对话框架，创建可定制、可对话智能体，实现多智能体聊天自动化，支持结合工具执行任务。
+#### 技术原理
+- **AutoGPT**：前端通过低代码界面设计智能体，以连接块方式构建工作流；服务器提供核心逻辑和基础设施支持智能体运行。采用Docker等技术，遵循一定网络和软件要求保障运行。
+- **AutoGen**：运用通用多智能体对话框架，集成大语言模型、工具和人类，实现智能体间的自动化聊天和任务执行。
+#### 应用场景
+- **AutoGPT**：生成热门话题视频、识别视频中的热门引语用于社交媒体发布，可定制工作流以满足不同场景。
+- **AutoGen**：适用于需要多智能体协作完成的任务，可结合工具实现自动化操作，能在有人类反馈或自主情况下完成工作。 
+
+
+- [Significant-Gravitas/AutoGPT: AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.](https://github.com/Significant-Gravitas/AutoGPT)
+- [Getting Started | AutoGen](https://microsoft.github.io/autogen/docs/Getting-Started/)
+
+------------------------------------------------------------
+
+# 2.Botpress
+
+#### 简介
+Botpress是一个用于构建由最新大语言模型（LLM）驱动的人工智能代理的一体化平台，以开源的方式为开发者提供支持，可帮助用户快速为项目或企业构建出色的聊天机器人和助手。其仓库包含集成、开发工具、示例机器人和插件等内容，社区可参与贡献。
+
+#### 核心功能
+- **客户支持增强**：协助处理常规咨询，必要时进行问题升级，保持各渠道服务的一致性。
+- **多平台部署**：支持在Slack、WhatsApp、Facebook Messenger等平台部署。
+- **系统集成**：通过API接入业务数据，处理文件、表格和用户记录等结构化输入。
+- **上下文对话**：实现有状态和持久化的对话，支持跨步骤跟踪上下文。
+- **自定义开发**：允许注入自定义代码，可对代理的操作和执行进行全面监控。 
+
+#### 技术原理
+Botpress的核心是自定义推理引擎LLMz，负责协调代理行为，包括解释指令、管理内存、选择工具、执行代码和返回响应。采用完全隔离的运行时架构，每个部署的代理都有独立的运行环境，版本化、持久化且与未来平台变更兼容。
+
+#### 应用场景
+- **客户服务**：处理常见问题咨询、退款申请、添加卡片等业务流程。
+- **内容生成**：如生成文章、图像等。
+- **音频处理**：对音频进行转录等操作。
+- **办公自动化**：辅助完成创建问题、添加卡片等任务。 
+
+
+- [botpress/botpress: The open-source hub to build & deploy GPT/LLM Agents ⚡️](https://github.com/botpress/botpress)
+- [Botpress | the Complete AI Agent Platform](https://botpress.com/)
+- [Index - Botpress Documentation](https://docs.botpress.cloud/docs/)
+
+------------------------------------------------------------
+
+# 2.ChatDev
+
+#### 简介
+ChatDev是一种借助自然语言创意创建定制化软件的平台。OpenBMB的ChatDev是虚拟软件公司，通过不同智能代理协作，提供基于大语言模型的易使用、可定制和扩展的框架；10cl的ChatDev IDE则是构建AI代理的工具，支持多种大语言模型，具有PromptIDE等功能，可用于游戏NPC定制等。
+#### 核心功能
+- **OpenBMB的ChatDev**：多智能代理协作进行软件开发，包括需求分析、编码、测试和文档编写；支持增量开发、Git模式、人机交互模式和艺术模式；可自定义软件开发流程、阶段和角色。
+- **10cl的ChatDev IDE**：加速提示工程，支持JavaScript实现复杂提示技术；具有游戏模式可定制NPC和位置标记；支持从代理社区导入或自定义代理；PromptIDE具备自动完成、双屏显示、可视化提示流等功能。
+#### 技术原理
+- **OpenBMB的ChatDev**：基于大语言模型，通过多智能代理组织架构协作，各代理参与专业功能研讨会完成软件开发任务。
+- **10cl的ChatDev IDE**：通过JavaScript支持实现复杂提示技术，利用PromptFlow将LLM、提示、JavaScript代码和其他工具连接成有向无环图（DAG）进行开发。
+#### 应用场景
+- **软件开发**：快速开发定制化软件，如游戏、工具类软件等。
+- **游戏开发**：定制游戏中的NPC，实现更丰富的游戏交互。
+- **AI代理构建**：设计各种强大的AI代理工具。 
+
+
+- [OpenBMB/ChatDev: Create Customized Software using Natural Language Idea (through LLM-powered Multi-Agent Collaboration)](https://github.com/OpenBMB/ChatDev)
+- [10cl/chatdev: ChatDev IDE is an tools for building your ai agent, Whether it's NPCs in games or powerful agent tools, you can design what you want for this platform.](https://github.com/10cl/chatdev)
+- [ChatDev](https://chatdev.toscl.com/)
+- [GuidePage手册](https://chatdev.modelbest.cn/introduce)
+
+------------------------------------------------------------
+
+# 2.EvoAgentX
+
+#### 简介
+EvoAgentX 是一个用于评估和发展代理工作流的自动化框架，可基于自然语言目标自动生成和执行多智能体工作流，还集成了多种进化算法以优化性能。
+
+#### 核心功能
+- **自动工作流生成**：根据自然语言目标，借助 WorkFlowGenerator 生成工作流，通过 AgentManager 实例化代理并执行。
+- **可视化与存储**：可对工作流进行可视化展示，支持工作流的保存和加载。
+- **进化算法集成**：集成 TextGrad、MIPRO 和 AFlow 等进化算法，优化代理系统性能。
+
+#### 技术原理
+利用预训练语言模型（如 OpenAI 的 gpt-4o-mini），通过 WorkFlowGenerator 解析自然语言目标生成工作流图，AgentManager 根据工作流图实例化代理，WorkFlow 执行工作流。同时，集成多种进化算法对代理系统进行优化。
+
+#### 应用场景
+- **智能求职推荐**：根据简历进行智能职位推荐。
+- **股票可视化分析**：对 A 股股票进行可视化分析。
+- **代码生成**：如生成俄罗斯方块游戏的 HTML 代码。 
+
+
+- [EvoAgentX/EvoAgentX: 🚀 EvoAgentX: Building a Self-Evolving Ecosystem of AI Agents](https://github.com/EvoAgentX/EvoAgentX)
+
+------------------------------------------------------------
+
+# 2.HuggingGPT
+
+#### 简介
+论文主要提出了名为HuggingGPT的系统以解决AI任务，它以语言为接口连接大语言模型（LLMs）与AI模型，让LLMs作为控制器管理AI模型，利用机器学习社区（如Hugging Face）的模型自动解决用户不同请求，在处理复杂AI任务上展现出巨大潜力，为实现通用人工智能开辟新途径。
+
+#### 核心功能
+- **任务规划**：用ChatGPT分析用户请求，将其拆解为可解决的任务。
+- **模型选择**：基于模型描述，从Hugging Face选择专家模型解决规划好的任务。
+- **任务执行**：调用并执行所选模型，将结果返回给ChatGPT。
+- **响应生成**：整合模型推理结果，以友好人类语言生成响应。
+
+#### 技术原理
+- **语言接口**：以语言作为LLMs与AI模型协作的通用接口，通过模型描述将其融入提示，使LLMs能管理AI模型。
+- **动态上下文任务 - 模型分配**：将任务 - 模型分配视为单项选择问题，根据任务类型筛选模型，按下载量排序选前K个作为候选。
+- **资源依赖处理**：用“\<resource\>”符号维护资源依赖，动态指定任务依赖资源。
+
+#### 应用场景
+- **单任务**：如识别图像中物体数量、展示搞笑猫图等。
+- **顺序任务**：像替换图像中物体、基于特定图像生成新图像等。
+- **图任务**：例如判断图像语义相似性等。 
+
+
+- [microsoft/JARVIS: JARVIS, a system to connect LLMs with ML community. Paper: https://arxiv.org/pdf/2303.17580.pdf](https://github.com/microsoft/JARVIS)
+- [[2303.17580] HuggingGPT: Solving AI Tasks with ChatGPT and its Friends in Hugging Face](https://arxiv.org/abs/2303.17580)
+
+------------------------------------------------------------
+
+# 2.MetaGPT
+
+#### 简介
+MetaGPT是一个多智能体框架，可让GPT以软件公司形式协作处理复杂任务。它以一行需求为输入，输出用户故事、竞品分析等内容，内部涵盖产品经理等多种角色，提供软件公司全流程及SOP，核心哲学是 `Code = SOP(Team)` ，用户还能在自身场景中搭建应用。
+
+#### 核心功能
+- 接收一行需求，输出软件相关的多种成果，如用户故事、数据结构、API等。
+- 为用户提供软件公司的全流程服务。
+- 支持用户在不同场景使用多智能体框架搭建应用。
+
+#### 技术原理
+MetaGPT以 `Code = SOP(Team)` 为核心哲学，将标准操作流程（SOP）具象化并应用于由大语言模型（LLM）构成的团队。通过为不同的LLM分配产品经理、架构师等角色，形成协作实体，以完成复杂任务。
+
+#### 应用场景
+- **软件开发**：根据需求生成软件项目，如创建2048游戏。
+- **数据分析**：对数据集进行分析并绘制图表，如对sklearn Iris数据集进行数据分析。
+- **特定领域应用**：搭建数据解释器、辩论、调研、收据助手等应用。 
+
+
+- [geekan/MetaGPT: 🌟 The Multi-Agent Framework: First AI Software Company, Towards Natural Language Programming](https://github.com/geekan/MetaGPT)
+- [MetaGPT: 多智能体框架 | MetaGPT](https://docs.deepwisdom.ai/main/zh/guide/get_started/introduction.html)
+
+------------------------------------------------------------
+
+# 2.OpenAI Swarm
+
+#### 简介
+OpenAI Swarm 是由 OpenAI 解决方案团队管理的一个教育性框架，旨在探索符合人体工学且轻量级的多智能体编排。它提供了一个用于协调多个智能体的实验性平台，是后续生产级工具（如 OpenAI Agents SDK）的前身。
+
+#### 核心功能
+*   **多智能体协调：** 提供机制来协调和管理多个 AI 智能体之间的交互。
+*   **轻量级编排：** 设计理念侧重于简洁和高效地处理智能体任务流。
+*   **消息传递接口：** 其 `run()` 函数类似于 OpenAI 的 Chat Completions API，接收消息、返回消息，且在调用之间不保存状态，实现无状态的智能体交互。
+*   **后端开发支持：** 主要面向需要编程专业知识的后端开发，用于构建多智能体系统。
+
+#### 技术原理
+Swarm 的核心技术原理在于其对**多智能体系统（Multi-Agent Systems, MAS）**的**分布式协调**与**无状态交互模型**的实践。它通过一个集中的客户端实例化（`Swarm()`）来抽象化底层复杂性，使开发者能够以简洁的方式调用智能体群组。其 `client.run()` 方法采用**请求-响应模式**，不维护会话状态，这与现代无服务器函数或 RESTful API 的设计原则相符，确保了系统的可伸缩性和弹性。该框架探索了**智能体间通信协议**和**任务分解/协作机制**，以实现高效的任务分发和结果聚合。
+
+#### 应用场景
+*   **多智能体系统研究与开发：** 作为教育和实验框架，Swarm 适用于研究和原型开发多智能体协作行为。
+*   **后端服务集成：** 可用于探索将多个 AI 智能体能力集成到复杂后端服务中的方法。
+*   **智能体编排学习：** 为开发者和研究人员提供一个理解和实践轻量级智能体编排模式的工具。
+*   **概念验证（PoC）：** 用于快速验证多智能体协作解决方案的可行性。
+
+**注意：** Swarm 是一个实验性项目，已被更成熟的 OpenAI Agents SDK 取代，后者是推荐用于生产环境的多智能体开发工具。
+
+- [openai/swarm: Educational framework exploring ergonomic, lightweight multi-agent orchestration. Managed by OpenAI Solution team.](https://github.com/openai/swarm)
+
+------------------------------------------------------------
+
+# 2.Qwen-Agent
+
+#### 简介
+Qwen-Agent是一个开发框架，开发者可基于它开发Agent应用，利用通义千问模型（Qwen）的指令遵循、工具使用、规划、记忆能力。项目提供了浏览器助手、代码解释器、自定义助手等示例应用，还支持便捷的GUI接口。
+
+#### 核心功能
+- **开发支持**：提供大模型（LLM）、工具（Tool）等原子组件和智能体（Agent）等高级抽象组件，方便开发者开发自定义Agent。
+- **函数调用**：支持函数调用（工具调用），默认工具调用模版原生支持并行工具调用。
+- **超长文档问答**：有快速的RAG解决方案和准确度较高的智能体，用于超长文档问答。
+- **GUI接口**：支持为Agent快速部署Gradio Demo。
+
+#### 技术原理
+- 框架中的LLM继承自`BaseChatModel`类，具备Function Calling功能；工具继承自`BaseTool`类。智能体继承自`Agent`类，可通过调用LLM和工具完成任务。
+- 支持接入阿里云DashScope服务提供的Qwen模型服务，也支持通过OpenAI API方式接入开源的Qwen模型服务。
+
+#### 应用场景
+- **浏览器助手**：如基于Qwen-Agent构建的BrowserQwen浏览器助手。
+- **代码解释器**：执行代码相关操作。
+- **超长文档问答**：在超长文档中进行问答。 
+
+
+- [Qwen-Agent](https://github.com/QwenLM/Qwen-Agent/blob/main/README_CN.md)
+- [QwenLM/Qwen-Agent: Agent framework and applications built upon Qwen>=2.0, featuring Function Calling, Code Interpreter, RAG, and Chrome extension.](https://github.com/QwenLM/Qwen-Agent/tree/main)
+
+------------------------------------------------------------
+
+# 2.SmolAgent-huggingface
+
+#### 简介
+SmolAgents 是 Hugging Face 开发的一个极简主义 AI 代理库，旨在简化基于大型语言模型（LLMs）的强大 AI 代理的创建和执行。其核心逻辑代码量极小（约 1000 行），强调简洁性、高效性和易用性，使得开发者能够以少量代码构建动态且适应性强的智能代理系统。
+
+#### 核心功能
+SmolAgents 的核心功能包括：
+*   **极简化的代理创建**：允许开发者通过极少的代码（例如，不到 30 行）快速定义和运行 AI 代理。
+*   **代码代理能力**：使 AI 代理能够“思考代码”，即具备编写、执行和调试代码的能力，从而与真实世界任务无缝交互。
+*   **与 LLMs 集成**：提供与各种大型语言模型（如 Llama-3.1-8B-Instruct）紧密集成，作为代理的智能核心。
+*   **工具集成**：支持集成外部工具（如 WebSearchTool），扩展代理的能力范围。
+*   **流式输出**：支持代理的流式输出，提高用户体验。
+
+#### 技术原理
+SmolAgents 的技术原理基于以下几点：
+*   **极简抽象层**：通过在原始代码之上保持最小化的抽象，实现高度简洁的代码库（`agents.py` 仅约 1000 行），降低开发复杂性。
+*   **Code-First Agent Design**：代理被设计为“思考代码”，这意味着 LLM 的输出直接转化为可执行的代码，从而实现对外部环境的精确控制和交互。
+*   **模块化工具链**：通过 `CodeAgent` 和可插拔的 `tools`（如 `WebSearchTool`）机制，将特定功能封装为代理可调用的模块，实现了功能的扩展性和灵活性。
+*   **推理客户端模型（InferenceClientModel）**：提供统一的接口来调用和管理不同的 LLM 推理服务，使得底层模型替换变得透明。
+*   **Python 生态集成**：作为 Python 库，能够轻松与 Python 强大的数据处理、网络请求和系统操作能力结合，便于代理执行复杂任务。
+
+#### 应用场景
+SmolAgents 可应用于以下场景：
+*   **自动化任务**：开发能够自动执行复杂编程任务、数据分析或系统操作的 AI 代理。
+*   **智能助手构建**：创建能够理解用户意图并执行相应操作的智能编程助手或开发工具。
+*   **研究与原型开发**：为 AI 代理的研究和快速原型验证提供一个简洁高效的平台。
+*   **教育与学习**：作为理解 AI 代理工作原理和 LLM 应用开发的入门工具。
+*   **领域特定自动化**：构建在特定领域（如网页抓取、文本处理、API 调用）中执行自动化任务的代理。
+
+- [huggingface/smolagents: 🤗 smolagents: a barebones library for agents that think in code.](https://github.com/huggingface/smolagents)
+
+------------------------------------------------------------
+
+# 2.XAgent
+
+#### 简介
+XAgent是一个开源的、由大语言模型驱动的自主智能体，用于自动解决各种任务。它处于早期阶段，具有自主性、安全性、可扩展性等特点，由调度器、规划器和行动者三部分组成，搭配ToolServer提供工具支持。
+
+#### 核心功能
+- 自动解决任务：无需人类参与自动处理各类任务。
+- 安全运行：行为限制在docker容器内。
+- 可扩展：能添加新工具和智能体。
+- 提供交互界面：有GUI和命令行两种交互方式。
+- 与人类合作：遵循人类指导，遇挑战时寻求帮助。
+
+#### 技术原理
+XAgent由调度器动态实例化和分派任务，规划器将任务分解为子任务并生成计划，行动者利用工具执行任务。ToolServer作为提供工具的服务器，以docker容器形式提供安全运行环境，内置文件编辑器、Python笔记本等工具。
+
+#### 应用场景
+- 数据分析：分解任务，完成数据理解、代码编写和报告生成。
+- 推荐服务：与人类合作，根据反馈提供个性化推荐。
+- 模型训练：下载数据集，训练模型以分析和预测。 
+
+
+- [OpenBMB/XAgent: An Autonomous LLM Agent for Complex Task Solving](https://github.com/OpenBMB/XAgent)
+- [XAgent/README_ZH.md at main · OpenBMB/XAgent](https://github.com/OpenBMB/XAgent/blob/main/README_ZH.md)
+
+------------------------------------------------------------
+
+# 2.agentUniverse蚂蚁
+
+#### 简介
+agentUniverse 是基于大语言模型的多智能体框架，源于蚂蚁集团金融业务实践。它有丰富的多智能体协作模式组件，支持集成多种 LLM 模型，可助力开发者和企业构建领域专家级智能体。
+
+#### 核心功能
+- 灵活构建智能体：提供构建智能体的必要组件，支持定制。
+- 多智能体协作：有 PEER、DOE 等协作模式组件，可自定义编排。
+- 集成领域经验：支持领域提示、知识构建与管理，注入领域 SOP。
+
+#### 技术原理
+agentUniverse 核心是多智能体协作模式组件，作为协作模式工厂，让智能体分工协作。通过简单配置实现 LLM 模型集成，利用工具、知识库、RAG 等技术增强智能体能力。
+
+#### 应用场景
+- 金融领域：金融报告生成、金融事件分析。
+- 分析研究：事件解读、行业分析。
+- 软件开发：Python 代码生成与执行。
+- 专业咨询：法律建议、投资研究辅助。 
+
+
+- [alipay/agentUniverse: agentUniverse is a LLM multi-agent framework that allows developers to easily build multi-agent applications.](https://github.com/alipay/agentUniverse)
+- [agentUniverse/README_zh.md at master · alipay/agentUniverse](https://github.com/alipay/agentUniverse/blob/master/README_zh.md)
+- [agentuniverse-ai/agentUniverse: agentUniverse is a LLM multi-agent framework that allows developers to easily build multi-agent applications.](https://github.com/agentuniverse-ai/agentUniverse/tree/master)
+
+------------------------------------------------------------
+
+# 2.agno
+
+#### 简介
+Agno是一个轻量级、高性能的开源库和全栈框架，专注于构建AI智能体和多智能体系统。它旨在使智能体具备记忆、知识和推理能力，并能与外部系统集成，提供模型无关、高速且面向未来的智能体构建解决方案。
+
+#### 核心功能
+*   **高性能智能体构建**：支持构建具备记忆、知识和工具使用能力的高性能智能体。
+*   **多智能体协作**：提供先进的多智能体架构（Agent Teams），支持智能体间的推理、记忆和共享上下文。
+*   **全栈智能体系统**：能够构建、部署和监控包含数据库、向量存储和API的全栈智能体系统。
+*   **模型无关性**：可与任何提供商的任何大型语言模型（LLM）配合使用，将LLM转化为智能体。
+*   **知识库管理**：支持知识库（如CSV、URL）的元数据过滤，实现精准的信息检索。
+*   **开发与监控工具**：提供智能体游乐场（Agent Playground）、智能体注册表（Agent Registry）、智能体优化器、安全和防护机制。
+
+#### 技术原理
+*   **智能体架构**：采用模块化设计，通过分层结构赋予智能体记忆模块、知识集成模块和推理引擎，实现高级认知功能。
+*   **多智能体协作机制**：基于共享上下文和协调协议，允许多个智能体组成“智能体团队”，进行并行处理和协同决策，提升复杂任务处理能力。
+*   **知识检索与增强生成（RAG）**：通过内置的检索增强生成系统，智能体能够访问外部知识库，并利用元数据过滤精确获取信息，提高生成内容的准确性和深度。
+*   **插件化工具集成**：设计了灵活的工具接口，允许智能体集成和调用外部API、数据库或其他系统，扩展其执行复杂操作的能力。
+*   **异步与并发处理**：框架底层可能采用异步编程和并发机制，以确保智能体在高负载和多任务环境下的高性能和低延迟。
+*   **模型抽象层**：通过抽象层将智能体逻辑与底层LLM模型解耦，实现模型无关性，便于切换和升级LLM，保持技术栈的灵活性。
+
+#### 应用场景
+*   **智能客服与虚拟助手**：构建能够理解复杂查询、具备长期记忆和知识检索能力的智能客服系统。
+*   **自动化工作流**：开发能够集成多种外部工具，自动化执行复杂业务流程的智能体。
+*   **数据分析与洞察**：实现Agentic RAG系统，结合知识库搜索和LLM，从大量数据中提取深度洞察。
+*   **复杂决策支持系统**：利用多智能体系统进行信息收集、分析和协同推理，为人类决策者提供支持。
+*   **AI研究与原型开发**：为工程师和研究人员提供一个快速构建、测试和优化AI智能体的平台。
+*   **企业级智能应用**：构建需要高性能、可监控且可部署的企业级智能体应用，如内容生成、代码辅助等。
+
+- [agno-agi/agno: Agno is a lightweight, high-performance library for building Agents.](https://github.com/agno-agi/agno)
+
+------------------------------------------------------------
+
+# 2.crewAI
+
+#### 简介
+CrewAI 是一个全新构建的轻量级、快速的 Python 框架，独立于 LangChain 或其他代理框架。它为开发者提供高级简单性和精确的低级控制，可创建适用于任何场景的自主 AI 代理，已获超 10 万开发者认证，正成为企业级 AI 自动化标准。
+
+#### 核心功能
+1. **创建 AI 团队**：能创建具有特定角色、工具和目标的 AI 团队，实现自主协作智能。
+2. **任务编排**：支持单 LLM 调用进行精确任务编排，具备事件驱动控制。
+3. **快速构建**：通过框架或 UI 工作室，利用无代码工具和模板构建多代理自动化。
+4. **可靠部署**：将构建的团队部署到生产环境，支持不同部署类型并自动生成 UI。
+5. **监控追踪**：监控 AI 代理在简单和复杂任务上的性能和进度。
+6. **持续迭代**：使用测试和训练工具不断提高效率和结果质量。
+
+#### 技术原理
+文档未详细提及技术原理相关内容。推测其基于 Python 语言开发，利用大语言模型（LLMs）实现智能决策和任务执行，通过定义角色、工具和目标来组织 AI 团队协作。
+
+#### 应用场景
+1. **战略规划**：使用 LLMs 预测趋势并制定战略业务计划。
+2. **金融领域**：实现自动化财务报告、合规和财务分析。
+3. **医疗保健**：丰富患者数据以改善诊断和个性化护理计划，自动化行政任务。
+4. **营销领域**：进行预测性营销活动、数据驱动的营销和品牌定位。
+5. **供应链管理**：优化库存和物流，提高供应链效率。
+6. **人力资源**：自动化重复性任务，如招聘、入职和员工管理。
+7. **媒体与娱乐**：增强内容创作和分发。 
+
+
+- [crewAIInc/crewAI: Framework for orchestrating role-playing, autonomous AI agents. By fostering collaborative intelligence, CrewAI empowers agents to work together seamlessly, tackling complex tasks.](https://github.com/crewAIInc/crewAI)
+- [crewAI](https://docs.crewai.com/)
+- [crewAI - Platform for Multi AI Agents Systems](https://www.crewai.com/)
+
+------------------------------------------------------------
+
+# 2.letta
+
+#### 简介
+Letta（前身为 MemGPT）是一个开源框架，用于构建具有高级推理能力和透明长期记忆的有状态代理。它是白盒且模型无关的，支持连接多种 LLM API 后端。用户可通过 REST API、Python/Typescript SDK 及 Agent Development Environment（ADE）与代理交互。
+
+#### 核心功能
+- **代理构建**：利用任意模型构建具备高级记忆和无限上下文的有状态代理，内置持久化和内存管理功能，支持自定义工具和 MCP。
+- **可视化调试**：借助 ADE 可视化代理的内存、推理步骤和工具调用，实时观察、测试和编辑代理状态。
+- **上下文管理**：明确约束代理行为以保障可靠性，实现代理的完全自主或完全受控。
+- **版本管理**：使用代理模板对代理设计进行版本控制，可对现有代理进行升级或回滚更改。
+- **API 集成**：代理以 REST API 端点形式暴露，便于集成到应用程序中。
+
+#### 技术原理
+Letta 运用由加州大学伯克利分校的 AI 博士设计的技术来管理上下文和内存，采用模型无关的表示方式自动持久化所有状态，能在不同 LLM 提供商之间迁移代理而不丢失记忆。同时，它支持将自定义工具在云沙箱中执行，可连接 MCP 服务器以附加预构建工具。
+
+#### 应用场景
+- **客户支持**：构建客户支持聊天机器人，通过长期记忆为客户提供更连贯的服务。
+- **智能助手**：打造具有高级推理能力和长期记忆的智能助手，满足用户多样化需求。
+- **大规模代理部署**：从原型扩展到数百万个代理，确保数据、状态和代理记忆不受供应商锁定。 
+
+
+- [letta-ai/letta: Letta (formerly MemGPT) is the stateful agents framework with memory, reasoning, and context management.](https://github.com/letta-ai/letta)
+- [Letta](https://www.letta.com/)
+
+------------------------------------------------------------
+
+# 2.mastra
+
+
+#### 简介
+Mastra 是一个基于 TypeScript 构建的、意见鲜明的 AI 代理框架，旨在帮助开发者快速构建和部署人工智能应用及功能。它提供了一套全面的解决方案，使得AI代理的开发、部署、可视化、任务管理和可观察性变得更加高效和便捷。
+
+#### 核心功能
+*   **AI 应用与功能快速构建：** 提供一套工具和规范，加速AI应用的开发流程。
+*   **AI 代理管理：** 支持构建和管理各种AI代理，包括部署、工作流可视化、长任务处理等。
+*   **可观察性：** 内置可观察性工具，便于监控和调试AI代理的运行状态。
+*   **RAG 支持：** 集成了检索增强生成（RAG）功能，允许代理利用知识库进行查询和回答。
+*   **多LLM兼容性：** 支持多种大型语言模型（LLM），如 GPT-4, Claude, Gemini, Llama 等，提供灵活的模型选择。
+*   **TypeScript 原生：** 提供 TypeScript 语言支持，利用其类型安全和开发效率优势。
+
+#### 技术原理
+Mastra 的核心技术原理是基于 TypeScript 构建一套结构化且可扩展的 AI 代理框架。它通过抽象和封装底层复杂的AI交互逻辑，提供简洁的API接口，实现对各种LLM的统一调用和管理。框架内部可能采用模块化设计，将代理的创建、执行、状态管理和外部工具集成等功能进行解耦。对于RAG功能，其可能通过集成向量数据库和语义搜索技术，使AI代理能够访问并利用外部知识库信息。
+
+#### 应用场景
+*   **AI 代理开发：** 适用于需要构建复杂AI代理，如智能客服、自动化工作流代理、数据分析代理等。
+*   **Web 搜索AI代理：** 可用于开发能够进行网络搜索并整合信息的智能代理。
+*   **AI 工作流自动化：** 帮助将AI能力集成到现有业务流程中，实现自动化和智能化。
+*   **大语言模型应用开发：** 为基于不同LLM构建的各类AI应用程序提供统一的开发和部署平台。
+*   **企业级AI解决方案：** 适用于需要可扩展、可维护且具有良好可观察性的企业级AI项目。
+
+- [mastra-ai/mastra: The TypeScript AI agent framework. ⚡ Assistants, RAG, observability. Supports any LLM: GPT-4, Claude, Gemini, Llama.](https://github.com/mastra-ai/mastra)
+
+------------------------------------------------------------
+
+# 2.pr-agent
+
+#### 简介
+PR - Agent是一个用于自动分析、反馈和提供建议的AI工具，可帮助高效审查和处理拉取请求（PR）。支持GitHub、GitLab、BitBucket等多个平台，有多种使用方式。Qodo Merge是其托管版本，具有更多高级功能、更好的隐私保护和优先支持。
+
+#### 核心功能
+- **PR审查与改进**：提供AI反馈和建议，对PR进行审查和改进。
+- **多平台支持**：支持GitHub、GitLab、BitBucket、Azure DevOps、Gitea等平台。
+- **多方式使用**：支持CLI、GitHub Action、GitHub App、Docker等使用方式。
+- **高级功能**：Qodo Merge具有静态代码分析、自定义配置、数据隐私保护等高级功能。
+
+#### 技术原理
+- **PR压缩策略**：将代码差异转换为可管理的大语言模型（LLM）提示，有效处理短和长PR。
+- **JSON提示策略**：实现模块化、可定制的工具，可通过配置文件控制工具类别。
+- **多模型支持**：支持GPT、Claude、Deepseek等多种模型。
+- **RAG上下文丰富**：丰富上下文信息，提升处理效果。
+
+#### 应用场景
+- **代码审查**：自动审查PR，提供反馈和改进建议。
+- **项目管理**：在多个代码托管平台上辅助项目管理。
+- **本地开发**：通过CLI在本地仓库运行，或在本地IDE使用Qodo Merge获取自动反馈。 
+
+
+- [qodo-ai/pr-agent: 🚀 PR-Agent (Qodo Merge open-source): An AI-Powered 🤖 Tool for Automated Pull Request Analysis, Feedback, Suggestions and More! 💻🔍](https://github.com/qodo-ai/pr-agent)
+- [Installation - Qodo Merge (and open-source PR-Agent)](https://qodo-merge-docs.qodo.ai/installation/#qodo-merge)
+- [Usage guide - Qodo Merge (and open-source PR-Agent)](https://qodo-merge-docs.qodo.ai/usage-guide/)
+
+------------------------------------------------------------
+
+# 2.pydantic-ai
+
+#### 简介
+PydanticAI 是一个 Python 代理框架，由 Pydantic 团队开发，旨在为生成式 AI 应用开发带来类似 FastAPI 的开发体验。它支持多种模型，能与 Pydantic Logfire 集成，具备类型安全、结构化响应等特性。
+
+#### 核心功能
+- **多模型支持**：支持 OpenAI、Anthropic、Gemini 等多种模型。
+- **集成调试**：与 Pydantic Logfire 集成，用于实时调试、性能监控和行为跟踪。
+- **类型安全**：增强类型检查功能。
+- **结构化响应**：利用 Pydantic 验证和结构化模型输出。
+- **依赖注入**：提供依赖注入系统，便于测试和迭代开发。
+- **流式响应**：可连续流式输出 LLM 结果并即时验证。
+- **图支持**：通过 Pydantic Graph 用类型提示定义图。
+
+#### 技术原理
+PydanticAI 基于 Python 构建，利用 Pydantic 的数据验证和结构化能力，结合 Python 熟悉的控制流和代理组合方式。通过类型提示确保代码的类型安全，使用依赖注入系统提供数据和服务，利用 Pydantic Graph 以类型提示定义图来处理复杂应用逻辑。
+
+#### 应用场景
+- **AI 驱动项目开发**：借助 Python 最佳实践构建 AI 项目。
+- **复杂应用开发**：利用图支持处理复杂应用中的逻辑。
+- **LLM 应用调试与监控**：通过 Pydantic Logfire 集成进行实时调试和性能监控。 
+
+
+- [pydantic/pydantic-ai: Agent Framework / shim to use Pydantic with LLMs](https://github.com/pydantic/pydantic-ai)
+
+------------------------------------------------------------
+
+# 2.微软Autogen+Magentic-One+RD-Agent
+
+#### 简介
+AutoGen是微软开发的用于创建多智能体AI应用程序的框架，支持智能体自主行动或与人类协作。其生态系统提供创建AI智能体所需的一切，具有分层和可扩展的设计，有Core API、AgentChat API和Extensions API等不同层次的API，还支持.NET和Python跨语言。此外，还有AutoGen Studio和AutoGen Bench等开发工具，目前也公布了不同版本的开发路线图。
+
+#### 核心功能
+- **多智能体对话**：提供统一的多智能体对话框架，实现智能体间自动聊天以完成任务。
+- **智能体定制**：可定制智能体，集成大语言模型、人类、工具或其组合。
+- **代码执行**：支持执行代码以调用工具解决任务。
+- **无代码GUI**：AutoGen Studio支持无代码原型设计和运行多智能体工作流。
+- **基准测试**：AutoGen Bench可评估智能体性能。
+
+#### 技术原理
+- **分层架构**：采用分层和可扩展设计，各层职责明确，上层基于下层构建，支持不同抽象级别的使用。
+- **核心API**：实现消息传递、事件驱动智能体以及本地和分布式运行时，支持跨语言。
+- **AgentChat API**：基于核心API构建，提供更简单的API用于快速原型设计。
+- **Extensions API**：支持第一方和第三方扩展，不断扩展框架功能。
+
+#### 应用场景
+- **信息检索与总结**：如通过智能体团队查找信息并撰写总结。
+- **多智能体工作流原型设计**：使用AutoGen Studio无需编写代码即可进行多智能体工作流的原型设计和运行。
+- **复杂任务处理**：构建如Magentic - One这样的多智能体团队，处理需要网页浏览、代码执行和文件处理的任务。 
+
+
+- [microsoft/autogen: A programming framework for agentic AI. Discord: https://aka.ms/autogen-dc. Roadmap: https://aka.ms/autogen-roadmap](https://github.com/microsoft/autogen)
+- [Multi-agent Conversation Framework | AutoGen](https://microsoft.github.io/autogen/docs/Use-Cases/agent_chat/)
+
+------------------------------------------------------------
+
+## AutoGen Studio可视化低代码
+
+#### 简介
+Autogen Studio是基于Autogen框架构建的低代码界面，用于快速搭建AI智能体原型，为其添加技能、组合成工作流并与之交互以完成任务。它并非生产就绪的应用，鼓励开发者使用Autogen框架构建自己的应用。其代码托管在GitHub的microsoft/autogen仓库。
+
+#### 核心功能
+- 快速搭建AI智能体原型，为智能体添加技能并组合成工作流。
+- 支持与智能体工作流进行交互并指定任务。
+- 在界面中查看智能体消息和输出文件。
+
+#### 技术原理
+Autogen Studio基于Autogen框架，其数据库层使用SQLModel（Pydantic + SQLAlchemy），提供实体链接功能，支持SQLAlchemy所支持的多种数据库后端方言，如SQLite、PostgreSQL等。前端使用Gatsby和Tailwind CSS构建。
+
+#### 应用场景
+主要用于快速进行多智能体工作流的原型设计，演示使用Autogen构建的最终用户界面示例，帮助开发者验证和展示AI智能体工作流的可行性。 
+
+
+- [autogen/samples/apps/autogen-studio at main · microsoft/autogen](https://github.com/microsoft/autogen/tree/main/samples/apps/autogen-studio)
+- [AutoGen Studio - Getting Started | AutoGen](https://microsoft.github.io/autogen/docs/autogen-studio/getting-started/)
+
+------------------------------------------------------------
+
+## RD-Agent
+
+#### 简介
+RD - Agent由微软开发，致力于自动化工业研发流程中关键且有价值的部分，尤其关注数据驱动场景，以优化模型和数据开发。它在MLE - bench基准测试中表现领先，还有用于量化金融的RD - Agent(Q)版本，在真实股市实验中效果良好。
+
+#### 核心功能
+- **自动化研发**：自动完成工业研发流程中的关键环节，如模型和数据开发。
+- **基准测试领先**：在MLE - bench中作为顶级机器学习工程代理，展现出较强的性能。
+- **量化金融应用**：RD - Agent(Q)可实现定量策略的全栈研究和开发，实现因子 - 模型联合优化。
+- **多场景支持**：适用于金融、医疗、通用等多个数据驱动的工业场景。
+
+#### 技术原理
+RD - Agent的框架包含三个主要研究领域：一是通过基准测试评估研发能力；二是探索新想法或完善现有想法；三是实现和执行想法。它建立了一个不断提出假设、验证假设并从实际应用中获取反馈的方法框架，支持与现实世界验证相连接。
+
+#### 应用场景
+- **金融领域**：自动进行定量交易、迭代因子模型联合进化、从财务报告中提取因子等。
+- **医疗领域**：在模型实现方面迭代提出想法并进化。
+- **通用领域**：自动读取论文并实现模型结构、自动进行Kaggle模型调优和特征工程等。 
+
+
+- [microsoft/RD-Agent: Research and development (R&D) is crucial for the enhancement of industrial productivity, especially in the AI era, where the core aspects of R&D are mainly focused on data and models. We are committed to automating these high-value generic R&D processes through our open source R&D automation tool RD-Agent, which lets AI drive data-driven AI.](https://github.com/microsoft/RD-Agent)
+
+------------------------------------------------------------
+
+# 3.Agenta
+
+#### 简介
+Agenta是一个全面的LLMOps平台，集prompt管理、评估、人类反馈和部署等功能于一体，旨在简化大型语言模型（LLM）的操作和维护工作，提高效率和效果。该项目为开源项目，社区活跃且持续更新，采用MIT许可证。
+
+#### 核心功能
+- 提供全面的prompt管理功能。
+- 支持大型语言模型的评估和测试。
+- 集成人类反馈机制，优化模型性能。
+- 一站式部署，简化LLM的应用流程。
+
+#### 技术原理
+项目使用Python和TypeScript作为主要开发语言，涉及prompt工具、评估、反馈和部署等多方面技术实现，支持prompt工具、rag、LLM等多个相关技术和工具的集成。
+
+#### 应用场景
+适用于需要操作和维护大型语言模型的场景，如模型开发、测试、优化及部署等，可帮助相关人员提高工作效率和效果。 
+
+
+- [Agenta-AI/agenta: The all-in-one LLM developer platform: prompt management, evaluation, human feedback, and deployment all in one place.](https://github.com/Agenta-AI/agenta)
+- [项目详情 | SOTA！模型社区](https://sota.jiqizhixin.com/project/agenta)
+
+------------------------------------------------------------
+
+# 3.SuperAGI
+
+#### 简介
+SuperAGI是一个面向开发者的开源自主AI代理框架。它旨在帮助开发者快速、可靠地构建、管理和运行有用的自主AI代理，提供了一个全面的平台，支持代理的开发、部署和操作，并提供Web界面访问。
+
+#### 核心功能
+*   **自主AI代理构建与管理**: 提供一个框架，使开发者能够轻松创建、部署和管理自主AI代理。
+*   **多工具集集成**: 支持集成多种工具集，如Google Search, GitHub, Jira等，通过配置API密钥/ID/令牌来扩展代理能力。
+*   **大型语言模型(LLM)支持**: 允许无缝配置和集成本地LLM，以及使用OpenAI API密钥。
+*   **Web界面与API访问**: 提供Web版本供用户通过浏览器访问，无需本地安装；同时提供公共API，支持云端或本地基础URL访问。
+*   **持久化记忆与数据管理**: 集成Weaviate DB进行知识管理和LTM (长期记忆) 用于“思考工具”。
+*   **多GPU支持**: 框架支持多GPU配置，以优化性能。
+
+#### 技术原理
+SuperAGI的核心是一个“dev-first”的自主AI代理框架，这意味着它提供了开发者友好的接口和工具来构建和操作AI代理。其技术原理包括：
+*   **模块化架构**: 框架设计支持集成不同的组件，如各种工具集（Toolkits）和LLM。
+*   **API驱动**: 代理可以通过配置外部工具的API密钥来与外部服务进行交互。
+*   **LLM集成**: 能够灵活地与各种大语言模型对接，包括云端模型（如OpenAI）和本地部署的模型。
+*   **向量数据库应用**: 利用Weaviate等向量数据库作为长期记忆（LTM）和知识管理的基础，使代理能够存储、检索和利用历史信息进行决策和推理。
+*   **分布式计算支持**: 通过多GPU支持，可能利用并行计算来加速模型推理和训练过程。
+
+#### 应用场景
+*   **自动化任务执行**: 开发能够自主执行复杂、多步骤任务的AI代理，例如项目管理、代码审查、数据分析等。
+*   **智能客户服务**: 构建能够理解和响应用户查询，并与外部系统（如CRM、工单系统）集成的智能客服代理。
+*   **数据洞察与报告**: 利用工具集从互联网或内部数据源收集信息，生成报告或提供决策支持。
+*   **软件开发辅助**: 创建能够辅助开发工作的AI代理，例如自动生成代码、进行测试、管理版本控制等。
+*   **个性化推荐系统**: 利用代理的自主学习和记忆能力，为用户提供高度个性化的内容或产品推荐。
+
+- [TransformerOptimus/SuperAGI: <⚡️> SuperAGI - A dev-first open source autonomous AI agent framework. Enabling developers to build, manage & run useful autonomous agents quickly and reliably.](https://github.com/TransformerOptimus/SuperAGI)
+
+------------------------------------------------------------
+
+# 3.atomic-agents
+
+#### 简介
+Atomic Agents是一个围绕原子性概念设计的轻量级、模块化框架，用于构建智能AI管道和应用程序。它基于Instructor构建，利用Pydantic进行数据和模式验证与序列化，所有逻辑和控制流用Python编写，兼顾开发者体验和可维护性。
+
+#### 核心功能
+- **模块化构建**：通过组合小型、可重用组件构建AI应用。
+- **可预测性**：定义清晰的输入输出模式，确保行为一致。
+- **可扩展性**：轻松替换或集成新组件，不影响整个系统。
+- **精细控制**：可单独微调系统各部分，从系统提示到工具集成。
+- **动态上下文注入**：使用上下文提供程序在运行时注入额外信息。
+- **组件链**：通过对齐输入输出模式，方便地链接代理和工具。
+
+#### 技术原理
+基于Instructor和Pydantic，利用Python编写逻辑和控制流。代理由系统提示、输入输出模式、内存和上下文提供程序等组件构成，通过定义清晰的模式和流程，实现可预测、可扩展的AI应用开发。
+
+#### 应用场景
+- **聊天机器人**：如基本聊天机器人、自定义聊天机器人等。
+- **信息提取与分析**：如从图像、视频中提取结构化信息。
+- **研究任务**：执行深度研究任务。
+- **搜索与问答**：执行网页搜索并回答问题。
+- **内容总结**：总结YouTube视频内容。 
+
+
+- [BrainBlend-AI/atomic-agents: Building AI agents, atomically](https://github.com/BrainBlend-AI/atomic-agents)
+
+------------------------------------------------------------
+
+# 3.muAgent-蚂蚁
+
+
+#### 简介
+CodeFuse-muAgent 是由知识图谱引擎驱动的创新 Agent 框架，基于 LLM+EKG 驱动，协同 MultiAgent、FunctionCall、CodeInterpreter 等技术。它兼容市面现有 Agent 框架，可实现复杂推理、在线协同、人工交互、知识即用四大核心差异技术功能，已在蚂蚁集团多个复杂 DevOps 场景落地验证。自 2024 年 4 月 1 日开源以来不断更新迭代，2025 年 1 月 13 日发布 muAgent v2.2 并提供 muAgent-sdk v0.1.0 支持 ekg-sdk 和 ekg 并行执行。
+#### 核心功能
+- **多技术协同**：结合 LLM、EKG、MultiAgent、FunctionCall、CodeInterpreter 等技术。
+- **复杂 SOP 流程实现**：通过画布式拖拽和轻文字编写，让大模型在人的经验指导下执行复杂 SOP 流程。
+- **四大核心功能**：复杂推理、在线协同、人工交互、知识即用。
+- **多场景支持**：满足各类 SOP 场景，适用于多人文本游戏等。
+#### 技术原理
+- **图谱构建**：通过虚拟团队构建、场景意图划分，支持文本智能解析、一键导入海量存量文档，体现在线协同优势。
+- **图谱资产**：通过统一图谱设计，纳入工具、人物/智能体，提升工具选择和参数填充准确性，让人可参与流程推进。
+- **图谱推理**：大模型在人的经验/设计指导下推理，可探索未知局面并沉淀经验。
+- **调试运行**：图谱编辑后可视调试，沉淀成功路径配置，减少模型开销，提供全链路可视化监控。
+- **记忆管理**：统一消息池设计，支持消息分类投递、订阅，处理超长上下文。
+- **操作空间**：遵循 Swagger 协议，提供工具注册、权限管理，保障安全可信代码执行环境和精准代码生成。
+#### 应用场景
+- **DevOps 场景**：在蚂蚁集团内多个复杂 DevOps 场景落地验证。
+- **多人文本游戏**：如谁是卧底游戏。
+- **各类 SOP 场景**：满足各类 SOP 流程的自动化需求。 
+
+
+- [CodeFuse-muAgent/README_zh.md at main · codefuse-ai/CodeFuse-muAgent](https://github.com/codefuse-ai/CodeFuse-muAgent/blob/main/README_zh.md)
+- [codefuse-ai/CodeFuse-muAgent: A Multi-Agent FrameWork For Faster Build Agents](https://github.com/codefuse-ai/CodeFuse-muAgent)
+- [codefuse-ai/codefuse-chatbot: An intelligent assistant serving the entire software development lifecycle, powered by a Multi-Agent Framework, working with DevOps Toolkits, Code&Doc Repo RAG, etc.](https://github.com/codefuse-ai/codefuse-chatbot)
+
+------------------------------------------------------------
+
+# 3.superagent[停更]
+
+#### 简介
+Superagent 是开源的 AI 助手框架与 API，由 Y Combinator 支持。它可让开发者将强大的 AI 助手添加到应用程序中，借助大语言模型（LLM）、检索增强生成（RAG）和生成式 AI 为用户提供帮助。
+
+#### 核心功能
+- 支持构建多种 AI 应用，如问答系统、聊天机器人、AI 助手等。
+- 具备记忆、流式传输功能。
+- 提供 Python 和 Typescript SDK 以及 REST API。
+- 支持 API 连接、矢量化，可对接第三方矢量存储和多种 LLM。
+- 支持 API 并发。
+
+#### 技术原理
+基于大语言模型（LLM）进行语言理解和生成，运用检索增强生成（RAG）技术结合外部知识源，通过矢量化处理数据并存储于第三方矢量存储，利用 REST API 实现与应用的交互。
+
+#### 应用场景
+- 文档问答：基于文档进行问答。
+- 聊天机器人开发。
+- 开发协同编辑助手和 AI 助手。
+- 内容生成。
+- 数据聚合。
+- 工作流自动化。 
+
+
+- [superagent-ai/superagent: 🥷 Run AI-agents with an API](https://github.com/superagent-ai/superagent)
+- [superagent-ai/superagent: 🥷 Run AI-agents with an API](https://github.com/superagent-ai/superagent#-tutorials)
+
+------------------------------------------------------------
+
+# 3.AGiXT
+
+
+#### 简介
+AGiXT是一个动态的人工智能自动化平台，旨在跨多个AI提供商高效管理指令和执行任务。它结合了自适应内存、智能功能和多功能插件系统，提升AI性能与响应能力，推动人工智能通用化（AGI）发展。
+
+#### 核心功能
+- **上下文与令牌管理**：自适应处理长短期记忆，优化AI性能。
+- **智能指令**：借助网络搜索和规划策略，使AI有效理解、规划和执行任务。
+- **交互式聊天与智能聊天**：用户友好的聊天界面，智能聊天结合网络研究提供准确回复。
+- **任务执行与智能任务管理**：高效管理和执行复杂任务，分解为子任务并避免冗余。
+- **链管理**：处理一系列链接命令，自动化复杂工作流程。
+- **网页浏览与命令执行**：具备网页浏览和命令执行能力，增强AI交互性。
+- **多提供商兼容性**：与OpenAI、ezLocalai、Hugging Face等主流AI提供商集成。
+- **多功能插件系统与代码评估**：支持多种AI模型扩展命令，提供代码评估辅助。
+- **Docker部署**：简化设置和维护。
+- **音频与文本转换**：集成Hugging Face实现音频与文本转换。
+- **平台互操作性与AI代理管理**：可创建、重命名、删除和更新AI代理设置，与多平台交互。
+- **自定义提示与命令控制**：可控制代理能力，创建、编辑和删除自定义提示。
+- **RESTful API**：便于与外部应用和服务集成。
+
+#### 技术原理
+AGiXT通过初始化代理、记忆，对用户输入的文本、语音、图像、文件等进行多模态处理。利用向量数据库和嵌入提供程序管理记忆，在执行命令、链和推理时注入用户设置、代理扩展设置和相关记忆。同时借助网络搜索获取信息，结合主流AI提供商的能力完成任务，并对整个过程进行日志记录。
+
+#### 应用场景
+- **编程辅助**：提供代码评估和编程任务协助。
+- **信息查询**：结合网络搜索，为用户提供准确的信息回复。
+- **复杂任务管理**：将复杂任务分解为子任务，高效执行和管理。
+- **智能对话**：通过交互式聊天界面，实现与用户的动态对话。 
+
+
+- [Josh-XT/AGiXT: AGiXT is a dynamic AI Agent Automation Platform that seamlessly orchestrates instruction management and complex task execution across diverse AI providers. Combining adaptive memory, smart features, and a versatile plugin system, AGiXT delivers efficient and comprehensive AI solutions.](https://github.com/Josh-XT/AGiXT)
+
+------------------------------------------------------------
+
+# 3.minion-agent
+
+
+#### 简介
+Minion Agent 是一个简单的智能体框架，具备浏览器使用、MCP（Model Context Protocol）、自动检测、规划、深度研究等功能，可通过 pip 安装，也能从源码安装。
+
+#### 核心功能
+- **多功能支持**：支持浏览器使用、MCP 工具、自动规划、深度研究等。
+- **可配置性**：通过 `AgentConfig` 类可对模型、名称、工具等进行配置。
+- **多 MCP 工具使用**：支持标准 MCP 工具和基于 SSE 的 MCP 工具，还可同时使用多个。
+
+#### 技术原理
+- 借助配置类 `AgentConfig` 对智能体的各项参数进行设置，包括模型 ID、使用工具、规划间隔等。
+- 利用 MCP 协议实现与外部工具的交互，通过不同的 MCP 工具配置方式适应不同场景。
+- 依据 `planning_interval` 参数实现自动规划，按计划执行任务并定期重新评估和制定新计划。
+
+#### 应用场景
+- **价格比较**：可用于比较不同平台的商品价格。
+- **深度研究**：对特定主题进行深入研究。
+- **游戏生成**：例如生成蛇形游戏等。 
+
+
+- [3.minion-agent](https://github.com/femto/minion-agent)
+
+------------------------------------------------------------
+
+# 3.AgentBench智谱
+
+
+#### 简介
+AgentBench是首个用于跨不同环境评估大语言模型（LLM）作为代理能力的基准测试工具。它涵盖8种不同环境，包括5个新创建领域和3个从已发布数据集重新编译的领域，能更全面评估LLM在各种场景下作为自主代理的能力。此外还推出了用于评估和训练视觉基础代理的VisualAgentBench。
+
+#### 核心功能
+- 对多种大语言模型在不同环境下作为代理的能力进行评估。
+- 提供Dev和Test两种数据集划分，支持多轮交互测试。
+- 为部分模型提供测试结果，展示模型在测试集上的得分。
+
+#### 技术原理
+基于不同环境构建评估框架，通过多轮交互让大语言模型在各环境中执行任务，根据其生成结果的情况进行评估。框架结构经过设计，方便使用和扩展，还可通过配置文件调整任务设置。
+
+#### 应用场景
+- 研究机构和开发者用于评估不同大语言模型作为自主代理的性能，助力模型的研发和改进。
+- 帮助选择适合特定场景的大语言模型代理，例如操作系统操作、数据库管理、知识图谱应用等场景。 
+
+
+- [THUDM/AgentBench: A Comprehensive Benchmark to Evaluate LLMs as Agents (ICLR'24)](https://github.com/THUDM/AgentBench)
+
+------------------------------------------------------------
+
+# 3.ERNIE Bot
+
+
+#### 简介
+内容主要围绕ERNIE相关的开发工具和应用展开。ERNIE SDK包含ERNIE Bot Agent和ERNIE Bot两个项目，前者是大模型智能体开发框架，有编排能力、丰富组件库且开发门槛低；后者为开发者提供调用文心大模型基础功能的接口。此外，还有LLM2Json工具可引导大语言模型输出符合JSON语法的数据，ERNIEBot Researcher能进行在线研究并生成研究报告。
+
+#### 核心功能
+- **ERNIE SDK**：ERNIE Bot Agent实现多工具编排和调度，提供预置组件库，支持零代码和简洁代码开发智能体应用；ERNIE Bot提供调用文心大模型文本创作、对话等功能的接口。
+- **LLM2Json**：自动构建prompts引导大语言模型输出符合JSON语法的返回数据。
+- **ERNIEBot Researcher**：根据研究任务生成研究问题，从知识库选信息，过滤汇总生成研究报告，支持多报告并行生成、质量评估和修订完善。
+
+#### 技术原理
+- **ERNIE SDK**：ERNIE Bot Agent基于文心大模型的Function Calling能力实现编排和调度；ERNIE Bot作为底层依赖调用文心大模型。
+- **LLM2Json**：参考LangChain，通过自动构建prompts引导大语言模型输出。
+- **ERNIEBot Researcher**：结合Plan-and-Solve技术和RAG技术，利用ernie-4.0做决策规划、ernie-3.5-8k撰写报告，通过多Agent协作和并行处理完成任务。
+
+#### 应用场景
+- **ERNIE SDK**：可用于开发各类AI原生应用，如智能客服、智能写作助手等。
+- **LLM2Json**：适用于需要大语言模型输出结果与其他程序进行数据交互的场景，如前端开发、GPTs和Agents开发等。
+- **ERNIEBot Researcher**：适合网页、期刊、企业办公文档等场景的研究报告生成。 
+
+
+- [PaddlePaddle/ERNIE-SDK: ERNIE Bot Agent is a Large Language Model (LLM) Agent Framework, powered by the advanced capabilities of ERNIE Bot and the platform resources of Baidu AI Studio.](https://github.com/PaddlePaddle/ERNIE-SDK)
+- [LLM2Json: 让 ERNIE Bot 稳定输出结构化生成结果 - 飞桨AI Studio星河社区](https://aistudio.baidu.com/projectdetail/7412328)
+- [ERNIE Bot Agent手册](https://ernie-bot-agent.readthedocs.io/zh-cn/latest/quickstart/preparation/)
+- [ERNIEBot Researcher-在线研究内容生产](https://github.com/PaddlePaddle/ERNIE-SDK/blob/develop/erniebot-agent/applications/erniebot_researcher/README.md)
+
+------------------------------------------------------------
+
+# 3.NVIDIA AgentIQ
+
+#### 简介
+NVIDIA AgentIQ 是一个开源工具包，旨在高效连接和优化人工智能代理团队。它提供了一个灵活的库，能够无缝集成不同框架下的企业代理，并连接到各种数据源和工具，从而实现代理、工具和代理工作流的真正可组合性。
+
+#### 核心功能
+*   **跨框架代理集成：** 能够集成使用不同AI框架开发的代理。
+*   **多源数据连接：** 实现代理与多种数据源的连接。
+*   **工具集成：** 支持代理与各种工具的结合使用。
+*   **代理工作流可组合性：** 将代理、工具和代理工作流视为简单的函数调用，实现“构建一次，随处重用”的高度可组合性。
+*   **团队优化：** 专注于优化AI代理团队的协作和性能。
+
+#### 技术原理
+AgentIQ 的核心技术原理在于其将AI代理、外部工具和复杂的代理工作流抽象为可调用的函数。这种设计模式使得系统能够以统一且模块化的方式管理和编排这些组件，无论其底层实现框架如何。通过函数调用的方式，AgentIQ 实现了高度的解耦和可重用性，允许开发者将不同功能单元进行灵活组合，形成复杂的智能代理系统。其开源库的特性也意味着它可能利用了现有成熟的AI和软件工程实践，提供标准化的接口和协议来促进不同组件间的通信和数据交换。
+
+#### 应用场景
+*   **企业级AI代理系统开发：** 构建需要集成多种AI代理、数据源和工具的复杂企业级智能系统。
+*   **跨部门自动化工作流：** 部署由不同AI代理协作完成的自动化业务流程，例如数据分析、客户服务、决策支持等。
+*   **多模态AI应用：** 开发需要结合不同类型AI模型（如LLM、视觉模型）和工具的应用。
+*   **智能体编排与管理：** 统一管理和优化大规模AI代理团队的性能和协作效率。
+*   **AI研发与测试：** 为AI代理的开发、测试和迭代提供一个灵活且可扩展的平台。
+
+
+- [NVIDIA/AgentIQ: The NVIDIA AgentIQ toolkit is an open-source library for efficiently connecting and optimizing teams of AI agents.](https://github.com/NVIDIA/AgentIQ)
+
+------------------------------------------------------------
+
+# 3.PC-Agent-E上交大+SII推出
+
+#### 简介
+PC Agent - E是一个高效的代理训练框架，旨在以显著的数据效率激发强大的计算机使用能力。该框架从仅312条人工注释的计算机使用轨迹开始，通过Claude 3.7 Sonnet合成多样化的行动决策，进一步提高数据质量。训练后的PC Agent - E模型在WindowsAgentArena - V2基准测试中取得了显著的相对改进，超越了Claude 3.7 Sonnet，并在OSWorld上展示了对不同操作系统的强大泛化能力。
+
+#### 核心功能
+1. **轨迹收集**：使用PC Tracker工具记录人类计算机使用轨迹，收集屏幕状态观察和人类操作，过滤错误步骤和轨迹。
+2. **思维补全**：基于屏幕状态观察和历史步骤上下文，重建每个行动决策前的潜在人类思维过程。
+3. **轨迹增强**：利用Claude 3.7 Sonnet为轨迹的每个步骤合成多样化的替代行动决策，增强轨迹数据的丰富性和多样性。
+4. **代理训练**：在增强的轨迹上训练PC Agent - E模型，使其具备强大的计算机使用能力。
+
+#### 技术原理
+1. **轨迹收集**：借助PC Tracker记录人类与计算机交互过程中的屏幕状态和操作，采用规则过滤数据，确保数据质量。
+2. **思维补全**：通过迭代方法，为Claude 3.7 Sonnet提供任务描述、历史操作、当前操作和截图等信息，重建人类操作背后的思维过程。
+3. **轨迹增强**：利用Claude 3.7 Sonnet的长程规划能力和先进推理模式，针对人类轨迹的每个步骤生成多个合理的替代行动决策。
+4. **代理训练**：以Qwen2.5 - VL - 72B为基础模型，采用简单的端到端架构，在增强的轨迹数据上进行训练。
+
+#### 应用场景
+1. **自动化办公**：可用于自动完成如文档处理、表格制作、邮件发送等日常办公任务。
+2. **系统管理**：协助进行系统配置、软件安装、文件管理等操作。
+3. **软件测试**：自动执行软件测试任务，提高测试效率和准确性。 
+
+
+- [GAIR-NLP/PC-Agent-E: Efficient Agent Training for Computer Use](https://github.com/GAIR-NLP/PC-Agent-E)
+- [gair-nlp.github.io](https://gair-nlp.github.io/PC-Agent-E)
+- [henryhe0123/PC-Agent-E · Hugging Face](https://huggingface.co/henryhe0123/PC-Agent-E)
+- [2505.13909](https://arxiv.org/pdf/2505.13909)
+
+------------------------------------------------------------
+
+# 3.Salesforce MAS Agent框架
+
+
+#### 简介
+MAS-ZERO 是 Salesforce AI Research 推出的首个用于自动设计多智能体系统（MAS）的自进化推理时框架。它无需验证集，通过元级设计迭代生成、评估和完善 MAS 配置，能动态组合智能体和分解问题，在数学、研究生级问答和软件工程等基准测试中表现出色，优于手动和现有自动 MAS 基线。
+
+#### 核心功能
+- **自动设计**：自动设计与底层大语言模型（LLM）能力相匹配的智能体结构。
+- **自适应优化**：针对每个问题实例自适应优化 MAS 配置，提升解决复杂问题的能力。
+- **自验证**：从候选答案中选择最可靠和完整的答案。
+
+#### 技术原理
+- **元迭代**：元智能体通过观察系统级和组件级性能学习组件智能体的潜力，包括元设计（将问题分解为子任务并提出 MAS）和元反馈（评估 MAS 和子任务并生成反馈）两个主要功能。
+- **自验证**：将验证问题转化为选择问题，元智能体从候选答案中选择最连贯和正确的输出。
+
+#### 应用场景
+- **数学领域**：解决如 AIME24 等数学基准测试中的复杂问题。
+- **研究生级问答**：处理 GPQA - diamond 等研究生级别的问答任务。
+- **软件工程**：应对 SWE - Bench - Lite - Oracle 等代码领域的挑战。 
+
+
+- [SalesforceAIResearch/MAS-Zero: Designing Multi-Agent Systems with Zero Supervision](https://github.com/SalesforceAIResearch/MAS-Zero)
+- [MAS-Zero: Designing Multi-Agent Systems with Zero Supervision](https://mas-design.github.io/)
+- [MAS-ZERO: Designing Multi-Agent Systems with Zero Supervision](https://arxiv.org/pdf/2505.14996)
+
+------------------------------------------------------------
+
+# 3.TaskWeaver微软
+
+
+#### 简介
+TaskWeaver是由微软开发的一个以代码为优先的代理框架，用于无缝规划和执行数据分析任务。它通过代码片段解释用户请求，以函数形式协调各种插件，实现有状态的数据处理。该框架支持多种大语言模型，具有易使用、易调试、易扩展等特点。
+
+#### 核心功能
+- **复杂任务规划**：具备任务分解和进度跟踪能力，可解决复杂任务。
+- **反思性执行**：支持对执行过程进行反思并调整。
+- **丰富数据处理**：允许使用Python中的丰富数据结构，如DataFrames。
+- **自定义算法封装**：可将自定义算法封装成插件并编排使用。
+- **融入领域知识**：便于融入特定领域知识，提高执行可靠性。
+- **有状态执行**：支持生成代码的有状态执行，确保用户体验一致流畅。
+- **代码验证**：执行前验证生成的代码，检测并提供修复建议。
+- **安全会话管理**：支持基本会话管理，隔离不同用户数据。
+
+#### 技术原理
+TaskWeaver基于大语言模型，通过代码片段理解用户请求，将其转化为可执行的数据分析任务。它结合任务分解和进度跟踪技术，对复杂任务进行规划。在执行过程中，利用反思机制调整执行策略。同时，借助代码验证技术确保生成代码的可靠性，通过会话管理和沙盒环境保障数据安全和执行安全。
+
+#### 应用场景
+- **数据分析**：处理和分析高维表格数据等复杂数据结构。
+- **工作流自动化**：编排自定义算法和插件，实现工作流自动化。
+- **科研辅助**：作为研究工具，辅助科研人员进行数据分析和实验。 
+
+
+- [microsoft/TaskWeaver: A code-first agent framework for seamlessly planning and executing data analytics tasks.](https://github.com/microsoft/TaskWeaver?tab=readme-ov-file)
+- [Overview | TaskWeaver](https://microsoft.github.io/TaskWeaver/docs/overview/)
+
+------------------------------------------------------------
+
+# 3.babyagi
+
+
+#### 简介
+BabyAGI是一个用于自构建自主代理的实验性框架，由Yohei开发。其核心是新的函数框架（functionz），可存储、管理和执行数据库中的函数，具有基于图的结构来跟踪导入、依赖函数和认证密钥，还配备了用于管理函数、运行更新和查看日志的仪表板。最初版本在2023年引入任务规划作为开发自主代理的方法，当前版本强调以最简单的自构建方式打造通用自主代理。
+
+#### 核心功能
+- **函数管理**：可注册、加载、存储和执行函数，支持将相关函数组织成包，便于构建和管理。
+- **密钥管理**：能从代码中或通过仪表板存储和管理关键依赖项（如API密钥）。
+- **执行环境管理**：自动加载必要的函数包，管理依赖关系，确保执行环境无缝运行。
+- **日志记录**：记录函数执行的各个方面，包括输入、输出、执行时间、错误等，便于监控和调试。
+- **触发机制**：允许特定函数根据系统内的特定事件或操作自动执行。
+- **自主任务执行**：用户提供初始目标和任务，执行代理完成任务，任务创建代理根据结果创建后续任务，优先级代理调整任务列表。 
+
+#### 技术原理
+- **函数框架**：采用functionz框架，以图结构存储函数的导入、依赖和认证信息，实现函数的自动加载和全面日志记录。
+- **任务驱动架构**：用户设定初始目标和任务，通过执行、任务创建和优先级调整三个代理协同工作，不断生成和执行任务。
+- **向量存储**：使用Pinecone将任务/结果对存储为嵌入式向量，在任务执行和创建时提取最相关的上下文。 
+
+#### 应用场景
+- **自动化工作流**：如自动处理业务流程中的各种任务，减少人工干预。
+- **信息收集与整合**：从多个应用（如Airtable CRM、Google Drive）中收集和整合信息。
+- **代码生成**：根据用户描述生成代码，辅助软件开发。 
+
+
+- [yoheinakajima/babyagi](https://github.com/yoheinakajima/babyagi)
+- [Birth of BabyAGI – Yohei Nakajima](https://yoheinakajima.com/birth-of-babyagi/)
+
+------------------------------------------------------------
+
+# 3.core
+
+
+#### 简介
+Cheshire Cat是一个用于构建自定义AI代理的框架，具有API优先、支持多种交互方式、内置RAG、可通过插件扩展等特点，支持多用户并具备细粒度权限，采用docker化部署。
+
+#### 核心功能
+- 为应用添加对话层，支持通过WebSocket聊天和使用可定制的REST API管理代理。
+- 内置RAG，支持通过langchain使用任何语言模型。
+- 可通过插件扩展功能，具备事件回调、函数调用、对话表单等机制。
+- 拥有易于使用的管理面板，支持多用户并可设置细粒度权限。
+
+#### 技术原理
+基于API优先设计，利用WebSocket实现聊天交互，REST API进行代理管理。内置RAG使用Qdrant，通过langchain支持多种语言模型。借助事件回调、函数调用等机制实现功能扩展，采用docker化部署确保环境一致性。
+
+#### 应用场景
+- 为各类应用添加对话交互功能，如智能客服、智能助手等。
+- 适用于需要处理多用户对话且具备权限管理的场景。
+- 可用于构建特定领域的AI代理，通过插件扩展满足不同业务需求。 
+
+
+- [cheshire-cat-ai/core: Production ready AI agent framework](https://github.com/cheshire-cat-ai/core)
+
+------------------------------------------------------------
+
+# 3.gpt-engineer
+
+
+#### 简介
+gpt - engineer是一个代码生成实验平台，允许用户用自然语言指定软件需求，让AI编写并执行代码，还能要求AI进行改进。它支持多种安装方式，默认支持OpenAI、Azure OpenAI、Anthropic等模型，也可通过额外设置使用开源模型。lovable.dev则可让用户通过与AI聊天创建应用和网站。
+
+#### 核心功能
+- **代码生成与改进**：依据自然语言描述生成代码，对现有代码进行改进。
+- **模型支持**：支持多种模型，包括OpenAI、Azure OpenAI、Anthropic模型及开源模型。
+- **基准测试**：提供“bench”二进制文件，用于将自定义代理与公共数据集进行基准测试。
+- **自定义AI身份**：可通过覆盖“preprompts”文件夹来指定AI代理的“身份”。
+- **图像输入**：支持为具有视觉能力的模型提供图像输入。
+
+#### 技术原理
+gpt - engineer主要基于大语言模型的自然语言处理能力，利用API与模型交互，将用户的自然语言描述转化为代码。通过对预提示（preprompts）的设置来引导模型输出符合特定需求的代码，同时可结合图像等额外信息辅助模型理解。对于不同模型，适配相应的API进行通信。
+
+#### 应用场景
+- **软件开发**：快速生成软件代码，提高开发效率。
+- **代码优化**：对已有代码进行功能增强和性能优化。
+- **模型研究**：用于研究和测试不同的编码代理模型。
+- **网站与应用创建**：通过lovable.dev平台，非技术人员也能与AI交流创建应用和网站。 
+
+
+- [gpt-engineer-org/gpt-engineer: Specify what you want it to build, the AI asks for clarification, and then builds it. Not actively maintained.](https://github.com/gpt-engineer-org/gpt-engineer)
+- [AntonOsika/gpt-engineer: CLI platform to experiment with codegen. Precursor to: https://lovable.dev](https://github.com/AntonOsika/gpt-engineer)
+
+------------------------------------------------------------
+
+# 3.gpt-researcher
+
+
+#### 简介
+GPT Researcher 是一个用于网络和本地研究的开源深度研究智能体，能生成详细、客观且带引用的研究报告，具备多种定制选项。它利用“计划者”和“执行者”代理架构，解决了人工研究耗时久、大语言模型信息过时、现有服务资源有限等问题。
+
+#### 核心功能
+- 生成详细研究报告，包含研究问题、大纲、资源等。
+- 智能图像抓取与过滤，用于报告内容。
+- 生成超 2000 字的详细报告，汇总超 20 个来源形成客观结论。
+- 支持 JavaScript 网页抓取，维护研究过程中的记忆和上下文。
+- 提供轻量级和生产级前端版本，可将报告导出为多种格式。
+- 支持 MCP 集成，可连接专业数据源；具备深度研究功能，采用树状探索模式。
+- 可基于本地文档（PDF、文本、CSV 等）进行研究。
+
+#### 技术原理
+核心是利用“计划者”和“执行者”代理。计划者生成研究问题，执行者收集相关信息，最后由发布者将结果汇总成综合报告。同时利用 gpt - 40 - mini 和 gpt - 4o(128K 上下文)完成研究任务，并对成本进行优化。
+
+#### 应用场景
+- 学术研究：帮助学者快速收集资料、生成研究报告。
+- 商业调研：为企业提供市场分析、竞品研究等报告。
+- 内容创作：为创作者提供丰富素材和研究支持。
+- 信息检索：快速从大量网页和本地文档中获取所需信息。 
+
+
+- [assafelovic/gpt-researcher: GPT based autonomous agent that does online comprehensive research on any given topic](https://github.com/assafelovic/gpt-researcher)
+- [gpt-researcher/README-zh_CN.md at master · assafelovic/gpt-researcher](https://github.com/assafelovic/gpt-researcher/blob/master/README-zh_CN.md)
+
+------------------------------------------------------------
+
+# 3.ii-agent
+
+
+#### 简介
+II-Agent 是一个开源智能助手，旨在跨多个领域简化和增强工作流程。它围绕领先语言模型提供代理接口，有 CLI 和 WebSocket 服务器，集成多个 LLM 提供商。在 GAIA 基准测试中表现出色，能执行复杂任务，提升生产力。
+
+#### 核心功能
+- **多领域支持**：涵盖研究、内容生成、数据分析、软件开发、工作流自动化和问题解决等领域。
+- **交互方式**：提供 CLI 接口和基于 WebSocket 的前端交互。
+- **集成多种 LLM**：如 Anthropic Claude、Google Gemini 等。
+- **多功能执行**：包括文件操作、命令执行、网页交互、任务报告等。
+
+#### 技术原理
+- **核心架构与交互**：通过动态定制上下文的系统提示、交互历史管理、智能上下文管理处理令牌限制，系统调用和选择 LLM 能力。
+- **规划与反思**：结构化推理、问题分解、透明决策、假设形成与测试。
+- **执行能力**：文件系统操作、命令行执行、网页交互、任务完成与报告。
+- **上下文管理**：令牌使用估计与优化、长交互截断、文件存档。
+- **实时通信**：基于 WebSocket 实现交互式通信。
+
+#### 应用场景
+- **研究与内容创作**：多步网络搜索、内容生成、数据可视化。
+- **软件开发**：代码合成、调试、教程编写。
+- **工作流优化**：脚本生成、浏览器自动化、文件管理。
+- **问题解决**：分解问题、探索替代路径、提供指导。 
+
+
+- [Intelligent-Internet/ii-agent: II-Agent: a new open-source framework to build and deploy intelligent agents](https://github.com/Intelligent-Internet/ii-agent)
+
+------------------------------------------------------------
+
+# 3.lagent
+
+
+#### 简介
+Lagent是一个轻量级的开源框架，受PyTorch设计哲学启发，允许用户高效构建基于大语言模型（LLM）的智能体，提供了多种功能和工具以支持智能体开发。
+
+#### 核心功能
+- **智能体通信**：使用`AgentMessage`进行通信，智能体可处理用户消息并生成回复。
+- **记忆管理**：每次交互的输入输出消息会添加到智能体的记忆中，支持多种方式查看记忆。
+- **消息聚合**：提供默认聚合器，也可自定义聚合器以接收少样本数据。
+- **灵活响应格式化**：使用`output_format`解析模型输出信息并存储在`AgentMessage`的`formatted`字段。
+- **工具调用一致性**：`ActionExecutor`与智能体使用相同通信数据结构，支持自定义消息转换钩子。
+- **双接口设计**：提供同步和异步接口，可根据需求选择以充分利用资源。
+
+#### 技术原理
+- 基于大语言模型（如VllmModel、INTERNLM2_META等），通过`Agent`类封装模型调用逻辑。
+- 利用`AgentMessage`作为消息传递的数据结构，在智能体的`__call__`方法中处理消息，包括添加记忆、调用模型和应用钩子等操作。
+- 借助`ActionExecutor`执行工具调用，使用`Hook`类实现消息转换和处理的自定义逻辑。
+
+#### 应用场景
+- **数学问题解决**：通过编程解决数学问题，如使用`Coder`智能体。
+- **博客写作**：异步博客智能体通过自我完善提高写作质量。
+- **信息检索与数据可视化**：执行信息检索、数据收集和图表绘制等多智能体工作流。 
+
+
+- [InternLM/lagent: A lightweight framework for building LLM-based agents](https://github.com/InternLM/lagent/tree/main)
+
+------------------------------------------------------------
+
+# 3.toolkam-Agent
+
+#### 简介
+Toolkami 是由 aperoc 在 GitHub 上开发的一个开源、轻量级人工智能代理框架。其核心理念是极简主义，仅通过七个基本工具即可构建功能齐全的 AI 代理。该框架旨在提供强大而简单的功能，实现以最小的复杂性提供最大的功能。
+
+#### 核心功能
+Toolkami 的核心功能围绕其七个关键工具展开，旨在使 AI 代理能够执行多样的任务并进行自我改进：
+*   **Read (读取)**：允许代理读取信息。
+*   **Write Diff (写入差异)**：支持代理修改内容，并记录修改轨迹。
+*   **Browse (浏览)**：使代理能够访问和导航网络信息。
+*   **Command (命令)**：执行命令行操作，与系统进行交互。
+*   **Ask (提问)**：允许代理向用户或其他模块提问以获取信息或澄清。
+*   **Think (思考)**：支持代理进行内部推理和决策。
+此外，框架还提供 **Turbo mode（涡轮模式）** 实现无人工干预的自动化操作，以及 **Hot-reloading（热重载）** 实现代理的自修改能力。
+
+#### 技术原理
+Toolkami 的技术原理在于其精炼的工具集设计和自适应机制。
+1.  **模块化工具集：** 框架将复杂任务分解为七个原子操作（Read, Write Diff, Browse, Command, Ask, Think），通过这些工具的组合与协作来完成高级代理行为。这种模块化设计降低了系统复杂性，提升了可维护性。
+2.  **“Turbo mode”：** 实现代理的自主运行和决策，减少人工干预，可能通过预设规则、强化学习或目标导向规划等方式实现代理的自动化行为。
+3.  **“Hot-reloading”：** 允许代理在运行时进行自我代码或逻辑的修改和更新，无需重启。这通常涉及到动态代码加载、反射机制或元编程技术，使代理能够基于环境反馈或自身学习结果进行适应性进化。
+4.  **轻量级架构：** 强调最小化依赖和资源占用，以提高运行效率和部署便捷性，适合在资源受限的环境中运行。
+
+#### 应用场景
+Toolkami 的极简和高效特性使其适用于多种 AI 代理开发和自动化场景：
+*   **自动化任务处理：** 构建能够自主执行文件操作、网络浏览、数据读写等日常或复杂自动化任务的代理。
+*   **开发辅助工具：** 作为开发人员的智能助手，自动完成代码修改、文档生成或环境配置等工作。
+*   **教育和研究：** 为 AI 代理原理的教学和研究提供一个简单易懂、功能完整的实验平台。
+*   **轻量级智能系统：** 部署于资源有限的边缘设备或嵌入式系统中，实现基本的智能化控制和响应。
+*   **快速原型开发：** 帮助开发者快速构建和测试 AI 代理的原型，验证想法。
+
+- [aperoc/toolkami: Minimal AI agent framework that just works with only seven tools.](https://github.com/aperoc/toolkami)
+
+------------------------------------------------------------
+
+# 3.斯坦福小镇generative_agents
+
+
+#### 简介
+该项目围绕论文“Generative Agents: Interactive Simulacra of Human Behavior”展开，包含生成式智能体的核心模拟模块及其游戏环境，可在本地机器上设置模拟环境并进行模拟演示。
+
+#### 核心功能
+- **模拟运行**：可启动环境服务器和智能体模拟服务器，运行多智能体模拟，能控制模拟步数，保存和继续模拟。
+- **模拟回放**：可对已运行的模拟进行回放，还能压缩模拟文件进行演示。
+- **模拟定制**：可通过初始化智能体历史或创建新的基础模拟文件来定制模拟。
+
+#### 技术原理
+借助OpenAI API，结合Python环境运行Django项目实现环境服务器和模拟服务器的启动与交互，通过文件存储模拟数据。
+
+#### 应用场景
+- **学术研究**：用于研究人类行为模拟、人机交互等领域。
+- **游戏开发**：为游戏提供更真实的智能体行为模拟。 
+
+
+- [joonspk-research/generative_agents: Generative Agents: Interactive Simulacra of Human Behavior](https://github.com/joonspk-research/generative_agents)
+
+------------------------------------------------------------
+
+# 4.MobileAgent具身机器人
+
+
+#### 简介
+Mobile-Agent-v2是用于解决长上下文图文交错输入中导航问题的移动设备操作助手，通过多智能体协作实现有效导航。它增强了视觉感知模块，凭借GPT - 4o提升操作性能和速度，已被NeurIPS 2024接收，还发布了可上传手机截图体验的Demo。
+
+#### 核心功能
+- 解决长上下文图文交错输入中的导航问题。
+- 通过多智能体协作实现移动设备操作的有效导航。
+- 增强视觉感知模块，提升操作准确率。
+- 利用GPT - 4o提升操作性能和速度。
+
+#### 技术原理
+采用多智能体架构，结合增强的视觉感知模块，借助GPT - 4o进行运算。可根据设备性能选择不同的图标描述模型调用方法和具体模型，如本地部署或API调用，使用不同的Qwen系列模型，还可设置“反思智能体”和“内存单元”开关。
+
+#### 应用场景
+适用于安卓和鸿蒙系统（版本号 <= 4）的移动设备操作辅助，如用户在移动设备上进行复杂操作时，可借助该助手更高效准确地完成任务。 
+
+
+- [MobileAgent/Mobile-Agent-v2/README_zh.md at main · X-PLUG/MobileAgent](https://github.com/X-PLUG/MobileAgent/blob/main/Mobile-Agent-v2/README_zh.md)
+
+------------------------------------------------------------
+
+# 4.UFO-微软面向Windows的Agent框架
+
+
+#### 简介
+UFO²是微软开源的桌面代理操作系统（Desktop AgentOS），可将自然语言请求转化为跨应用工作流，在Windows系统上运行。它具有深度操作系统集成、多模式控制检测等关键能力，2025年4月发布v2.0.0版本，引入AgentOS概念。
+
+#### 核心功能
+- **任务执行**：将自然语言目标解析为操作步骤，协调应用程序完成任务。
+- **多模式控制**：结合Windows UIA、Win32和WinCOM进行控件检测，选择GUI操作或原生API执行。
+- **知识融合**：融合离线文档、在线搜索、演示和执行跟踪等知识，支持检索增强生成。
+- **推测执行**：预测批量操作并一次性验证，减少大语言模型查询次数。
+- **隔离运行**：即将支持在隔离的虚拟桌面运行，不影响主工作区。
+
+#### 技术原理
+UFO²采用多代理框架，包括HostAgent、AppAgents、Knowledge Substrate、Speculative Executor等组件。HostAgent负责解析目标和协调AppAgents；AppAgents通过多模态感知和混合控制检测选择执行方式；Knowledge Substrate将各类知识整合到向量存储中；Speculative Executor预测并验证批量操作以降低延迟。
+
+#### 应用场景
+- **办公自动化**：在Office、Edge等应用中自动完成文档处理、网页浏览等任务。
+- **系统管理**：执行文件管理、系统设置等操作。
+- **跨应用协作**：协调多个应用完成复杂任务，如数据导入导出、报告生成等。 
+
+
+- [microsoft/UFO: A UI-Focused Agent for Windows OS Interaction.](https://github.com/microsoft/UFO)
+
+
+# DeepSWE-Agent框架
+
+
+#### 简介
+DeepSWE-Preview 是 Agentica Project 开源的一个先进的软件工程（SWE）智能体模型，专注于代码的理解、修改与优化。它是 rLLM 框架下通过强化学习进行训练的代表性成果。rLLM 是一个旨在通过大规模复现先进强化学习技术来推动大型语言模型（LLMs）强化学习民主化的开源框架，致力于构建通用且可扩展的智能体系统。
+
+#### 核心功能
+*   **自动化代码操作**: DeepSWE-Preview 能够自动理解和编辑代码，包括快速定位并修复漏洞、优化性能瓶颈以及重构代码结构。
+*   **软件工程任务执行**: 作为软件工程智能体，它在 SWEBench-Verified 等基准测试上表现出色，能够处理复杂的软件开发任务。
+*   **语言智能体训练与部署**: rLLM 框架提供构建自定义智能体和环境、利用强化学习进行训练以及将其部署到实际工作负载的能力。
+*   **代码生成与推理**: 除了软件工程，Agentica Project 还通过如 DeepCoder-14B-Preview 等模型，实现了高精度的代码生成与推理功能。
+
+#### 技术原理
+DeepSWE-Preview 的核心技术原理是基于**强化学习（RL）**对大型语言模型进行**后训练（post-training）**。具体而言，它采用**纯粹的强化学习方法**进行训练，以解决复杂的软件工程问题。rLLM 框架则致力于**民主化强化学习技术**，通过**分布式强化学习（Distributed RL）**的方法，实现对 LLMs 的大规模微调和行为塑造，从而提升智能体在特定任务上的表现。这包括构建 reward function、设计环境交互机制以及优化训练策略，使模型能够从经验中学习并改进其代码理解和生成能力。
+
+#### 应用场景
+*   **自动化软件开发**: 用于自动化代码漏洞修复、性能优化、代码重构和维护等任务，显著提升软件开发效率和代码质量。
+*   **智能编程辅助**: 为开发者提供智能代码补全、错误检测和修复建议，作为高级编程助手。
+*   **教育与研究**: 为学术界和研究人员提供一个开源框架，用于探索和开发基于强化学习的语言智能体。
+*   **企业级解决方案**: 在大型企业中应用于代码库管理、自动化测试、CI/CD流程中的智能代码审查等。
+
+
+[DeepSWE-Agent](https://huggingface.co/agentica-org/DeepSWE-Preview)
+[rllm-github](https://github.com/agentica-project/rllm)
+
+
+# deepagent
+
+#### 简介
+DeepAgent 是 Abacus.AI 推出的一款通用型人工智能助理，旨在自动化和简化复杂的工作流程。它能够结合高级研究能力与实际执行，从生成定制应用、报告、演示文稿到自动化跨平台（如 Google Workspace 和 Jira）的任务，全面提升工作效率。
+
+#### 核心功能
+*   **多任务自动化:** 自动化处理多种复杂任务和工作流程。
+*   **内容生成:** 自动创建应用程序、视频、演示文稿、网站，甚至小型游戏（如数独）。
+*   **文档分析与提取:** 分析上传的合同，自动提取关键条款、条款和条件，简化合同审查。
+*   **平台集成:** 支持与 Google Workspace 和 Jira 等现有平台的无缝集成。
+*   **AI 应用构建:** 能够根据需求构建特定功能的 AI 应用程序。
+
+#### 技术原理
+DeepAgent 的技术核心在于其作为“通用代理”的能力，这表明它可能融合了多模态学习、自然语言处理（NLP）和强化学习等先进AI技术。通过对大量数据的训练，它能够理解用户意图、规划执行路径，并调用相应的模块或API来完成任务。其自动化能力可能依赖于预设的工作流模板和动态任务编排，使得AI能够像人类一样进行研究、分析和内容创造。具体而言，合同分析功能可能利用了信息提取（Information Extraction）和命名实体识别（Named Entity Recognition, NER）等NLP技术，而内容生成则可能基于大型语言模型（LLM）和生成对抗网络（GAN）等生成式AI模型。
+
+#### 应用场景
+*   **企业自动化:** 自动化日常办公任务、数据报告生成和流程审批。
+*   **合同管理:** 法律和金融领域中，快速审查、分析和提取合同关键信息。
+*   **市场营销与内容创作:** 自动生成营销文案、网站内容、演示幻灯片和宣传视频。
+*   **软件开发与应用构建:** 快速构建和部署特定功能的AI应用程序，无需深入编程知识。
+*   **项目管理:** 自动化Jira等项目管理工具中的任务分配、进度更新和报告。
+*   **教育与培训:** 自动生成教学材料、测验和交互式学习内容。
+
+
+[deepagent](https://deepagent.abacus.ai/)
+
+
+## MiroThinker 针对深度研究和复杂工具使用场景进行开源Agent模型
+
+MiroThinker 是一个开源的智能体模型系列，由 MiroMind AI 推出，专为深度研究、复杂问题解决和长期规划设计。该模型致力于通过其先进的智能体能力，弥合人类智能与人工智能之间的鸿沟，旨在推动通用人工智能（AGI）的发展。MiroThinker 在大规模、高质量轨迹和偏好数据集上进行训练，具有高性能表现。
+
+![MiroThinker.png](fecf390e9ada.png)
+
+#### 核心功能
+*   **深度研究与复杂问题解决：** 能够处理需要深入分析和多步骤推理的复杂任务。
+*   **多跳推理能力：** 支持链式思维和逐步推理，以解决需要多阶段思考的问题。
+*   **任务分解：** 将复杂任务拆解成可管理的子任务。
+*   **检索增强生成（RAG）：** 结合外部知识检索，提高生成内容的准确性和相关性。
+*   **代码执行：** 具备执行代码的能力，支持与外部工具和环境的交互。
+*   **工具使用与调用：** 高效利用各种工具来完成特定任务。
+*   **自我意识与长期记忆（MiroMind愿景）：** 作为MiroMind的核心研究方向，旨在通过长期记忆实现AI的自我意识觉醒。
+
+#### 技术原理
+MiroThinker 模型系列基于 **Qwen3 (通义千问3)** 等先进的基础模型进行构建。其核心技术原理包括：
+*   **大型语言模型（LLM）驱动的智能体架构：** 利用强大的LLM作为核心，实现复杂的认知和决策过程。
+*   **轨迹与偏好数据训练：** 模型在 **MiroVerse-v0.1** 等大规模、高质量的轨迹和偏好数据集上进行训练，通过监督微调（SFT）和直接偏好优化（DPO）等技术，提升模型的决策能力和行为表现。
+*   **强化学习与反馈机制：** 通过从复杂任务执行中获取反馈，不断优化智能体的策略和表现。
+*   **多智能体系统框架（如MiroFlow）：** MiroFlow作为一个多智能体系统开发框架，为MiroThinker等模型生成高质量的智能体轨迹数据，并支持高并发处理，提供强大的协同和管理能力。
+
+#### 应用场景
+*   **科学研究与发现：** 辅助科研人员进行深度文献分析、实验设计、数据解释等。
+*   **复杂项目管理与规划：** 在工程、商业等领域进行长期、多阶段的项目规划和执行。
+*   **智能决策支持系统：** 为企业或个人提供基于复杂数据分析的决策建议。
+*   **自动化问题解决：** 在客服、技术支持、教育等领域实现高度自动化的疑难问题解答。
+*   **Agent开发与研究：** 为AI研究者和开发者提供一个高性能、开源的Agent模型基础，用于探索更高级的AI智能体应用。
+
+
+MiroThinker 的项目地址
+* GitHub仓库：https://github.com/MiroMindAI/MiroThinker
+* HuggingFace模型库：https://huggingface.co/collections/miromind-ai/mirothinker-v01-689301b6d0563321862d44a1
+* 在线体验Demo：https://dr.miromind.ai/
+
+
+## MiroFlow – 多Agent系统开发框架
+
+MiroFlow是一个强大的多智能体系统开发框架，旨在简化复杂、高性能AI智能体的构建、管理和扩展。它专注于为MiroThinker等模型生成高质量的智能体轨迹数据，并提供对外部工具的无缝集成能力。
+
+![miroflow-gaia_score.png](156e55b585ce.png)
+
+![miroflow_architecture.png](64d01c0a33a3.png)
+
+#### 核心功能
+*   **智能体系统开发与管理：** 提供构建、管理和扩展复杂多智能体系统的能力。
+*   **高并发处理：** 支持处理高并发任务，确保系统的高效运行。
+*   **工具集成框架：** 提供灵活的框架，支持与外部工具（如搜索引擎、代码执行环境）的无缝集成，以扩展AI模型的功能。
+*   **数据生成：** 能够为AI模型（如MiroThinker）生成高质量的智能体轨迹数据。
+
+#### 技术原理
+MiroFlow作为一个多智能体系统开发框架，其核心技术原理在于提供一套结构化的机制来协调和管理多个AI智能体的行为与交互。它通过**工具集成框架**实现AI智能体与外部环境的连接与互动，扩展其感知和行动能力。框架设计着重于**高并发处理**，这意味着它内部可能采用异步通信、任务调度或分布式处理等机制，以有效管理大量并行运行的智能体和其交互。同时，通过生成**智能体轨迹数据**，它可能利用这些数据进行模型训练、行为分析或系统优化，以提升智能体的决策质量和协作效率。
+
+#### 应用场景
+*   **复杂AI系统构建：** 适用于需要多个智能体协同工作以解决复杂问题的场景。
+*   **大规模智能体部署：** 在需要部署和管理大量AI智能体的应用中，如智能客服集群、自动化交易系统。
+*   **AI模型训练与优化：** 为MiroThinker等AI模型提供高质量的智能体交互数据，用于模型训练、微调及性能评估。
+*   **扩展AI能力：** 通过集成外部工具，使AI智能体能够执行更广泛的任务，例如信息检索、代码执行、数据分析等。
+
+
+* GitHub仓库：https://github.com/MiroMindAI/Miroflow
+
+
+## NeuralAgent – 开源的桌面AI助手
+
+NeuralAgent是一款开源的桌面AI个人助手，旨在通过自然语言指令自动化执行计算机上的多种复杂任务。它作为一个本地AI智能体，能够直接在用户的操作系统上运行，像人类一样与桌面环境进行交互。
+
+![getneural.png](97f17fecd0ac.png)
+
+#### 核心功能
+*   **桌面自动化操作:** 模拟键盘输入、鼠标点击等，实现与桌面应用的无缝交互。
+*   **浏览器任务处理:** 自动导航浏览器、填写表单、发送邮件等。
+*   **跨应用和工作流自动化:** 理解并执行跨不同应用程序和工作流程的任务。
+*   **复杂任务执行:** 能够自动化处理需要多步骤和多应用协作的复杂任务。
+
+#### 技术原理
+NeuralAgent的核心技术在于其作为“操作系统级智能体”的能力。它利用先进的AI模型来解析用户的自然语言指令，并将其转化为对操作系统和应用程序的底层操作，例如：
+*   **自然语言处理 (NLP):** 理解并解释用户的意图和指令。
+*   **视觉感知与识别:** 识别屏幕上的元素，如同人类用户一般理解界面布局和内容。
+*   **低级操作模拟:** 通过模拟键盘/鼠标事件、调用系统API等方式，实现对操作系统和应用程序的精确控制。
+*   **任务规划与执行:** 根据指令自动规划执行路径，并在实时环境中完成任务。
+*   **本地化运行:** 作为本地AI代理，直接在桌面环境运行，提高了数据安全性和响应速度。
+
+#### 应用场景
+*   **日常办公自动化:** 自动填写表格、整理邮件、数据录入、文档处理等。
+*   **重复性任务:** 自动化执行网页浏览、信息抓取、数据搬运等高重复性工作。
+*   **客户服务与支持:** 辅助处理常见问题、自动回复邮件或消息。
+*   **个人效率提升:** 根据用户指令自动管理文件、启动应用程序、设置提醒等。
+*   **软件测试与开发:** 自动化执行测试用例，模拟用户操作流程。
+
+
+*  项目官网：https://www.getneuralagent.com/
+*  GitHub仓库：https://github.com/withneural/neuralagent
+
+
+## Youtu-agent – 腾讯优图智能体框架
+
+Youtu-agent是腾讯优图实验室推出的开源智能体框架，旨在构建、运行和评估自主智能体。该框架以其模块化和可扩展性为设计核心，支持开发者轻松创建定制化的智能体、工具和环境，并基于开源模型DeepSeek-V3实现了领先性能，致力于简化智能体开发流程。
+
+![youtu.png](220280dbbaef.png)
+
+![youtu1.png](b4380c189c3e.png)
+#### 核心功能
+*   **智能体构建与配置：** 支持灵活的YAML配置和自动智能体生成，用于定义智能体的行为、所使用的工具和运行环境。
+*   **多模型与工具集成：** 兼容多种模型API，并提供丰富的工具包（如网络搜索、文件操作），扩展智能体的能力范围。
+*   **数据分析与处理：** 具备自动读取、分析CSV文件并生成数据报告的能力。
+*   **文件管理与组织：** 辅助用户自动分类、命名和存储文件。
+*   **研究与内容生成：** 能够自动搜索、整理文献生成综述报告，或根据需求生成网页内容、视频脚本。
+*   **性能评估：** 提供一套全面的评估框架，用于基准测试智能体性能，包括数据管理、处理和自动化执行与判断。
+
+#### 技术原理
+Youtu-agent 的核心架构遵循清晰的职责分离原则，主要由以下模块构成：
+*   **AgentConfig：** 智能体的配置文件，采用YAML格式，定义智能体的行为、工具集和环境参数。
+*   **Agent：** 智能体的核心逻辑单元，依据AgentConfig运行，并能执行任务，支持单一智能体（如SimpleAgent）或多智能体协同工作（如OrchestraAgent）。
+*   **Environment：** 提供智能体与外部世界交互的接口，例如`BrowserEnv`支持网页操作，`ShellLocalEnv`支持本地文件系统访问。
+*   **Toolkits：** 智能体的能力集合，包含可调用的各种工具，如`search`工具用于网络搜索，`file`工具用于文件操作。
+*   **Evaluation Framework：** 用于评估智能体性能的标准化框架，包含数据管理、处理和执行等管道，确保评估的准确性和可重现性。框架的设计理念是构建在底层模型（如DeepSeek-V3）之上，通过灵活的组件组合实现复杂任务。
+
+
+
+* 项目官网：https://tencent.github.io/Youtu-agent/
+* GitHub仓库：https://github.com/Tencent/Youtu-agent
+
+## Parlant – AI Agent开发框架
+
+Parlant 是一个开源的大型语言模型（LLM）代理行为建模引擎，旨在帮助开发者快速创建和部署符合业务需求的对话式AI代理。它通过自然语言规则定义来确保AI代理的行为遵循预设的业务逻辑和指令，从而实现可控、可靠且能生成对齐响应的智能客服或聊天代理。
+
+#### 核心功能
+*   **AI代理行为建模与塑造：** 允许通过对话和响应的迭代优化来逐步构建和塑造AI代理的行为。
+*   **自然语言规则定义：** 支持使用自然语言规则来设定AI代理的指导方针、对话路径和工具使用，确保行为合规性。
+*   **生产级引擎：** 提供稳定可靠的引擎，即使在复杂性扩展的情况下，也能保证AI聊天代理生成对齐的响应并遵循指令。
+*   **快速创建与部署：** 帮助开发者在短时间内构建和发布AI聊天代理。
+*   **开放社区协作：** 作为开源项目，鼓励社区参与共同发展和完善。
+
+#### 技术原理
+Parlant 的技术核心在于其LLM代理行为建模引擎。它利用大型语言模型作为基础，通过引入自然语言规则和迭代反馈机制，对LLM的输出进行约束和引导。
+*   **自然语言处理 (NLP) 与理解：** 核心在于解析和理解用户输入及预设的自然语言规则。
+*   **行为对齐 (Behavior Alignment)：** 通过内部机制确保AI代理的响应与既定的指导方针、业务协议和指令保持一致。这可能涉及提示工程、强化学习或监督微调等技术。
+*   **迭代开发与精炼：** 支持通过持续的对话测试和响应调整来优化代理性能，类似于人类专家的“塑造”过程。
+*   **模块化与可扩展性：** 提供结构化的方式来集成各种功能（如工具调用、知识库查询），以应对复杂的对话场景。
+
+#### 应用场景
+*   **客户服务与支持：** 构建能够可靠遵循企业协议和流程的智能客服代理。
+*   **合规性对话代理：** 在金融、医疗等需要严格合规的行业中，确保AI代理的回复符合法律法规和内部政策。
+*   **业务流程自动化：** 用于自动化复杂的对话流程，如销售咨询、预约安排或故障排除。
+*   **企业内部助手：** 开发能准确理解并执行内部指令的AI助手，提升员工效率。
+*   **多轮对话管理：** 处理需要记忆上下文和遵循特定对话路径的复杂交互。
+
+
+* 项目官网：https://www.parlant.io/
+* Github仓库：https://github.com/emcie-co/parlant
+
+## SciToolAgent – 浙大开源知识图谱驱动的科学领域Agent
+
+SciToolAgent是由浙江大学创新中心（HICAI-ZJU）开发的一个开源工具平台，旨在通过整合多达500多种科学工具，提升科学研究效率。它是一个知识图谱驱动的科学智能体，能够覆盖生物学、化学、材料科学等多个科学领域。
+
+#### 核心功能
+*   **多工具集成与管理：** 整合并管理海量科学工具，实现跨领域、跨功能的工具调用与协作。
+*   **科研流程自动化：** 能够处理数据，支持科学研究任务的自动化执行。
+*   **领域知识图谱驱动：** 利用知识图谱对科学工具进行组织和驱动，增强智能体的理解和推理能力。
+
+#### 技术原理
+SciToolAgent的核心技术原理是**知识图谱驱动的智能体架构**。它通过构建和利用全面的科学领域知识图谱，将500多种科学工具进行结构化表示和关联。智能体能够基于知识图谱对用户输入的科研任务进行语义理解、工具选择、参数配置和执行流程规划，从而实现多工具的智能协同与自动化操作。这种架构赋能智能体具备更强的可解释性、规划能力和泛化性。
+
+#### 应用场景
+*   **生物信息学研究：** 进行基因序列分析、蛋白质结构预测、药物筛选等。
+*   **材料科学探索：** 辅助新材料设计、性能预测与模拟。
+*   **化学实验设计与数据分析：** 自动化化学反应路径规划、分子模拟以及实验数据的处理与解释。
+*   **跨学科科研：** 促进不同科学领域工具的协同使用，解决复杂多学科问题。
+*   **科研教育与培训：** 作为辅助工具，帮助科研人员和学生快速掌握和运用各类科学工具。
+
+
+*  Github仓库：https://github.com/HICAI-ZJU/SciToolAgent
+
+## OpenAgents – 构建AI Agent网络
+
+
+OpenAgents 是一个开源框架和开放平台，旨在构建和托管人工智能代理（AI Agent）网络，特别是语言代理。它通过创建一个持久化的代理网络，使得各个代理能够像人类一样长期在线并进行开放式协作，从而在日常生活中实现广泛的应用。
+
+
+#### 核心功能
+*   **AI Agent网络构建与管理：** 提供工具和接口，用于创建、部署和管理多个AI代理组成的网络。
+*   **开放式协作机制：** 促进网络中的AI代理之间进行高效、灵活的协作和信息交换。
+*   **持久化Agent环境：** 确保代理能够保持长时间在线运行，维持其状态和任务，实现连续性的交互与工作。
+*   **语言代理支持：** 专注于支持基于大型语言模型的代理，使其能够理解、生成自然语言并执行复杂任务。
+
+#### 技术原理
+OpenAgents 的核心技术原理围绕着构建一个可扩展、互操作的Agent生态系统。
+*   **分布式架构：** 支撑多个代理在网络中独立运行和协作，可能采用微服务或分布式通信协议。
+*   **状态持久化：** 通过数据库或特定存储机制，记录代理的会话历史、任务进度和知识库，确保代理即使离线也能恢复工作状态。
+*   **Agent间通信协议：** 定义代理之间安全、高效的数据交换和指令传递方式，可能是基于API调用、消息队列或事件驱动模式。
+*   **工具集成与调用：** 代理能够根据需求调用外部工具、API和服务，扩展其能力边界。
+*   **基于大语言模型（LLM）的智能：** 语言代理利用先进的LLM进行自然语言理解（NLU）和自然语言生成（NLG），支持复杂的决策制定和交互。
+
+#### 应用场景
+*   **智能助理与自动化：** 构建能够长期在线，协同完成复杂任务的智能个人或企业助理。
+*   **在线客服与支持：** 提供多代理协作的自动化客户服务，处理复杂的用户咨询和问题解决。
+*   **研究与开发：** 允许科研人员部署和测试协同AI代理系统，加速AI应用的研究和迭代。
+*   **教育与培训：** 创建互动式的学习代理，提供个性化的教学辅导和模拟环境。
+*   **日常任务协助：** 在各种日常场景中，如日程管理、信息检索、内容创作等，提供智能化的代理协助。
+
+
+*  项目官网：https://openagents.org/
+*  GitHub仓库：https://github.com/openagents-org/openagents
+
+## Agent HQ – GitHub
+Agent HQ是一个统一的平台或“任务控制中心”，旨在帮助开发者在一个环境中高效管理、协调和部署来自不同供应商的AI编码工具或AI代理。它解决了AI工具生态日益碎片化的问题，通过提供集中式的管理界面，简化了多AI模型协同工作的复杂性，旨在提高软件开发效率和质量。
+
+![](04182d13c5d6.png)
+
+#### 核心功能
+*   **多源AI代理集成:** 能够无缝集成和管理来自OpenAI、Google、Anthropic、xAI、Cognition等多个领先供应商的AI编码代理。
+*   **统一任务分配与监控:** 允许开发者向不同AI代理分配编程任务，并提供“任务控制中心”以实时跟踪代理的工作进度和状态。
+*   **协作工作流协调:** 将AI代理作为“第一类协作伙伴”引入到GitHub等开发平台，使其深度参与代码审查、拉取请求和CI/CD等开发流程。
+*   **权限与治理管理:** 提供集中化的权限管理功能，确保AI代理的部署和操作符合企业政策和安全标准。
+*   **跨平台一致体验:** 在Web界面、IDE（如VS Code）、移动应用和命令行工具中提供一致的用户交互和管理体验。
+*   **互操作性与扩展性:** 构建可扩展的基础设施，促进不同AI代理、数据源和AI模型之间的互操作性。
+
+#### 技术原理
+*   **统一控制平面架构 (Unified Control Plane Architecture):** Agent HQ作为抽象层，在底层AI代理和上层开发者之间提供一个标准化的接口和管理机制，实现多代理的统一调度和编排。
+*   **任务编排与代理生命周期管理 (Task Orchestration and Agent Lifecycle Management):** 平台支持对AI代理的任务进行分解、分配、执行监控和结果聚合，并管理代理的部署、更新和销毁。
+*   **API与SDK层 (API & SDK Layer):** 提供开放的API和SDK，允许第三方AI代理便捷地接入平台，实现功能扩展和定制。
+*   **基于大语言模型 (LLM) 的智能体 (LLM-based Agents):** 核心AI代理通常基于大型语言模型构建，使其具备理解、生成和执行代码的能力，并能进行推理、规划和采取行动。
+*   **并行计算与数据处理 (Parallel Computing & Data Processing):** （部分平台提及）可能采用高效的并行计算引擎，以处理大量数据和支持AI代理的实时分析能力。
+*   **AI可观测性 (AI Observability):** 包含监控工具，用于跟踪AI代理的性能、行为和潜在偏差，确保其可靠运行。
+
+#### 应用场景
+*   **软件开发与工程:**
+    *   **自动化代码辅助:** 自动生成代码片段、测试用例、文档和API规范。
+    *   **Bug修复与代码优化:** 自动识别并修复代码中的错误，提供性能优化建议。
+    *   **项目管理与任务自动化:** 将复杂的编程任务分解并分配给AI代理，自动处理简单的重复性开发工作。
+    *   **代码审查与质量保证:** 辅助代码审查过程，标记潜在问题或提供改进意见。
+*   **企业级AI解决方案:**
+    *   **跨行业自动化:** 在金融、医疗、零售、制药等行业中，利用专业AI代理实现特定业务流程的自动化。
+    *   **企业内容生成与管理:** 自动生成报告、营销文案或内部知识文档。
+    *   **数据分析与洞察:** 自动化数据收集、分析和可视化，辅助决策制定。
+*   **AI代理生态系统构建:**
+    *   为AI代理开发者提供一个标准化的开发、测试和部署环境。
+    *   促进不同AI代理和AI模型之间的集成与协作，加速AI应用创新。
+
+
+
+官网地址：https://github.blog/news-insights/company-news/welcome-home-agents/
+
+
+## DeepEyesV2 – 小红书开源的多模态智能体模型
+ 
+DeepEyesV2 是由小红书团队开源的多模态智能体模型，它扩展了前一代 DeepEyes 模型，专注于实现更强大的工具调用和多模态推理能力。该模型能够理解图文信息，并通过将代码执行和网络检索作为互补且可交错的工具，整合到单一的推理轨迹中，从而有效处理复杂的多模态任务。
+
+![DeepEyesV2.png](1a303e425150.png)
+
+![DeepEyesV2-1.png](1327b6436c2d.png)
+
+#### 核心功能
+*   **多模态理解与推理：** 能够深度理解图像和文本信息，并在此基础上进行高级推理。
+*   **工具调用能力：** 支持主动调用外部工具，包括程序代码执行环境和网络搜索，以增强问题解决能力。
+*   **智能规划与决策：** 对于用户输入和查询，模型能生成初始推理计划，并动态决定是否需要调用外部工具。
+*   **上下文感知工具选择：** 具备任务自适应的工具调用能力，能根据任务类型（如感知任务使用图像操作，推理任务使用数值计算）选择合适的工具。
+
+#### 技术原理
+DeepEyesV2 采用两阶段训练法构建其智能体能力。模型在基座模型Qwen2.5-VL-7B的基础上，通过强化学习（Reinforcement Learning）进一步增强了鲁棒的工具使用行为，克服了直接强化学习在诱导工具使用行为方面的局限性。其核心机制是将程序代码执行和网络检索视为推理轨迹中可交错的工具，使模型能够在处理图像输入和用户查询时，根据需要生成推理计划并动态调用这些工具。这种统一代码执行和网络搜索的策略，使得模型能够进行可靠且复杂的推理，从而在真实世界理解、数学推理和搜索密集型任务中表现出色。
+
+#### 应用场景
+*   **复杂视觉问答：** 解决需要结合视觉信息、编程计算和实时网络搜索的复杂问题。
+*   **多模态内容理解：** 对图像和文本混合的内容进行深入分析和推理，例如电商平台上的商品描述理解与推荐。
+*   **智能助理与Agent：** 作为能够理解视觉信息并执行外部操作的智能体，应用于各类自动化和辅助决策场景。
+*   **数据分析与洞察：** 利用其代码执行能力对图像数据进行量化分析，提取深层洞察。
+
+
+* 项目官网：https://visual-agent.github.io/
+* GitHub仓库：https://github.com/Visual-Agent/DeepEyesV2
+* arXiv技术论文：https://arxiv.org/pdf/2511.05271
+
+
+## Kosong – 月之暗面开源的全新AI Agent开发框架
+
+Kosong是由MoonshotAI开发的一个大型语言模型（LLM）抽象层，旨在为现代AI Agent应用提供统一、便捷的LLM交互接口。它封装了不同LLM提供商的底层差异，简化了LLM的调用、管理和集成过程，使开发者能够更高效地构建和部署复杂的AI Agent。
+
+#### 核心功能
+*   **LLM抽象与统一接口:** 提供标准化的API来与各种LLM（如Kimi）进行交互，屏蔽底层模型差异。
+*   **会话历史管理:** 通过`Message`对象结构化管理对话历史，支持多轮对话的上下文维护。
+*   **系统提示与工具集成:** 允许设置`system_prompt`引导模型行为，并预留了`tools`参数以支持外部工具调用。
+*   **流式响应处理:** 提供`on_message_part`回调机制，支持LLM响应的实时分块输出，提升用户体验。
+*   **可扩展的聊天提供商:** 设计为可插拔架构，方便集成和切换不同的LLM服务提供商。
+
+#### 技术原理
+Kosong的核心技术原理基于**抽象层设计模式**，通过定义一套统一的接口和数据结构（如`Message`），来封装和管理不同LLM供应商的API调用细节。其**会话管理机制**采用面向对象的方式，将用户输入和模型输出封装为`Message`实例列表，形成完整的对话历史，从而实现上下文感知能力。针对实时交互需求，Kosong集成了**流式传输处理**，利用`StreamedMessagePart`和回调函数 (`on_message_part`)，允许LLM响应在生成过程中逐步返回，而非等待完整生成后一次性返回。此外，它通过**策略模式**实现了可扩展的`chat_provider`机制，使得集成新的LLM服务变得简单，并暗示了通过`tools`参数实现的**函数调用或工具使用集成**，以增强AI Agent的能力。
+
+#### 应用场景
+*   **智能客服与虚拟助手:** 快速构建和部署支持复杂对话逻辑的智能客服系统或个人助手。
+*   **AI内容生成平台:** 利用其抽象层能力，灵活切换不同LLM生成各类文本内容。
+*   **多模态AI Agent开发:** 为需要与多种外部系统或工具交互的AI Agent提供LLM核心能力。
+*   **LLM应用原型验证:** 简化新LLM模型的集成和测试，加速概念验证过程。
+*   **教育与研究:** 作为LLM交互的标准化工具，方便教学和研究人员进行模型比较与实验。
+
+* Github仓库：https://github.com/MoonshotAI/kosong
+
+
+## Open-AutoGLM：智谱AI开源手机端智能体框架
+
+Open-AutoGLM是智谱AI开源的手机端智能助理框架，基于AutoGLM大模型构建。它旨在通过自然语言指令实现手机操作的自动化，将用户的口头或文本指令转化为实际的手机交互行为，如点击、滑动和输入。该框架通过其Phone Use能力保障隐私安全，并支持广泛的中文主流应用。
+
+#### 核心功能
+*   **自然语言理解与任务执行：** 能够解析用户自然语言指令，并将其转化为手机上的具体操作以完成任务。
+*   **自动化操作模拟：** 支持模拟真实用户在手机上的多样化操作，包括点击、滑动、文本输入、长按和双击等。
+*   **隐私与安全保障：** 在执行敏感操作时，提供人工确认或接管机制，同时借助云手机技术确保用户隐私安全。
+*   **远程调试与控制：** 支持通过WiFi或网络进行远程ADB（Android Debug Bridge）调试，无需物理连接即可控制设备。
+*   **广泛应用支持：** 兼容50多款主流中文手机应用，涵盖社交、电商、外卖、娱乐等多个领域。
+
+#### 技术原理
+Open-AutoGLM的核心技术原理是构建在**AutoGLM大模型**之上，结合了**多模态感知能力**和**智能规划机制**。它利用**Phone Use能力框架**，将高层级的自然语言指令（例如“帮我订外卖”）拆解为一系列低层级的原子操作。具体实现包括：
+1.  **视觉语言模型（Vision-Language Model, VLM）：** 用于理解手机屏幕的当前UI状态和内容，从而实现对界面的感知。
+2.  **智能规划（Intelligent Planning）：** 根据用户意图和当前屏幕状态，生成并优化操作序列以达成目标。
+3.  **ADB (Android Debug Bridge) 控制：** 通过ADB协议与手机设备进行通信，执行屏幕点击、滑动、文本输入等底层操作，模拟用户行为。
+4.  **模型客户端：** 采用与OpenAI兼容的客户端，便于接入和调用AI模型。
+
+#### 应用场景
+*   **外卖点餐：** 用户通过自然语言指令，实现自动打开外卖应用、搜索特定商家、选择商品并完成下单。
+*   **社交媒体互动：** 自动化执行点赞、评论、分享等社交应用内的操作，如在微信、微博或抖音上与内容互动。
+*   **办公自动化：** 在WPS、Microsoft Office等办公应用中，根据指令创建文档、编辑内容或处理其他办公任务。
+*   **智能家居控制：** 通过智能家居应用，AI能够精准识别并控制相应的智能设备，实现场景切换或设备操作。
+*   **交通出行：** 在地图或打车应用中，自动规划路线、叫车或执行其他出行相关操作。
+
+
+* GitHub仓库：https://github.com/zai-org/Open-AutoGLM
+
+------------------------------------------------------------
+
+## OpenHarness – 港大开源的轻量级 AI Agent 框架
+
+> 周报归档：第 33 期 · 条目 2.2 · 2026-04-08 · [回看原周报](../weeklyHighlights/33.md)
+> 原始周报文件：`weekly_report_20260408_155302.md`
+
+OpenHarness是香港大学数据智能实验室开源的轻量级AI Agent框架，以纯Python实现，仅为Claude Code代码量的1/44，却复刻其98%核心工具能力。它采用Agent Harness架构，支持多模型切换与生态兼容，为开发者和研究者提供轻量、安全、可扩展的AI Agent开发底座。
+
+#### 2.2.1 核心功能
+1. **智能Agent循环**：实现流式工具调用、指数退避重试与并行执行，支持上下文自动压缩和断点续聊，兼顾执行效率与成本管控。
+2. **丰富工具集**：内置43+工具，覆盖文件I/O、Shell命令、Web搜索等场景，兼容Claude Code工具生态，满足多样任务需求。
+3. **动态技能系统**：支持Markdown格式技能按需加载，兼容anthropics/skills生态，可快速复用千余个官方及社区技能。
+4. **跨会话持久记忆**：通过MEMORY.md和SQLite实现记忆跨会话留存，结合CLAUDE.md注入项目规则，提升Agent任务连续性。
+5. **多级权限治理**：提供默认、自动、计划、严格四种权限模式，支持路径级规则与交互式审批，保障敏感操作安全可控。
+
+#### 2.2.2 技术原理
+采用**Agent Harness架构**，将LLM智能层与执行层解耦，模型决策"做什么"，框架负责安全高效执行"怎么做"。核心基于**ReAct工具调用循环**，LLM输出JSON工具指令，框架解析后并行执行，循环至模型停止调用。系统由10+模块化子系统构成，通过Pydantic实现输入校验，利用Asyncio协程管理多Agent任务，支持MCP协议扩展，通过环境变量实现OpenAI兼容模型快速切换，采用uv包管理器实现轻量部署。
+
+#### 2.2.3 应用场景
+1. **AI Agent研究原型**：轻量级代码库降低学习门槛，便于研究者快速验证多Agent协调、上下文压缩等前沿技术，无需处理复杂企业级代码。
+2. **本地私有化助手**：对接Ollama等本地模型，可在离线/内网环境运行，满足金融、医疗等行业数据安全需求，保留专业级代码操作能力。
+3. **CI/CD自动化流水线**：通过无头模式输出结构化结果，在GitHub Actions等环境中自动完成代码审查、测试生成、文档更新等任务。
+4. **多Agent协作研发**：利用Swarm模式创建子Agent并行执行任务，可同时检索多仓库代码、对比技术方案，提升复杂研发任务效率。
+5. **领域工具快速构建**：加载行业技能文件，可快速搭建针对Python、React、Docker等特定技术栈的专用AI开发助手。
+
+* GitHub仓库：https://github.com/HKUDS/OpenHarness
+
+------------------------------------------------------------
+
+## Qwen3.6-Plus – 阿里通义推出的 Agent 编程模型
+
+> 周报归档：第 32 期 · 条目 1.3 · 2026-04-04 · [回看原周报](../weeklyHighlights/32.md)
+> 原始周报文件：`weekly_report_20260404_142629.md`
+
+Qwen3.6-Plus是阿里通义实验室推出的Agent编程模型，主打编码智能体能力跃升，默认支持100万token超长上下文，在代码修复、终端自动化等测试中领先国内同尺寸模型，还强化了多模态理解能力，能通过阿里云百炼API接入，为开发者提供高性价比的AI编码体验。
+
+#### 1.3.1 核心功能
+1. 智能体编程：具备强大Coding Agent能力，可稳定完成代码生成、错误修复、终端自动化等端到端开发任务，在SWE-bench等基准测试中表现领先。
+2. 超长上下文处理：默认支持100万token超大上下文窗口，能精准处理长文档分析、多轮对话历史追踪及复杂信息提取任务。
+3. 多模态理解：强化视觉感知、OCR文字识别、文档图表解析和视频推理能力，实现对图像、文档和视频的深入分析与跨模态信息整合。
+4. 工具集成兼容：通过阿里云百炼API开放服务，兼容OpenAI和Anthropic协议，可无缝集成至OpenClaw、Claude Code等主流编程助手工具。
+5. 高性价比输出：以不到K2.5或GLM 5模型一半的参数量，实现同等甚至更优的性能表现，显著降低推理成本。
+
+#### 1.3.2 技术原理
+该模型采用轻量化大模型架构，在参数量压缩的同时，通过优化的智能体决策算法提升编码任务的端到端处理能力；基于Transformer架构实现100万token超长上下文窗口的高效注意力机制；融合多模态感知模块，打通视觉、文本、视频数据的特征提取与语义转换链路；兼容OpenAI、Anthropic协议的API网关架构，支持`preserve_thinking`参数实现思维链的持续存储与复用，降低复杂任务的推理开销。
+
+#### 1.3.3 应用场景
+1. AI编程与软件开发：面向开发者，可用于前端页面生成、代码自动修复、终端命令自动化，尤其适配复杂3D场景和游戏开发项目。
+2. 长文档处理与知识管理：面向企业知识管理者，可精准分析超长技术文档、论文，在多轮对话中持续追踪和提取关键信息。
+3. 多模态内容理解：面向内容运营人员，支持复杂版面文档解析、图表OCR识别、图像视觉推理及视频内容时序分析。
+4. 企业自动化与工具集成：面向企业IT运维人员，可通过MCP等协议连接外部系统，执行跨平台任务自动化与复杂业务流程的智能代理操作。
+
+
+------------------------------------------------------------
+
+## 小精龙 – 学而思推出的学生私人 AI 学伴 Agent
+
+> 周报归档：第 32 期 · 条目 1.7 · 2026-04-04 · [回看原周报](../weeklyHighlights/32.md)
+> 原始周报文件：`weekly_report_20260404_142629.md`
+
+小精龙是学而思推出的学生专属AI智能学伴，基于OpenClaw架构打造。它通过“大脑映射”理解学生知识漏洞，沉淀学习轨迹为专属认知资产，以“学习伴侣”身份提供7×24小时个性化辅导与情感陪伴，助力学生高效学习。
+
+#### 1.7.1 核心功能
+1. 学情诊断：构建动态知识图谱，精准定位知识漏洞与能力边界，预测最优学习动作。
+2. AI讲题：支持拍照上传作业试卷，分步骤讲解解题思路，提供深度思考推导过程。
+3. 记忆沉淀：永久保存错题、学习偏好与对话记录，形成个人专属认知资产，越用越精准。
+4. 情感陪伴：根据学生年龄、性格和状态调整互动方式，提供情绪支持与学习动力激励。
+5. 技能配置：将教育能力解耦为Skill模块，可按需组装诊断、讲题等功能并设置定时提醒。
+
+#### 1.7.2 技术原理
+基于OpenClaw框架进行深度教育原生化改造，设置教育专属围栏以降低大模型幻觉。采用“大脑映射”技术持续构建动态知识图谱，实现对学情的深度理解。将教育能力解耦为可调用的Skill模块，支持功能灵活组合。通过长期记忆机制沉淀学生专属学习数据，跨会话持续进化，实现个性化适配。
+
+#### 1.7.3 应用场景
+1. 作业辅导：学生遇到难题时，拍照上传题目，AI提供分步骤解题思路，替代传统搜题仅给答案的模式。
+2. 考前诊断：学生通过“大脑映射”查看知识图谱，明确薄弱章节，系统预测最优复习路径，精准查漏补缺。
+3. 错题管理：自动归类沉淀错题与易错知识点，定期推送巩固练习，形成个人错题资产库。
+4. 学习规划：根据学情生成每日学习任务与计划，设置定时提醒，在学生分心时主动督促。
+5. 情绪陪伴：当学生学习焦虑或挫败时，AI识别情绪并提供鼓励与疏导，稳住学习节奏。
+
+------------------------------------------------------------
+
+## 办公场景下哪款 Claw 最好用？5 个智能体实测对比
+
+> 周报归档：第 31 期 · 条目 1.6 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+这是一份针对5款国产OpenClaw办公AI智能体（百度DuMate、阿里JVS Claw、腾讯QClaw、智谱AutoClaw、MiniMax MaxClaw）的实测对比报告。报告从安装配置、办公效率、费用、安全性多维度展开测试，为职场用户提供选品参考，帮助提升办公自动化效率。
+
+#### 1.6.1 核心功能
+1. 跨应用自动化操作：可打通文档、表格、网页等多格式文件，执行跨平台任务，如DuMate能通过镜像源完成GitHub文件下载。
+2. 内容策划生成：支持全网热点调研，输出包含标题、结构、选题判断的完整内容方案，DuMate产出的文档质量与排版表现最优。
+3. 多Agent协作调度：如JVS Claw可一键指挥多个专家智能体协同完成复杂流程任务，适配企业级办公场景。
+4. 通讯工具集成：支持微信、飞书等IM工具接入，AutoClaw、MaxClaw可通过扫码或链接快速绑定，提升使用便捷性。
+5. 数据安全隔离：通过沙箱技术、独立云端环境实现用户数据物理隔离，DuMate、JVS Claw采用金融级加密标准保障数据安全。
+
+#### 1.6.2 技术原理
+底层基于OpenClaw框架构建，本地版（DuMate、AutoClaw、QClaw）采用沙箱架构实现与本地系统环境隔离，限制AI文件系统访问范围；云端版（JVS Claw、MaxClaw）依托Multi-agent System分布式协作，通过API对接大模型（如GLM-5-Turbo、Kimi-k2.5）实现任务拆解与推理。部分产品集成专属浏览器Agent（AutoGLM-Browser-Agent），支持网页自动化操作，同时通过端到端加密协议保障数据传输安全。
+
+#### 1.6.3 应用场景
+1. 内容创作者：使用DuMate调研抖音、小红书热点，一键生成包含选题评估、结构框架的文章策划方案，提升内容产出效率。
+2. 企业办公人员：借助JVS Claw跨系统执行流程化任务，多Agent协同处理报表、审批等工作，适配钉钉等企业协同生态。
+3. 开发者：通过AutoClaw调用GLM-5-Turbo模型完成代码逻辑推理，结合本地沙箱环境安全执行自动化开发任务，降低操作风险。
+4. 轻度办公用户：选用MaxClaw云端服务，无需本地安装，通过网页完成简单文档处理、文件下载等任务，节省设备资源。
+
+------------------------------------------------------------
+
+## 阿里国际Accio Work实测：电商版OpenClaw，一键自动化运营
+
+> 周报归档：第 31 期 · 条目 1.9 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+Accio Work是阿里国际推出的电商专属AI Agent，具备7*24小时自动化办公能力，依托阿里全球电商生态数据，可帮助海外创业者快速搭建并运营网店，同时能为国内阿里国际站商家精准引流海外采购需求。
+
+#### 1.9.1 核心功能
+1. 一键网店搭建：接收开店指令后，自动完成市场调研、选品、货源对接等全流程，半小时内完成网店搭建。
+2. AI智能体团队组建：可创建运营、美工、文案等专属智能体，定义其模型与技能，组建协作团队并指定负责人。
+3. 电商专属技能调用：内置选品、智能发品、查关税等电商技能，无需手动调教提示词即可直接使用。
+4. 自我进化能力：能根据生意进程迭代商业能力，持续优化运营决策。
+5. 安全操作机制：对本地文件操作需用户授权，避免未经许可的访问与修改。
+
+#### 1.9.2 技术原理
+采用多大模型集成架构，内置Gemini 3.1 Pro、Qwen3 Max等旗舰大模型作为核心推理引擎；基于阿里国际站26年外贸数据训练行业专属模型，通过知识蒸馏技术降低AI幻觉；采用智能体协作框架，支持角色定义与任务分发，通过工具调用协议实现浏览器自动化操作；内置强化学习模块，根据用户反馈与业务数据持续优化模型决策能力。
+
+#### 1.9.3 应用场景
+1. 海外个人创业者：无需电商经验，通过自然语言指令快速搭建Shopify等跨境网店，实现自动化运营。
+2. 国内外贸商家：对接阿里国际站通道，接收Accio Work导入的精准海外采购询盘，提升订单转化效率。
+3. 小型电商团队：用AI智能体替代部分人工岗位，降低人力成本，实现7*24小时不间断运营。
+4. 电商新品牌测试：快速完成市场调研与小范围开店测试，验证产品市场需求，降低试错成本。
+------------------------------------------------------------
+
+## 移动云 MobileClaw – 中国移动推出的桌面级AI办公智能体
+
+> 周报归档：第 31 期 · 条目 1.11 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+移动云MobileClaw是中国移动推出的桌面级AI办公智能体，深度兼容OpenClaw生态，主打央企自研、安全合规，核心数据本地存储不上云。它支持Windows/Mac系统，内置MiniMax模型，依托移动智算集群提供算力，可执行代码编写、报表制作等办公任务，还能接入微信/飞书。
+
+#### 1.11.1 核心功能
+1. 智能任务执行：可理解复杂指令，自主规划步骤并调用工具执行，让AI从"对话者"变为"执行者"。
+2. 代码开发辅助：支持写代码、编程开发等工作，能有效提升开发人员的工作效率。
+3. 办公自动化：可制作报表、管理邮件、搭建工作流，覆盖职场全品类办公需求。
+4. 内容创作生成：具备PPT制作、文档撰写等创作能力，满足多种内容产出需求。
+5. 多平台接入：支持微信、飞书接入，实现7×24小时在线响应和远程操控。
+
+#### 1.11.2 技术原理
+基于OpenClaw生态架构搭建，采用客户端/本地部署模式实现核心数据本地存储。内置MiniMax大语言模型，依托移动万卡智算集群提供分布式算力支撑。通过智能任务规划算法解析复杂指令，调用预置Skills工具集完成任务执行，采用双层安全防护体系保障操作安全，后续将兼容GLM-5、Qwen3.5等多模型生态。
+
+#### 1.11.3 应用场景
+1. 代码开发场景：面向程序员，可辅助编写代码、优化程序，提升开发效率。
+2. 日常办公场景：面向职场办公人员，可自动化制作报表、管理邮件、搭建工作流。
+3. 内容创作场景：面向文案、策划人员，可生成PPT、撰写文档，满足多样化创作需求。
+4. 直播运营场景：面向直播运营人员，可生成艺人直播培训PPT，涵盖带货、短视频趋势等内容。
+
+
+------------------------------------------------------------
+
+## KAT-Coder-Pro V2 – 快手KwaiKAT推出的旗舰级AI编程模型
+
+> 周报归档：第 31 期 · 条目 1.14 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+KAT-Coder-Pro V2是快手KwaiKAT团队推出的旗舰级AI编程模型，专为Agentic Coding场景深度优化，原生兼容10余种主流AI编码工具，核心优势在于前端美学生成能力和长链路任务执行稳定性，能大幅提升编码效率与内容生成质量。
+
+#### 1.14.1 核心功能
+1. 多Agent框架原生兼容：深度适配Claude Code、OpenClaw等工具，专项优化OpenClaw框架，实现业界一流的长链路任务执行稳定性与完成率。
+2. 前端美学生成：支持Landing Page和PPT场景智能生成，用户口语化描述即可输出接近专业设计spec的结果，PPT场景表现大幅提升。
+3. 超长上下文处理：支持256K上下文长度、80K最大输出，满足大型代码库分析、长文档生成等复杂需求。
+4. 代码生成与修复：SWE-Bench Verified得分73.4%，跻身全球顶级行列，擅长复杂代码生成、Bug修复等软件工程任务。
+
+#### 1.14.2 技术原理
+采用Agentic Coding架构，通过端到端多步推理框架与强化学习优化长链路任务执行路径；美学生成基于多模态对齐技术，将自然语言映射为结构化设计规范，经视觉-语言联合训练提升输出质量；以稀疏注意力机制、动态缓存策略实现256K上下文高效推理；在SWE-Bench基准上经指令微调与RLHF训练，配合MoE架构稀疏激活优化推理成本。
+
+#### 1.14.3 应用场景
+1. AI辅助软件开发：作为Agent工具后端模型，支撑从需求分析到测试的全流程自动化，适配复杂软件工程任务。
+2. 前端页面生成：开发者通过口语化描述，快速获取Landing Page、官网等前端代码，降低设计与开发成本。
+3. 大型代码库维护：依托长上下文能力，实现百万行级代码库的架构分析、跨文件重构与文档生成。
+4. 多Agent协作编排：在OpenClaw生态中作为核心节点，协调多Agent完成端到端软件交付，提升团队协作效率。
+
+* 官网地址：https://streamlake.com/product/kat-coder
+------------------------------------------------------------
+
+## 360安全龙虾 – 360推出的AI Agent桌面应用
+
+> 周报归档：第 31 期 · 条目 1.24 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+360安全龙虾是360推出的基于OpenClaw架构的AI Agent桌面应用，内置16家顶级大模型，覆盖13000+技能场景。它主打开箱即用，支持飞书、钉钉、微信等平台接入，可完成内容创作、办公自动化、资料管理、定时任务及多端操控等任务，兼顾安全性与易用性，能为用户提升多场景下的工作效率。
+
+#### 1.24.1 核心功能
+1. 自媒体内容创作：自动抓取热点灵感，生成图文视频内容，实现多平台运营与数据监测，降低内容创作成本。
+2. 办公自动化：自动抓取网页数据并生成表格报告，自动发送工作邮件，减少重复性办公操作，提升办公效率。
+3. 个人资料管理：智能整理桌面文件并分类归档，识别图片文字、分析总结文档，优化个人数字空间管理。
+4. 定时任务：自动发送日周报、备份重要文件，到期提醒并执行预设流程，保障事务按时推进。
+5. 多端远程操控：支持跨设备同步管理，可通过聊天交互远程触发任务，集成主流办公平台，实现随时随地办公。
+
+#### 1.24.2 技术原理
+基于OpenClaw智能体架构开发，采用多大模型集成方案，对接16家顶级大模型的API接口，通过模型路由算法根据任务场景匹配合适模型，实现13000+技能场景的覆盖。采用本地桌面运行架构，结合360安全防护体系保障数据隐私；通过模块化任务调度系统，支持定时任务触发与跨设备通讯协议，实现多端远程操控能力。
+
+#### 1.24.3 应用场景
+1. 自媒体运营场景：适用于内容创作者，可自动追踪热点、批量生成内容，管理多平台账号，提升内容产出效率。
+2. 企业办公场景：面向企业员工，自动抓取行业数据生成报表，定时发送工作邮件，减少行政类重复工作。
+3. 个人效率场景：针对普通个人用户，智能整理桌面文件、分类归档，提取图片文字，打造有序的个人数字空间。
+4. 远程协作场景：适合经常外出办公的人群，可通过手机微信触发电脑任务，跨设备同步工作进度，实现移动办公。
+
+* 官网下载：https://claw.360.cn/
+
+------------------------------------------------------------
+
+## Lark CLI – 飞书开源的命令行工具，让Agent直接操作飞书
+
+> 周报归档：第 31 期 · 条目 2.4 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+Lark CLI是飞书开源的AI Agent原生命令行工具，支持Claude Code、Codex等AI助手直接操作飞书全生态服务。它覆盖11大业务域，提供200+命令与19个开箱即用技能，用户通过自然语言即可让AI完成日程管理、文档编写等办公操作，助力飞书迈向Agent时代，大幅提升办公自动化效率。
+
+#### 2.4.1 核心功能
+1.  全场景办公操作：支持日历、即时通讯、云文档、多维表格等11类飞书核心业务操作，覆盖日常办公全流程。
+2.  AI原生技能适配：内置19个Agent Skills，无需额外适配即可对接主流AI工具，实现自然语言指令转办公操作。
+3.  灵活调用架构：采用快捷命令→API命令→原始API调用的三层架构，兼顾操作便捷性与功能扩展性。
+4.  文档格式无缝转换：支持Markdown与飞书文档双向格式转换，保留排版结构，提升跨平台编辑效率。
+5.  安全防护机制：具备输入防注入、终端输出净化、系统原生密钥链存储等安全特性，保障操作与数据安全。
+
+#### 2.4.2 技术原理
+基于Node.js环境开发，采用分层调用架构设计：快捷命令层提供自然语言友好的简化指令，API命令层封装飞书开放平台接口，原始API层直接对接底层能力，实现不同粒度的操作需求。通过Agent实测验证的命令参数与结构化输出，降低AI解析成本；集成OAuth授权协议实现安全身份认证，利用OS原生密钥链存储凭证避免明文泄露；未来将通过OpenClaw插件实现更广泛的AI工具生态对接。
+
+#### 2.4.3 应用场景
+1.  会议自动化办公：面向企业办公人员，会后AI自动提取会议纪要中的待办事项，创建任务并同步给参会人员，无需手动整理。
+2.  智能文档协作：面向内容创作者，通过自然语言指令让AI生成飞书文档初稿，基于评论反馈自动修订内容，提升协作效率。
+3.  批量信息通知：面向企业行政/HR，通过自然语言指令让AI定位特定部门人员，自动发送个性化通知，替代手动群发短信。
+4.  跨平台文档转换：面向技术人员，将AI工具生成的Markdown技术文档一键转换为飞书文档，保留专业排版格式。
+5.  智能日程管理：面向企业员工，通过自然语言指令让AI查询日程、检测忙闲状态并自动创建会议邀请，简化日程管理流程。
+
+* GitHub仓库：https://github.com/larksuite/cli
+------------------------------------------------------------
+
+## OpenCLI – 开源 AI 命令行工具，网站一键转为命令行接口
+
+> 周报归档：第 31 期 · 条目 2.8 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+OpenCLI是一款开源的AI原生命令行工具，可将任意网站、Electron桌面应用和本地CLI工具转化为标准化命令行接口。它通过Chrome浏览器扩展复用已登录账号权限，无需额外配置API密钥，支持B站、知乎、Cursor等60+平台，能让AI Agent统一操控各类软件，实现“万物皆可CLI”。
+
+#### 2.8.1 核心功能
+1. **多平台CLI转化**：将B站、小红书等网站，以及Cursor、Notion等Electron应用转为命令行工具，支持内容查看、搜索、下载等操作。
+2. **外部CLI枢纽**：集成gh、docker等现有命令行工具，提供统一发现、自动安装和透传执行能力，实现多工具统一调用。
+3. **AI原生发现引擎**：通过`explore`、`synthesize`、`cascade`命令，自动探索网站API、生成适配器代码、探测认证策略，便于AI Agent自主操控新平台。
+4. **多格式结构化输出**：支持JSON、YAML、Markdown等多种格式输出，方便AI Agent直接处理和分析数据，适配不同场景需求。
+5. **内容下载导出**：支持下载小红书、B站、Twitter等平台的图文、视频、文章内容到本地，满足内容存档和二次创作需求。
+6. **零配置安全架构**：复用Chrome浏览器已登录的账号状态，无需额外配置API密钥，降低凭证泄露风险，保障使用安全。
+
+#### 2.8.2 技术原理
+采用“CLI→本地Daemon（localhost:19825）→WebSocket→Chrome扩展→浏览器/应用”的四层架构，通过WebSocket实现进程间通信。基于Chrome DevTools Protocol（CDP）操控Electron应用，支持YAML声明式数据管道与TypeScript运行时注入的双引擎模式。内置反检测机制，通过补丁`navigator.webdriver`、伪造插件列表等方式规避网站反爬。AI发现引擎采用5层认证策略决策树，自动完成从API探索到适配器生成的全流程，支持热加载`.ts`/`.yaml`适配器实现动态扩展。
+
+#### 2.8.3 应用场景
+1. **AI Agent自动化**：开发者可借助OpenCLI让AI Agent自主操控浏览器和桌面应用，完成跨平台信息收集、表单填写、内容发布等自动化任务，提升开发效率。
+2. **数据抓取与监控**：运营人员可定时抓取B站热榜、知乎话题等平台数据，输出结构化格式用于数据分析或内容推送，辅助运营决策。
+3. **内容创作辅助**：内容创作者可利用工具下载小红书笔记、知乎文章等内容，导入Notion或Cursor进行整理和二次创作，丰富创作素材。
+4. **跨应用工作流编排**：企业员工可串联多平台操作，如从雪球获取股票数据，经AI分析后发送到飞书群，或从B站提取字幕总结后写入文档，优化工作流。
+5. **本地工具统一管理**：IT运维人员可通过OpenCLI统一管理gh、docker等本地命令行工具，实现工具的自动安装、统一调用，简化运维操作。
+
+* GitHub仓库：https://github.com/jackwener/opencli
+------------------------------------------------------------
+
+## MiniMax Office Skills – 稀宇科技开源的生产级办公文档引擎
+
+> 周报归档：第 31 期 · 条目 2.11 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+这是稀宇科技开源的MiniMax Skills工具集，包含办公文档处理与多领域开发两类核心能力。其中Office Skills组件解决AI Agent生成文档"能打开但无法交付"的痛点，通过底层格式操作保留高级内容，达到专业领域交付标准，同时还提供全栈、移动开发等多场景AI编码辅助能力。
+
+#### 2.11.1 核心功能
+1. 专业Word处理：基于.NET OpenXML SDK实现复杂排版、模板套用与修订追踪，确保多级目录、嵌套表格等高级功能完整可靠。
+2. 金融级Excel处理：通过XML直操作实现表格编辑、公式验证，完整保留数据透视表、VBA宏与动态计算能力。
+3. 印刷级PDF生成：采用ReportLab与Playwright技术栈，支持15种专业封面设计，输出符合印刷标准的文档。
+4. 自动化PPT生成：基于PptxGenJS与XML技术创建演示文稿，支持内容组织、排版控制与模板化输出。
+5. 全栈开发辅助：提供前端、后端、移动应用开发的标准化流程指导，涵盖架构设计、性能优化与工程化实践。
+
+#### 2.11.2 技术原理
+采用底层格式直操作架构，Word组件基于.NET OpenXML SDK解析编辑DOCX结构，Excel组件直接操作XLSX的XML文档对象模型，避免第三方封装导致的功能丢失。PDF组件结合ReportLab的矢量渲染与Playwright的网页转PDF能力，实现高精度排版。所有组件通过模块化设计，提供API接口与AI Agent适配层，支持多语言技术栈（C#、Python、Node.js），并通过XSD校验确保文档结构合规。
+
+#### 2.11.3 应用场景
+1. AI Agent自动化办公：为智能助手提供文档生成能力，支持从指令直接生成可交付的合同、报告等专业文档，适用于行政、法务等岗位。
+2. 金融数据处理：处理复杂财务报表、估值模型，保留动态公式与数据透视表，满足金融、投行领域的精准计算与合规排版需求。
+3. 企业报告自动化：批量生成财报、战略报告，支持模板套用与品牌一致性控制，提升市场、财务部门的报告制作效率。
+4. 开发团队工程化：为全栈、移动开发团队提供标准化开发流程，涵盖架构设计、性能优化与CI/CD配置，提升团队协作效率。
+
+* GitHub仓库：https://github.com/MiniMax-AI/skills
+
+------------------------------------------------------------
+
+## DeerFlow 2.0 – 字节跳动开源的超级智能体框架
+
+> 周报归档：第 31 期 · 条目 2.12 · 2026-04-01 · [回看原周报](../weeklyHighlights/31.md)
+> 原始周报文件：`weekly_report_20260401_164414.md`
+
+DeerFlow 2.0是字节跳动开源的超级智能体框架，采用“主智能体+11层中间件链+动态子智能体”架构，基于LangGraph实现多智能体协同。它内置10+种可插拔技能，支持Docker/K8s隔离沙箱执行，原生适配飞书、Telegram、Slack，无需公网IP即可运行，能处理分钟到小时级的复杂任务，可一键生成网站、PPT、漫画等内容。
+
+#### 2.12.1 核心功能
+- **多智能体协同架构**：主智能体统筹规划，动态子智能体并行执行，实现复杂任务的高效分解与协同处理。
+- **可插拔技能体系**：内置深度研究、数据分析、PPT生成等10余种技能，支持通过MCP接口和Python函数自定义扩展新能力。
+- **隔离沙箱执行**：提供本地、Docker、Kubernetes三种运行模式，基于字节AIO Sandbox为每个任务创建独立容器环境，保障执行安全与资源隔离。
+- **上下文工程机制**：通过自动摘要压缩、中间结果外部存储和子任务限流，解决长时任务中的上下文窗口不足问题。
+- **跨会话长期记忆**：支持持久化存储用户画像、偏好和知识，数据本地存储，用户完全掌控。
+- **多渠道交互适配**：原生支持飞书、Telegram、Slack三大IM平台，无需公网IP即可通过命令与智能体交互。
+
+#### 2.12.2 技术原理
+基于LangGraph和LangChain框架构建，采用“主智能体+动态子智能体”的分布式架构，主智能体负责任务规划与结果合成，子智能体承担具体任务执行。通过渐进式技能加载机制优化上下文窗口，仅在任务需要时加载对应技能模块。沙箱执行依托字节AIO Sandbox实现容器级隔离，支持本地、Docker、K8s三种部署模式，为每个任务分配独立文件系统环境。上下文管理通过自动摘要、结果外存和子任务限流三重机制，突破大模型上下文窗口限制。长期记忆采用本地持久化存储，基于用户行为数据构建动态画像。多模型兼容通过统一配置接口实现，支持OpenAI、Gemini、DeepSeek、豆包等主流大模型的灵活切换。
+
+#### 2.12.3 应用场景
+- **深度研究分析**：适用于学术研究、竞品分析、行业调研等场景，自动收集多源信息并生成结构化研究报告，提升信息处理效率。
+- **自动化内容创作**：面向内容创作者，可将复杂概念转化为科普漫画，自动生成PPT、播客脚本、视频内容等多媒体素材。
+- **网页快速开发**：针对前端开发人员，一键生成完整可交付的网站页面，覆盖UI设计到前端代码的全流程自动化。
+- **数据驱动决策**：助力企业数据分析师，自动执行数据清洗、可视化图表生成和商业智能报告撰写，加速数据到决策的转化。
+- **跨平台任务协作**：支持团队通过飞书、Telegram、Slack等IM平台发送任务指令，无需切换工具即可实现跨地域协同办公。
+
+* GitHub仓库：https://github.com/bytedance/deer-flow
+* GitHub仓库：https://github.com/bytedance/deer-flow.git
+* 项目官网：https://deerflow.tech
+------------------------------------------------------------
+
+## 新SearchClaw – 中国人民大学推出的 AI 深度研究智能体
+
+> 周报归档：第 34 期 · 条目 1.3 · 2026-04-16 · [回看原周报](../weeklyHighlights/34.md)
+> 原始周报文件：`weekly_report_20260416_150700.md`
+
+SearchClaw是中国人民大学信息检索实验室推出的自托管式AI深度研究智能体，基于FastAPI构建并配备Web交互界面。用户提交问题后，系统可自动完成多轮网络搜索、页面抓取、论文检索与内容综合，最终生成带引用链接的详实报告，支持多种大语言模型与持久化记忆，适合科研人员、分析师开展可溯源的自动化调研。
+
+#### 1.3.1 核心功能
+1. 自主多轮研究循环：自动迭代执行搜索、抓取、阅读、引用操作，直至生成达标答案，无需人工干预迭代过程。
+2. 多源信息检索：集成网页、学术论文、新闻及微信公众号文章搜索，覆盖中英文多类异构信息来源，适配跨境调研场景。
+3. 浏览器深度集成：通过Playwright/CDP技术渲染JavaScript页面，支持登录态抓取，可获取需认证或JS渲染的内容。
+4. 质量门禁系统：内置钩子检查机制，对引用数量、来源多样性及答案完整性进行校验，不达标则自动补充研究。
+5. 跨会话持久记忆：自动保存并复用过往研究中的高质量来源、用户偏好与关键事实，优化后续调研效率。
+
+#### 1.3.2 技术原理
+采用"工具+钩子"的架构设计，基于FastAPI搭建本地服务器，通过litellm实现多LLM提供商的路由兼容。核心运行机制为：用户问题经WebSocket传入后，LLM驱动agentic research loop，自主调用web_search、academic_search等工具集完成信息获取；通过research_plan工具拆解复杂查询为子任务，借助builtin_hooks钩子执行质量校验；采用双阶段上下文压缩机制管理长会话的上下文窗口，结合文件存储的持久记忆系统实现跨会话信息复用；支持Playwright/CDP两种浏览器渲染模式，解决JS页面与登录内容抓取难题。
+
+#### 1.3.3 应用场景
+1. 学术文献综述：科研人员可使用该工具自动检索Semantic Scholar与arXiv论文，快速生成带引用的领域进展摘要，提升文献调研效率。
+2. 市场竞品监测：行业分析师能借助其追踪新闻源与微信公众号动态，自动整合信息并输出带时间戳的竞品分析报告，掌握市场态势。
+3. 政策与法规研究：合规从业者可通过工具抓取政府网站与智库报告，整合多语言来源形成合规分析报告，辅助政策解读与合规判断。
+4. 技术选型评估：开发人员可利用其搜索技术博客、GitHub讨论与学术论文，对比不同技术框架的社区评价与性能数据，支撑技术选型决策。
+
+* GitHub仓库：https://github.com/RUC-NLPIR/SearchClaw
+* GitHub仓库：https://github.com/RUC-NLPIR/SearchClaw.git
+
+
+------------------------------------------------------------
+
+## Mano-P 1.0 – 明略科技开源的 GUI-VLA 智能体模型
+
+> 周报归档：第 34 期 · 条目 2.6 · 2026-04-16 · [回看原周报](../weeklyHighlights/34.md)
+> 原始周报文件：`weekly_report_20260416_150700.md`
+
+Mano-P 1.0是明略科技开源的GUI-VLA智能体模型，采用纯视觉驱动，无需API即可直接操控桌面软件与网页界面。它提供72B完整版与4B量化版，支持Apple M4芯片本地部署，实现数据零上云与物理隔离级隐私保护，在OSWorld等13项国际基准测试中取得SOTA成绩。
+
+#### 2.6.1 核心功能
+1. **GUI全链路操控**：具备感知、理解、规划、操作与验证的完整能力，可直接操控桌面软件、网页界面及复杂图形化工作流，支持点击、文本输入等闭环动作。
+2. **纯视觉理解**：不依赖底层API、CDP协议或HTML解析，通过像素级视觉理解直接“看懂”屏幕内容，可处理非标准应用、3D软件及跨系统协作场景。
+3. **端侧本地部署**：支持Apple M4芯片设备本地运行，也可通过USB 4.0连接算力棒，数据零上云，无网环境下仍可自主执行长任务。
+4. **Agent生态集成**：作为Skill无缝接入OpenClaw、Claude Code等AI Agent，为其提供GUI执行能力底座，解决复杂工作流中的人工干预瓶颈。
+
+#### 2.6.2 技术原理
+采用GUI-VLA架构，基于视觉-语言-动作多模态框架，直接解析屏幕像素信息，结合自然语言指令输出具体操作坐标与动作。通过三阶段渐进训练（监督微调→离线强化学习→在线强化学习）形成闭环优化，搭配GSPruning剪枝加速与4-bit量化方案，使4B模型在M4芯片端侧实现476 tokens/s推理速度，内存占用仅4.3GB。同时采用端云双版本设计，72B模型处理复杂任务，4B模型专注端侧运行。
+
+#### 2.6.3 应用场景
+1. **跨应用办公自动化**：企业办公人员可使用该模型自动在Excel、ERP、邮件客户端间迁移数据，完成报表生成、邮件分发等跨系统办公流。
+2. **复杂软件操控**：设计人员可借助它直接操控Photoshop、CAD、3D建模等专业设计软件，以及无API接口的legacy系统。
+3. **端到端软件测试**：测试人员利用其自动执行UI界面点击、表单填写、结果验证，完成无人工干预的全流程应用测试。
+4. **隐私敏感业务处理**：金融、医疗行业从业者可在本地运行该模型处理财务报表、医疗记录等敏感数据，确保信息不出本机。
+5. **离线场景自动化**：野外作业或无网络环境下的工作人员，可依靠它自主完成数据录入、文档处理、系统运维等长周期复杂任务。
+
+* GitHub仓库：https://github.com/Mininglamp-AI/Mano-P
+
+------------------------------------------------------------
+
+## PokeClaw – 开源的全本地离线运行手机 AI Agent 应用
+
+> 周报归档：第 34 期 · 条目 2.7 · 2026-04-16 · [回看原周报](../weeklyHighlights/34.md)
+> 原始周报文件：`weekly_report_20260416_150700.md`
+
+PokeClaw是首个完全本地离线运行的开源Android手机AI代理，基于Google Gemma 4模型通过LiteRT-LM运行时在设备端推理，无需联网、账户或API密钥即可自主控制手机，支持WhatsApp自动回复、通知汇总等功能，同时可接入云端模型增强复杂任务能力，全方位保障用户隐私。
+
+#### 2.7.1 核心功能
+1. **全本地离线运行**：基于Google Gemma 4模型在设备端推理，数据全程本地化处理，彻底杜绝隐私泄露风险。
+2. **手机自动化控制**：通过Android无障碍服务读取屏幕UI树，自主执行点击、滑动、输入、发送消息等操作。
+3. **上下文感知自动回复**：监控WhatsApp等应用消息，自动读取对话历史生成贴合语境的回复内容。
+4. **技能系统**：将通用工具组合成可复用工作流，如自动回复、晨间简报，支持用户自定义技能扩展。
+5. **云端模型可选增强**：可接入OpenAI、Anthropic等云端API，实时显示token消耗和费用，满足复杂任务需求。
+
+#### 2.7.2 技术原理
+采用本地优先架构，默认通过LiteRT-LM运行时在设备端部署Google Gemma 4模型，支持原生工具调用（Tool Calling）能力。通过Android无障碍服务获取屏幕UI树的文本化表示，结合预设技能系统（Skills）构建任务工作流，AI模型根据当前屏幕状态自主选择工具并执行操作，形成"感知-决策-执行"的闭环代理流程。同时提供云端模型兼容层，支持会话内无缝切换模型，适配不同复杂度任务需求。
+
+#### 2.7.3 应用场景
+1. **消息自动化管理**：用户在驾车、会议等无法手动操作的场景下，自动回复WhatsApp等应用的消息，或在错过电话后发送跟进短信。
+2. **设备状态监控与优化**：实时检查电池健康、存储空间、手机温度等状态，自动生成清理建议，适用于设备日常维护和性能优化。
+3. **跨应用信息整合**：根据用户指令在多应用间切换操作，如在YouTube搜索视频、复制邮件主题到Chrome进行搜索，满足信息调研需求。
+4. **隐私敏感数据处理**：在离线模式下分析剪贴板内容、汇总通知信息，确保敏感数据不会传输到外部服务器，适用于商务、医疗等场景。
+5. **无障碍操作辅助**：行动不便或视觉障碍用户可通过自然语言指令，让AI完成点击、输入等操作，降低手机使用门槛。
+
+* GitHub仓库：https://github.com/agents-io/PokeClaw，首次启动时自动下载约
+
+------------------------------------------------------------
+
+## TripStar – 开源 AI 旅行规划工具，多智能体协作规划旅行
+
+> 周报归档：第 34 期 · 条目 2.8 · 2026-04-16 · [回看原周报](../weeklyHighlights/34.md)
+> 原始周报文件：`weekly_report_20260416_150700.md`
+
+这是基于HelloAgents框架打造的开源多智能体协作文旅规划平台TripStar，通过LLM与多智能体架构，根据用户输入的目的地、日期及偏好，自动生成含行程、住宿、景点等信息的完整攻略，解决旅行规划的信息过载与决策疲劳问题，目前主要支持国内城市。
+
+#### 2.8.1 核心功能
+1. 个性化行程生成：根据用户目的地、旅行日期及交通、住宿、兴趣等偏好，快速输出包含每日行程、景点路线的专属攻略。
+2. 多维度行程展示：提供知识图谱可视化、暗黑主题地图动态绘制路线、预算明细面板，清晰呈现各项花销。
+3. 沉浸式伴游问答：生成攻略后支持多轮深度上下文追问，可解答行程相关细节问题。
+4. 实用信息整合：自动整合景点预约提醒、实时天气数据、小红书真实避坑指南及实拍照片。
+
+#### 2.8.2 技术原理
+采用前后端分离架构，前端基于Vue 3+Vite实现响应式动态组件渲染，后端以FastAPI为服务层，搭配异步轮询任务系统解决LLM超长文本生成的网关超时问题。核心采用多智能体协作架构，主控Agent基于React模式拆解任务，调用旅程总控、天气管家、酒店专员、景点提取四大Agent分工协作，通过SSR抓取小红书游记数据，经LLM提纯后为用户输出结构化行程信息。
+
+#### 2.8.3 应用场景
+1. 个人自由行规划：适合独立旅行者，输入需求即可快速获取完整攻略，替代手动耗时查资料的过程。
+2. 短途周边游规划：针对2-3天周末出行需求，生成紧凑合理的短途行程，自动计算景点距离避免折返。
+3. 深度文化体验游：适合追求在地化体验的用户，依托小红书真实游记获取非网红景点推荐与避坑指南。
+4. 预算敏感型出行：帮助学生、背包客等群体，通过预算明细面板精准控制各维度花销，避免超支。
+
+* GitHub仓库：https://github.com/1sdv/TripStar
+* ModelScope模型库：https://modelscope.cn/studios/lcclxy/Journey-to-the-China
+* ModelScope模型库：https://modelscope.cn/studios/lcclxy/Journey-to-the-China。输入目的地、旅行日期、偏好设置（交通方式、住宿风格、旅行兴趣等
+
+------------------------------------------------------------
+
+## claude-code-best-practice – 开源的Claude Code系统化使用指南
+
+> 周报归档：第 34 期 · 条目 2.9 · 2026-04-16 · [回看原周报](../weeklyHighlights/34.md)
+> 原始周报文件：`weekly_report_20260416_150700.md`
+
+这是一款开源的Claude Code系统化使用指南，从“氛围编程”进阶到“智能体工程”，收录86+条实战技巧，涵盖Agents、Commands等核心模块，对比10+套主流开发工作流，被Claude Code创造者多次引用，为开发者提供从入门到进阶的完整学习路径。
+
+#### 2.9.1 核心功能
+1. **系统化知识库**：全面拆解Claude Code核心模块，提供从入门到进阶的完整学习路径。
+2. **热门功能追踪**：实时更新Beta功能表格，涵盖Ultraplan、Auto Mode等最新特性。
+3. **工作流对比**：横向对比10+套主流开发工作流，标注Star数和适用场景。
+4. **实战技巧库**：收录69+条社区踩坑经验，覆盖提示工程、上下文管理等。
+5. **资源聚合**：整理官方团队的文章、推文和视频教程。
+
+#### 2.9.2 技术原理
+基于Anthropic Claude大模型构建，采用**智能体工程架构**，通过Subagents实现多角色任务分工，利用Commands注入知识到现有上下文，Skills实现技能的配置化与预加载。通过Model Context Protocol（MCP）连接外部工具与API，采用Git-based Checkpointing实现代码编辑的自动追踪与回滚。支持插件化扩展，可集成技能、子代理、钩子等组件，通过Hierarchical Configuration System实现多维度权限与模型配置管理。
+
+#### 2.9.3 应用场景
+1. **个人开发者效率提升**：查阅69条实战技巧，快速掌握提示工程、上下文管理和调试方法，避免常见踩坑。
+2. **团队工作流选型**：通过对比10+套主流方案，为团队选择最适合的AI辅助开发模式。
+3. **新功能快速落地**：借助Hot Features表格即时了解Beta功能的配置方法，抢先体验新能力。
+4. **代码质量控制**：采用内置的Code Review工作流或TDD-first方案，结合Subagents实现多智能体PR审查和漏洞捕捉。
+5. **大型项目管理**：通过CLAUDE.md规则文件和Agent Teams功能，在Monorepo或多模块项目中实现并行开发和上下文隔离。
+
+* 直达仓库：https://github.com/shanraisshan/claude-code-best-practice
+
+------------------------------------------------------------
+
+## 阿里Meoo 秒悟实测 – 10 分钟零代码开发可上线应用
+
+> 周报归档：第 35 期 · 条目 1.1 · 2026-04-19 · [回看原周报](../weeklyHighlights/35.md)
+> 原始周报文件：`weekly_report_20260419_095821.md`
+
+阿里Meoo秒悟是一款对话式AI开发工具，支持零代码生成完整可用的网页应用、小游戏等成品，用户仅需通过自然语言描述需求，即可快速完成开发并一键部署，让无编程基础的用户也能实现创意落地。
+
+#### 1.1.1 核心功能
+1. 提供Agent和Swarms蜂群Agent两种开发模式，前者适配长任务，后者通过多Agent并行处理提升轻量开发速度。
+2. 支持接入Qwen、GLM等全模态大模型，可对生成的应用功能进行算法调整和API接入优化，提升功能准确性。
+3. 具备可视化编辑功能，用户可对网页元素进行精准细节调整，同时自动配置后端云数据库。
+4. 内置技能市场，可直接调用预置能力或上传创建技能包，快速实现特定UI风格或功能需求。
+5. 支持一键部署上线，生成的应用拥有独立网页链接，无需用户关注部署技术细节。
+
+#### 1.1.2 技术原理
+基于多Agent协作架构，Swarms模式下通过分布式多Agent并行处理任务，提升开发效率；采用自然语言处理技术解析用户需求，自动生成任务规划；集成第三方全模态大模型API，实现功能的动态扩展与优化；通过低代码可视化引擎，将用户需求转化为前端页面元素，同时自动生成并配置后端云数据库，实现前后端一体化开发部署。
+
+#### 1.1.3 应用场景
+1. 无编程基础的创意开发者：通过自然语言描述需求，快速将创意转化为网页应用或小游戏，无需学习编程技术。
+2. 小型企业或团队：快速开发内部效率工具、客户展示网页等轻量应用，降低开发成本和周期。
+3. 活动运营人员：快速生成H5邀请函、活动报名页面等营销物料，支持自定义UI风格和交互功能。
+4. 游戏爱好者：通过描述游戏玩法和场景，快速生成3D小游戏，并可进一步实现多人对战等功能。
+
+* 官网：https://meoo.com
+
+## SearchClaw – 中国人民大学推出的 AI 深度研究智能体
+
+> 周报归档：第 35 期 · 条目 1.7 · 2026-04-19 · [回看原周报](../weeklyHighlights/35.md)
+> 原始周报文件：`weekly_report_20260419_095821.md`
+
+SearchClaw是中国人民大学信息检索实验室推出的自托管式AI深度研究智能体，基于FastAPI构建并配备Web交互界面。用户提交问题后，它能自动执行多轮网络搜索、页面抓取、论文检索与内容综合，最终生成带引用链接的详实报告，适合科研人员、分析师开展可溯源的自动化调研。
+
+#### 1.7.1 核心功能
+1. 自主多轮研究循环：自动迭代执行搜索、抓取、阅读、引用流程，直至生成达标答案
+2. 多源信息检索：集成网页、学术论文、新闻资讯及微信公众号文章的跨平台搜索能力
+3. 浏览器深度集成：通过Playwright/CDP渲染JavaScript页面，支持登录态抓取受限内容
+4. 智能质量管控：内置钩子系统检查引用数量、来源多样性及答案完整性，不达标则自动补充研究
+5. 跨会话持久记忆：自动保存并复用过往研究中的高质量来源、用户偏好与关键事实
+
+#### 1.7.2 技术原理
+采用"工具+钩子"的架构设计，基于FastAPI搭建本地服务端，通过litellm实现多LLM提供商兼容。核心组件包括：负责任务调度的agentic研究循环模块、覆盖多源检索的工具集、执行质量校验的钩子引擎，以及实现跨会话记忆的文件存储系统。采用双阶段上下文压缩机制管理长会话，通过WebSocket实现实时流式结果推送，支持Playwright/CDP两种浏览器渲染模式处理动态内容。
+
+#### 1.7.3 应用场景
+1. 学术文献综述：科研人员可快速检索Semantic Scholar与arXiv论文，生成带引用的领域进展摘要
+2. 市场竞品监测：分析师借助工具追踪新闻源与微信公众号，自动分析竞品动态并输出参考依据
+3. 政策法规研究：合规人员可抓取政府网站与智库报告，整合多语言来源形成合规分析报告
+4. 技术选型评估：开发人员能够搜索技术博客、GitHub讨论与学术论文，对比不同框架的社区评价与性能数据
+
+* GitHub仓库：https://github.com/RUC-NLPIR/SearchClaw
+* GitHub仓库：https://github.com/RUC-NLPIR/SearchClaw.git
+
+------------------------------------------------------------
+
+## 新Hermes Agent 部署全攻略 – 安装、配置、飞书接入一文搞定
+
+> 周报归档：第 35 期 · 条目 2.1 · 2026-04-19 · [回看原周报](../weeklyHighlights/35.md)
+> 原始周报文件：`weekly_report_20260419_095821.md`
+
+Hermes Agent是Nous Research推出的开源自进化AI智能体，支持本地/服务器部署，可通过CLI、Telegram、飞书等多平台交互。其核心特性包含自动技能生成优化、三层记忆系统，能随使用次数增加持续提升任务执行效率，适合个人及小团队处理重复性工作。
+
+#### 2.1.1 核心功能
+1.  自动技能管理：完成5次以上工具调用的复杂任务后，自动提炼结构化Skill文档，每15个任务自我优化一次，研究类任务效率可提升40%。
+2.  跨平台持续交互：通过单个Gateway进程对接Telegram、飞书等多平台，支持跨设备、跨平台会话上下文延续，切换平台无需重复交代需求。
+3.  三层记忆系统：包含技能记忆（沉淀的Skill文档）、长期记忆（用户习惯与历史任务）、短期记忆（当前会话上下文），实现个性化服务。
+4.  灵活模型适配：支持Nous Portal、OpenRouter、NVIDIA NIM等200+模型，可通过命令快速切换，无绑定限制。
+5.  安全与自动化防护：内置prompt注入扫描、凭证过滤等五层防护，支持cron定时任务自动化执行，如每日报告、备份等。
+
+#### 2.1.2 技术原理
+基于Python/TypeScript技术栈构建，采用模块化插件式架构，核心包含任务调度、工具调用、记忆管理三大模块。技能生成采用基于任务轨迹的提取算法，通过LLM归纳任务流程并结构化存储。记忆系统采用分层向量数据库，技能记忆和长期记忆持久化存储，短期记忆会话级缓存，支持FTS5全文检索与LLM摘要召回。通过MCP（Model Context Protocol）实现扩展工具集成，支持Docker/Modal等多环境隔离执行，保障任务安全性与环境一致性。
+
+#### 2.1.3 应用场景
+1.  个人日常助理：个人用户可通过CLI或飞书接入，让其处理日程管理、信息查询、文件整理等日常事务，自动沉淀个人操作习惯技能。
+2.  小团队协作支持：小团队可通过多平台网关，统一处理项目文档协作、任务分配提醒、跨成员信息同步，减少重复沟通成本。
+3.  研发效率提升：开发者借助代码执行、模型切换能力，实现代码调试、API调用、文档自动生成，技能沉淀后可复用解决同类问题。
+4.  定期自动化任务：运维或行政人员可配置cron任务，实现服务器状态每日报告、数据定期备份、团队周报自动汇总等无人值守工作。
+
+* GitHub仓库：https://github.com/NousResearch/hermes-agent
+
+------------------------------------------------------------
+
+## 飞书OpenClaw完整部署教程 – 3分钟组建 AI Agent 团队
+
+> 周报归档：第 35 期 · 条目 2.5 · 2026-04-19 · [回看原周报](../weeklyHighlights/35.md)
+> 原始周报文件：`weekly_report_20260419_095821.md`
+
+飞书OpenClaw是飞书推出的多智能体协作工具，支持一键组建AI Agent团队，通过主管Agent拆解并分配任务，实现多Agent并行协作。它解决了单智能体上下文受限、任务处理排队的问题，帮助用户以低学习成本提升工作效率。
+
+#### 2.5.1 核心功能
+1. 一键部署Agent团队：用户可快速创建OpenClaw项目，自动获赠500万7天有效期Token，无需复杂配置即可启用。
+2. 多Agent协同工作：支持添加内置专业Agent或自定义Agent，通过主管Agent统一拆解、分配任务，实现多核并发处理。
+3. 灵活模型配置：每个Agent可单独配置GLM-5.1、Qwen-3.6等大模型，用户可按需选择，降低Token使用成本。
+4. 飞书生态集成：直接在飞书群内完成任务指令下发、Agent协作，适配原有办公流程，无需额外学习新工具。
+
+#### 2.5.2 技术原理
+基于大语言模型调度架构，采用多智能体分布式协作模式，通过任务拆解算法将复杂需求拆分为子任务，分配至对应专业Agent。每个Agent独立调用配置的大模型处理任务，主管Agent负责任务调度与结果聚合，借助飞书开放API实现消息互通与权限管理，保障多Agent并行执行时的上下文一致性与任务协同效率。
+
+#### 2.5.3 应用场景
+1. 内容创作团队：内容运营者可组建包含策划、写作、编辑的AI Agent团队，在飞书群内下发创作指令，由主管Agent分配任务，多Agent协同完成脚本撰写、内容编辑等工作。
+2. 企业项目管理：项目负责人可通过OpenClaw搭建包含研发、测试、运维的AI Agent团队，下发项目需求后，由主管Agent拆解任务，各专业Agent并行处理研发、测试等环节。
+3. 个人效率提升：职场个人可根据工作需求添加对应领域Agent，如市场分析、数据整理等，通过主管Agent统筹任务，实现多任务同时推进，提升个人工作产能。
+
+* 官网：https://openclaw.feishu.cn
+
+------------------------------------------------------------
+
+## 新ClawLess – 南方科技大学等推出的AI Agent安全框架
+
+> 周报归档：第 36 期 · 条目 1.1 · 2026-04-22 · [回看原周报](../weeklyHighlights/36.md)
+> 原始周报文件：`weekly_report_20260422_140944.md`
+
+ClawLess是南方科技大学与香港科技大学联合推出的AI Agent安全框架，针对自主AI Agent的越权、数据泄露等风险，基于最坏情况威胁模型，通过形式化验证策略与BPF系统调用拦截技术，在不依赖Agent内部逻辑的前提下，为OpenClaw、Claude Code等智能体提供数学级安全保障，解决传统安全机制适配AI Agent的不足。
+
+#### 1.1.1 核心功能
+1. 形式化安全建模：将文件、进程等系统资源纳入基于实体、作用域与权限的数学化模型，实现统一安全定义。
+2. 动态时序权限管控：通过线性时序逻辑，根据Agent历史行为动态调整访问权限，平衡安全与可用性。
+3. SMT策略一致性验证：利用Z3等SMT求解器自动化推演安全策略，提前检测并阻断逻辑冲突。
+4. BPF内核调用拦截：以BPF程序挂载内核系统调用入口，实时捕获并核验资源请求，精准拦截越权操作。
+5. 外部脚本沙盒隔离：在Agent主容器内创建更低权限执行域，隔离不可信外部脚本，防止恶意载荷扩散。
+
+#### 1.1.2 技术原理
+采用“最坏情况”威胁建模，将AI Agent及其容器栈划为不可信组件；以gVisor用户态内核作为可信监控层，隔离Agent与宿主机内核；通过策略编译器将形式化权限模型翻译为Linux系统调用管控规则；基于BPF的raw_tracepoint钩子挂载sys_enter事件，以尾调用机制分发系统调用至对应处理程序，在内核态完成权限核验；引入“Visible”权限语义，允许Agent引用凭证但不泄露内容。
+
+#### 1.1.3 应用场景
+1. 企业级AI编程助手部署：为Claude Code、OpenClaw等工具提供隔离，防止自主执行代码时越权访问敏感代码库或外泄数据。
+2. 云端多租户Agent服务：实现不同用户AI Agent的细粒度隔离，避免恶意Agent突破容器攻击宿主机或其他租户。
+3. 金融数据自动化处理：在Agent读取敏感财务信息后，自动封锁其网络外发通道，防范数据泄露风险。
+4. 开源智能体安全加固：为社区自主Agent提供开箱即用的安全容器封装与策略验证工具，提升开源智能体安全性。
+
+* arXiv技术论文：https://arxiv.org/pdf/2604.06284v1
+
+------------------------------------------------------------
+
+## 新Elephant – 蚂蚁Inclusion AI团队推出的大语言模型
+
+> 周报归档：第 36 期 · 条目 1.2 · 2026-04-22 · [回看原周报](../weeklyHighlights/36.md)
+> 原始周报文件：`weekly_report_20260422_140944.md`
+
+Elephant是蚂蚁集团Inclusion AI团队研发的100B参数大语言模型，支持256K超长上下文与32K输出长度，以极致Token效率为核心优势，主打代码生成、文档处理与轻量级Agent任务，在OpenRouter平台上线，是高效生产力工具。
+
+#### 1.2.1 核心功能
+1. 代码生成与修复：快速生成HTML、JS等前端代码，精准定位Bug并提供极简修复方案，提升开发效率。
+2. 文档信息提取：从冗长杂乱的会议记录中剔除无用信息，提取结构化结论与待办事项，简化信息整理。
+3. 数据分析与推理：读取CSV等数据文件，执行计算、分析与自检，输出准确业务洞察，辅助决策。
+4. 轻量级Agent执行：支持数据读取→计算→分析→自检的多步骤任务闭环，实现工作流自动化。
+
+#### 1.2.2 技术原理
+采用100B参数规模架构，在模型性能与推理效率间取得平衡，实现同规模SOTA水平。搭载256K超长上下文窗口，可处理长文档与多轮复杂对话。通过精简输出机制优化Token效率，减少无效Token生成。内置敏捷推理引擎，针对代码、数学逻辑与结构化输出专项优化，保障高准确度与低延迟。
+
+#### 1.2.3 应用场景
+1. 软件开发：开发者通过描述需求或报错信息，快速生成前端代码，精准定位并修复Bug，大幅提升编码效率。
+2. 办公提效：职场人上传冗长会议纪要，自动提取关键结论、待办事项及责任人，生成结构化跟进邮件草稿。
+3. 数据分析：业务人员上传CSV数据文件，由模型执行报表解读、同比环比计算，输出带自检修正的趋势洞察。
+4. 轻量自动化：作为Agent核心引擎，独立完成数据读取、计算、分析、报告撰写的全流程自动化任务。
+
+------------------------------------------------------------
+
+## QClaw 海外版 – 腾讯推出的 AI Agent 平台，面向海外市场
+
+> 周报归档：第 36 期 · 条目 1.4 · 2026-04-22 · [回看原周报](../weeklyHighlights/36.md)
+> 原始周报文件：`weekly_report_20260422_140944.md`
+
+这是腾讯推出的海外版QClaw个人本地AI智能体，通过主流即时通讯工具远程操控电脑完成各类任务，支持Mac和Windows平台，采用本地运行模式保障数据安全，目前为邀请制内测，主打零门槛使用，可帮用户高效代办事务、解放精力。
+
+#### 1.4.1 核心功能
+1. 一键零配置安装：自动完成运行时、依赖项配置及后续更新，无需终端操作，普通用户可直接上手。
+2. 跨通讯工具远程操控：绑定WhatsApp、Telegram、微信等多平台，通过聊天指令让AI代劳电脑任务。
+3. AI安全网关监控：对AI的prompt、技能调用、脚本执行全流程监控拦截，操作透明可追溯。
+4. 专家导师商店：一键获取真实领域专家训练的AI导师，零配置享受个性化专业辅助。
+5. 持久用户记忆学习：持续记录用户偏好、习惯，使用越久越贴合用户个性化需求。
+
+#### 1.4.2 技术原理
+采用本地部署架构，所有数据在用户设备端处理，避免云端传输风险；基于自研AI Agent框架，通过通讯工具API实现跨平台指令交互；内置“龙虾管家”安全网关，结合实时规则引擎与行为分析算法，对AI执行流程进行动态监控；采用长短期记忆模型（LSTM）实现用户行为偏好的持续学习与个性化适配；自动依赖管理模块通过预编译环境包完成 runtime 部署，无需手动配置开发环境。
+
+#### 1.4.3 应用场景
+1. 职场人士事务代办：绑定工作通讯工具，远程指令AI完成数据核对、表单填写、邮件发送等繁琐办公任务，提升工作效率。
+2. 内容创作者运营：让AI学习爆款内容方法论，自动接管社交媒体账号的内容创作、发布与运营，实现账号增长。
+3. 普通用户习惯养成：通过聊天指令让AI制定健身、学习计划，记录数据并动态调整方案，帮助长期坚持目标。
+4. 海外用户跨设备操控：在外出时通过WhatsApp、Telegram远程操控家中Mac，完成文件整理、数据备份等任务。
+
+* 项目官网：https://qclawsg.qq.com/，下载对应版本（Mac
+
+------------------------------------------------------------
+
+## 新AgentScope Tuner – 阿里通义推出的一站式自动优化引擎
+
+> 周报归档：第 36 期 · 条目 1.5 · 2026-04-22 · [回看原周报](../weeklyHighlights/36.md)
+> 原始周报文件：`weekly_report_20260422_140944.md`
+
+AgentScope Tuner是阿里通义实验室推出的Agent一站式自动优化引擎，深度融入AgentScope生态，提供Prompt调优、模型选择、强化微调三种核心能力，支持零改造成本接入，实现从研发到部署的全周期优化，帮助智能体性能持续提升。
+
+#### 1.5.1 核心功能
+1. Prompt调优：基于MIPROv2算法探索提示词空间，面向Agent轨迹优化模板，无需GPU即可快速迭代。
+2. 模型选择：结合准确率、响应速度、Token消耗等多维指标，自动筛选综合性价比最优的基座模型。
+3. 强化微调：基于Trinity-RFT框架，以端到端交互轨迹为单位优化模型参数，支持百卡集群分布式训练。
+4. 统一优化接口：三种优化策略共享同一API，开发者可自由切换，无需学习不同框架。
+5. 开发-调优闭环：训练指标与线上效果一致，省去数据导出、格式适配等繁琐步骤。
+
+#### 1.5.2 技术原理
+采用Workflow-as-Function抽象，将Agent工作流封装为异步函数，通过参数注入绑定可优化变量，结合Judge函数形成强化学习三元组。Prompt调优基于MIPROv2实现组合搜索迭代；模型选择通过多目标帕累托计算完成权衡；强化微调采用GRPO算法解决长轨迹信用分配问题，且通过训练-推理同构运行时避免环境漂移。
+
+#### 1.5.3 应用场景
+1. 数学推理Agent：优化链式思考路径与工具调用逻辑，提升复杂数学问题的求解准确率。
+2. 多智能体博弈系统：如狼人杀场景，通过强化微调训练智能体的推理、欺骗与协作策略。
+3. 金融深度分析Agent：针对长链路报告生成任务，优化端到端交互轨迹，实现数据整合自动化。
+4. 企业内部工具调用Agent：当智能体需调用多个内部API时，通过强化微调突破性能天花板。
+5. 模型降本增效：在准确率无损前提下，自动替换为高性价比轻量模型，降低Token成本。
+
+* GitHub仓库：https://github.com/agentscope-ai/agentscope/tree/main/src/agentscope/tuner
+* 项目官网：https://docs.agentscope.io/tune-agent/tune-your-first-agent
+
+------------------------------------------------------------
+
+## Hermes Agent 部署全攻略 – 安装、配置、飞书接入一文搞定
+
+> 周报归档：第 36 期 · 条目 2.5 · 2026-04-22 · [回看原周报](../weeklyHighlights/36.md)
+> 原始周报文件：`weekly_report_20260422_140944.md`
+
+Hermes Agent是Nous Research推出的开源AI智能体，支持部署在本地或服务器，具备自主进化能力。它能自动提炼任务技能并优化，拥有三层记忆系统维持会话连续性，还支持多平台接入与五层安全防护，可替代OpenClaw满足个人及小团队需求，运行效率随使用时长提升。
+
+#### 2.5.1 核心功能
+1. 自主技能生成：完成5次以上工具调用的复杂任务后，自动提炼结构化Skill文档并定期优化，使研究类任务执行速度提升40%。
+2. 三层记忆系统：包含技能记忆、长期记忆和短期记忆，实现跨平台会话上下文保持，换设备登录也能继续对话。
+3. 多平台接入：通过单个Gateway进程支持Telegram、Discord、飞书等多平台，适配国内团队使用场景。
+4. 安全防护体系：内置prompt注入扫描、凭证过滤、沙箱隔离等五层防护，保障生产环境使用安全。
+5. 灵活模型适配：支持Nous Portal、OpenRouter等200+模型，可通过命令快速切换，无供应商锁定。
+
+#### 2.5.2 技术原理
+采用模块化架构设计，核心包含Agent执行引擎、记忆管理模块和Gateway接入层。技能生成基于任务轨迹分析与LLM提炼，记忆系统结合FTS5实现会话搜索与LlamaIndex式长期记忆管理。通过ProviderTransport抽象层适配多模型API，利用沙箱隔离技术实现终端操作安全，同时基于cron调度系统支持无人值守自动化任务。部署支持本地、Docker、Modal等多后端，服务器端采用FastAPI构建Web管理界面。
+
+#### 2.5.3 应用场景
+1. 个人日常助手：用户通过CLI或飞书等IM平台对话，处理任务执行、信息查询，利用记忆系统适配个人习惯，提升日常事务处理效率。
+2. 小团队协作工具：团队成员通过Discord等平台共享智能体，进行任务分配、文档协作，借助技能沉淀功能统一工作流程，减少重复沟通。
+3. 自动化运维：技术人员配置定时任务，让智能体执行服务器监控、日志分析等操作，通过多终端后端实现云端无人值守运行。
+4. 研究辅助工具：科研人员调用智能体进行文献调研、数据整理，利用自主技能生成功能沉淀研究方法，提升研究类任务执行速度。
+5. 客服与用户支持：企业部署智能体在Telegram等平台，处理常见用户咨询，通过记忆系统识别用户历史问题，提供个性化服务。
+
+* GitHub仓库：https://github.com/NousResearch/hermes-agent
+
