@@ -101,6 +101,10 @@ params:
     minMatchCharLength: 0
     keys: ["title", "permalink", "summary", "content"]
   
+  # Mermaid 图表配置
+  mermaid:
+    enable: true
+
   # 图片配置
   cover:
     hidden: false
