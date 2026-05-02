@@ -1056,6 +1056,3 @@ AI 能挖掘。
 ## 现在就去找到那个 100 倍创意！！！
 
 ---
-
-> 原文作者：[@hooeem](https://x.com/hooeem)
-> 原文地址：[https://x.com/hooeem/status/2050332284675362853](https://x.com/hooeem/status/2050332284675362853)
