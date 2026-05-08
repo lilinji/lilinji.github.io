@@ -11,8 +11,6 @@ author: Ringi Lee
 showToc: true
 tocOpen: false
 description: 你的 AI 智能体在周五凌晨 2 点坏了。你还不知情。到周一它会发出 47 封故障邮件、错过 12 张支持工单...
-slug: 如何建立一个不辞职、不睡觉、不会在周五消失的 AI 团队
-source: https://x.com/zodchiii/status/2052368125480354000
 ---
 
 ![Image](fb438c9285c6.jpg)
@@ -24,8 +22,6 @@ source: https://x.com/zodchiii/status/2052368125480354000
 这就是为什么 90% 的"AI 团队"在 30 天内死亡。不是因为智能体太笨。是因为没人在看着它们。
 
 **以下是完整解析** **👇**
-
-在深入之前，我在 Telegram 频道分享关于 AI 和 vibe coding 的每日笔记：[https://t.me/zodchixquant](https://t.me/zodchixquant) 🧠
 
 ![Image](b70cfb3b4b31.jpg)
 
@@ -69,7 +65,6 @@ source: https://x.com/zodchiii/status/2052368125480354000
 
 在这之后，我开始寻找专门为 AI 智能体构建的东西，而不是我必须弯曲成形的通用平台。
 
-那就是我找到 **Teamly (**[@Teamly](https://x.com/@Teamly)) 的时候
 
 ![Image](0d98198e398d.jpg)
 
@@ -156,5 +151,3 @@ source: https://x.com/zodchiii/status/2052368125480354000
 ![Image](c6637e528fe0.jpg)
 
 ---
-
-> 原文地址：<a href="https://x.com/zodchiii/status/2052368125480354000">https://x.com/zodchiii/status/2052368125480354000</a>
