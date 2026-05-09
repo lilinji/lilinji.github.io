@@ -1,5 +1,5 @@
 ---
-title: 使用 Claude Code：HTML 的不合理有效性
+title: "使用 Claude Code：HTML 的不合理有效性"
 date: 2026-05-09T08:00:00+08:00
 draft: false
 tags:
@@ -11,7 +11,7 @@ author: Ringi Lee
 showToc: true
 tocOpen: false
 description: Markdown 已成为智能体与我们沟通的主要文件格式。但随着智能体越来越强大，Markdown 越来越成为限制...
-slug: 使用 Claude Code：HTML 的不合理有效性
+slug: "使用 Claude Code：HTML 的不合理有效性"
 source: https://x.com/trq212/status/2052809885763747935
 ---
 
