@@ -330,5 +330,3 @@ Karpathy 2026 年 1 月的帖子是一次抱怨。Forrest Chang 将其变成了 
 > 收藏这篇文章，今晚就把 12 条规则粘贴到你的 CLAUDE.md 中。如果它帮你节省了一周的 Claude 弯路时间，请转发。每日 Claude 优化技巧 Telegram 频道：[https://t.me/+\_ZWrQN7GuDA3ZDEy](https://t.me/+_ZWrQN7GuDA3ZDEy)
 
 ---
-
-> 原文地址：<a href="https://x.com/Mnilax/status/2053116311132155938">https://x.com/Mnilax/status/2053116311132155938</a>
