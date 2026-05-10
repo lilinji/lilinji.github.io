@@ -1,5 +1,5 @@
 ---
-title: Karpathy's 4 CLAUDE.md rules cut Claude mistakes from 41% to 11%. After 30 codebases, I added 8 more
+title: "Karpathy 的 4 条 CLAUDE.md 规则将 Claude 错误率从 41% 降至 11%。在 30 个代码库测试后，我额外增加了 8 条"
 date: 2026-05-09T08:00:00+08:00
 draft: false
 tags:
@@ -10,320 +10,324 @@ tags:
 author: Ringi Lee
 showToc: true
 tocOpen: false
-description: "In late January 2026, Andrej Karpathy posted a thread complaining about how Claude writes code. Three failure modes: silent wrong assumption..."
-slug: Karpathy's 4 CLAUDE.md rules cut Claude mistakes from 41% to 11%. After 30 codebases, I added 8 more
+description: "2026 年 1 月底，Andrej Karpathy 发了一条帖子抱怨 Claude 的代码编写方式。三种失败模式：沉默的错误假设、过度复杂化、以及对不该触碰的代码造成连带损伤。"
+slug: "karpathy-4-claudemd-rules-cut-claude-mistakes"
 source: https://x.com/Mnilax/status/2053116311132155938
+translate-from: "https://x.com/Mnilax/status/2053116311132155938"
 
 ---
 
 ![Image](f1295c2aeffc.jpg)
 
-In late January 2026, Andrej Karpathy posted a thread complaining about how Claude writes code. Three failure modes: silent wrong assumptions, over-complication, orthogonal damage to code it shouldn't have touched.
+2026 年 1 月底，Andrej Karpathy 发了一条帖子，抱怨 Claude 的代码编写方式。三种失败模式：沉默的错误假设、过度复杂化、以及对不该触碰的代码造成连带损伤。
 
-Forrest Chang read the thread, packaged the complaints into 4 behavioral rules in a single CLAUDE.md file, and dropped it on GitHub. **It hit 5,828 stars in the first day. 60,000 bookmarks in two weeks. 120,000 stars today.** The fastest-growing single-file repo of 2026.
+Forrest Chang 读了这条帖子后，将这些抱怨整理成 4 条行为规则，写在了一个 CLAUDE.md 文件中，然后发布到了 GitHub。**上线第一天就收获了 5,828 颗星。两周内获得 60,000 个收藏。如今已有 120,000 颗星。**这是 2026 年增长最快的单文件仓库。
 
 ![Image](4b736ccdf330.jpg)
 
-Then I tested it on 30 codebases over 6 weeks.
+然后，我在 30 个代码库上对这套规则进行了为期 6 周的测试。
 
-The 4 rules work. Mistakes that used to happen ~40% of the time dropped to under 3% on tasks that played to their strengths. But the template was built to fix code-writing mistakes from January.
+4 条规则确实有效。原本约 40% 概率会犯的错误，在适合规则发挥优势的任务上降到了 3% 以下。但这个模板是为解决 2026 年 1 月的代码编写问题而设计的。
 
-The Claude Code ecosystem in May 2026 has different problems — agent fights, hook cascades, skill loading conflicts, multi-step workflows that break across sessions.
+2026 年 5 月的 Claude Code 生态面临着不同的问题——智能体冲突、钩子级联、技能加载冲突、跨会话的多步骤工作流崩溃。
 
-So I added 8 more rules. Below: t**he full 12-rule CLAUDE.md, why each one earned its place, and the 4 places where the original Karpathy template silently breaks.**
+因此，我又增加了 8 条规则。以下内容包含：**完整的 12 条规则 CLAUDE.md、每条规则获得一席之地的原因、以及原始 Karpathy 模板在 4 个地方静默失效的问题。**
 
-If you want to skip the explanations and just paste, **the full file is at the end.**
+如果你想跳过解释直接粘贴，**完整文件在文末。**
 
-# Why this matters
+# 为什么这很重要
 
-Claude Code's CLAUDE.md is the most under-leveraged file in the entire AI coding stack. Most developers either:
+Claude Code 的 CLAUDE.md 是整个 AI 编程栈中最被低估的文件。大多数开发者要么：
 
-- Treat it as a dump for every preference they've ever had, bloated to 4,000+ tokens, compliance drops to 30%
-- Skip it entirely and prompt every time — 5x token waste, no consistency between sessions
-- Copy a template once and forget. Works for two weeks, then breaks silently as their codebase shifts
+- 把它当作偏好设置的垃圾场，膨胀到 4000+ token，合规率骤降到 30%
+- 完全跳过，每次都手动提示——浪费 5 倍 token，且会话之间没有一致性
+- 复制一次模板就忘了。能用两周，然后随着代码库变化而静默失效
 
-The official Anthropic docs are explicit: **CLAUDE.md is advisory. Claude follows it about 80% of the time. Past 200 lines, compliance drops sharply because important rules get buried in the noise.**
+Anthropic 官方文档明确指出：**CLAUDE.md 是建议性的。Claude 大约 80% 的时间会遵循。超过 200 行后，合规率会急剧下降，因为重要规则会被淹没在噪音中。**
 
-Karpathy's template solved this in one file, 65 lines, 4 rules. That's the floor.
+Karpathy 的模板用一份文件、65 行、4 条规则解决了这个问题。这是底线。
 
-The ceiling is higher. With 8 more rules, the ones I'll go through below, you cover not just the January 2026 code-writing problems Karpathy complained about, but the May 2026 agent-orchestration problems that didn't exist yet when the template was written.
+天花板可以更高。再增加 8 条规则后，你不仅能覆盖 Karpathy 抱怨的 2026 年 1 月的代码编写问题，还能覆盖当时尚不存在的 2026 年 5 月的智能体编排问题。
 
-# The original 4 rules
+# 原始 4 条规则
 
-If you haven't read Forrest Chang's repo, the floor:
+如果你还没读过 Forrest Chang 的仓库，这是底线：
 
-**Rule 1 — Think Before Coding.** No silent assumptions. State what you're assuming. Surface tradeoffs. Ask before guessing. Push back when a simpler approach exists.
+**规则 1 —— 先思考再编码。** 不做沉默的假设。明确陈述你的假设。暴露权衡取舍。在猜测之前先询问。当存在更简单的方法时提出反对。
 
-**Rule 2 — Simplicity First.** Minimum code that solves the problem. No speculative features. No abstractions for single-use code. If a senior engineer would call it overcomplicated — simplify.
+**规则 2 —— 简洁优先。** 用最少的代码解决问题。不做投机性功能。不为一次性代码做抽象。如果一个资深工程师会说这过于复杂——那就简化。
 
-**Rule 3 — Surgical Changes.** Touch only what you must. Don't "improve" adjacent code, comments, or formatting. Don't refactor what isn't broken. Match existing style.
+**规则 3 —— 精准修改。** 只触碰必须改的地方。不要"改进"相邻代码、注释或格式。不要重构没坏的东西。匹配现有风格。
 
-**Rule 4 — Goal-Driven Execution.** Define success criteria. Loop until verified. Don't tell Claude what steps to follow, tell it what success looks like and let it iterate.
+**规则 4 —— 目标驱动执行。** 定义成功标准。循环验证直到达标。不要告诉 Claude 该遵循哪些步骤，告诉它成功是什么样子，让它自己迭代。
 
-These four close ~40% of the failure modes I see in unsupervised Claude Code sessions. The remaining ~60% live in the gaps below.
+这四条规则解决了我在无人监督的 Claude Code 会话中约 40% 的失败模式。剩下约 60% 存在于以下缺口之中。
 
 ![Image](59668acd2971.jpg)
 
-# The 8 rules I added (and why)
+# 我额外添加的 8 条规则（以及原因）
 
-Each of these came from a real moment where Karpathy's 4 weren't enough. I'll show the moment, then the rule.
+每一条都来自 Karpathy 的 4 条规则不够用的真实场景。我会先展示那个场景，再给出规则。
 
-## Rule 5 — Don't make the model do non-language work
+## 规则 5 —— 不要让模型做非语言类工作
 
-Karpathy's rules are silent on this. The model decides things that should be deterministic code, whether to retry an API call, how to route a message, when to escalate. Different decisions every week. Flaky if-else at $0.003 per token.
-
-```text
-## Rule 5 — Use the model only for judgment calls
-Use Claude for: classification, drafting, summarization, extraction from unstructured text.
-Do NOT use Claude for: routing, retries, status-code handling, deterministic transforms.
-If a status code already answers the question, plain code answers the question.
-```
-
-**The moment:** Code that called Claude to "decide if we should retry on 503" worked beautifully for two weeks, then started flaking because the model started reading the request body as context for the decision. The retry policy was random because the prompt was random.
-
-## Rule 6 — Hard token budgets, no exceptions
-
-CLAUDE.md without budgets is a blank check. Every loop has a chance to spiral into a 50,000-token context dump. The model won't stop on its own.
+Karpathy 的规则对此只字未提。模型会决定那些本应是确定性代码的事情——是否重试 API 调用、如何路由消息、何时升级处理。每周做出的决定各不相同。按每次 token $0.003 计算的脆弱 if-else 语句。
 
 ```text
-## Rule 6 — Token budgets are not advisory
-Per-task budget: 4,000 tokens.
-Per-session budget: 30,000 tokens.
-If a task is approaching budget, summarize and start fresh. Do not push through.
-Surfacing the breach > silently overrunning.
+## 规则 5 —— 仅将模型用于判断性调用
+使用 Claude 进行：分类、起草、摘要提取、从非结构化文本中提取信息。
+不要使用 Claude 进行：路由、重试、状态码处理、确定性转换。
+如果状态码已经回答了问题，普通代码就能回答问题。
 ```
 
-**The moment:** A debugging session ran for 90 minutes. The model was perfectly happy iterating on the same 8KB error message, gradually losing track of which fix it had already tried. By the end, it was suggesting fixes I'd rejected 40 messages earlier. Token budget would have killed it at minute 12.
+**那个场景：** 有一段调用 Claude 来"决定是否应该在 503 错误时重试"的代码，前两周运行得很好，后来开始不稳定——因为模型开始将请求体作为决策的上下文。重试策略变成了随机的，因为 prompt 本身是随机的。
 
-## Rule 7 — Surface conflicts, don't average them
+## 规则 6 —— 硬性 token 预算，无例外
 
-When two parts of the codebase disagree, Claude tries to please both. The result is incoherent.
+没有预算限制的 CLAUDE.md 等于一张空白支票。每个循环都有可能螺旋式膨胀到 50,000 token 的上下文倾倒。模型不会自己停下来。
 
 ```text
-## Rule 7 — Surface conflicts, don't average them
-If two existing patterns in the codebase contradict, don't blend them.
-Pick one (the more recent / more tested), explain why, and flag the other for cleanup.
-"Average" code that satisfies both rules is the worst code.
+## 规则 6 —— Token 预算不是建议
+每任务预算：4,000 token。
+每会话预算：30,000 token。
+如果任务接近预算上限，总结并重新开始。不要强行推进。
+主动上报 > 静默超额。
 ```
 
-**The moment:** A codebase had two error-handling patterns — one async/await with explicit try/catch, one with a global error boundary. Claude wrote new code that did both. Doubled error handlers. Took me 30 minutes to figure out why errors were swallowed twice.
+**那个场景：** 一次调试会话持续了 90 分钟。模型很"乐意"在同一段 8KB 的错误信息上反复迭代，逐渐忘记了之前已经尝试过哪些修复。到最后，它提出的修复方案是我早在 40 条消息前就拒绝过的。token 预算本可以在第 12 分钟就终止这个问题。
 
-## Rule 8 — Read before you write
+## 规则 7 —— 暴露冲突，不要取平均值
 
-Karpathy's "Surgical Changes" tells Claude not to touch adjacent code. It doesn't tell Claude to understand adjacent code first. Without this, Claude writes new code that conflicts with existing code 30 lines away.
+当代码库的两个部分存在分歧时，Claude 会试图同时讨好双方。结果是前后不一致的代码。
 
 ```text
-## Rule 8 — Read before you write
-Before adding code in a file, read the file's exports, the immediate caller, and any obvious shared utilities.
-If you don't understand why existing code is structured the way it is, ask before adding to it.
-"Looks orthogonal to me" is the most dangerous phrase in this codebase.
+## 规则 7 —— 暴露冲突，不要取平均值
+如果代码库中两个现有模式相互矛盾，不要将它们混合。
+选一个（更新的 / 测试更充分的），解释原因，并标记另一个待清理。
+"折中"满足两条规则的代码是最糟糕的代码。
 ```
 
-**The moment:** Claude added a function next to an existing identical function it hadn't read. Both functions did the same thing. The new one took precedence because of import order. The old one had been the source of truth for 6 months.
+**那个场景：** 一个代码库有两种错误处理模式——一种是 async/await 加显式 try/catch，一种是全局错误边界。Claude 写的新代码同时包含两种。加倍的错误处理器。花了我 30 分钟才弄清楚为什么错误被吞了两次。
 
-## Rule 9 — Tests are not optional, but they're not the goal
+## 规则 8 —— 先阅读再编写
 
-Karpathy's Goal-Driven Execution implies tests as success criteria. In practice, Claude treats "tests pass" as the only goal, and writes code that passes shallow tests while breaking everything else.
+Karpathy 的"精准修改"告诉 Claude 不要触碰相邻代码。但它没有告诉 Claude **先理解相邻代码**。没有这条规则，Claude 会写出与 30 行外的现有代码冲突的新代码。
 
 ```text
-## Rule 9 — Tests verify intent, not just behavior
-Every test must encode WHY the behavior matters, not just WHAT it does.
-A test like \`expect(getUserName()).toBe('John')\` is worthless if the function takes a hardcoded ID.
-If you can't write a test that would fail when business logic changes, the function is wrong.
+## 规则 8 —— 先阅读再编写
+在文件中添加代码之前，先阅读该文件的导出、直接调用者和任何明显的共享工具函数。
+如果你不理解现有代码为什么是这样组织的，先问清楚再添加。
+"在我看来这是正交的"是这个代码库中最危险的短语。
 ```
 
-**The moment:** Claude wrote 12 tests for an auth function. All passed. Auth was broken in production. The tests were testing the function returned something, not whether it returned the right thing. The function passed because it was returning a constant.
+**那个场景：** Claude 在一个已存在的相同函数旁边添加了一个新函数，而它并没有读过那个函数。两个函数做完全相同的事。由于导入顺序，新函数优先。老函数已经作为权威来源存在了 6 个月。
 
-## Rule 10 — Long-running operations need checkpoints
+## 规则 9 —— 测试不是可选项，但测试不是目标
 
-Karpathy's template assumes one-shot interactions. Real Claude Code work is multi-step — refactoring across 20 files, building features over a session, debugging across multiple commits. Without checkpoints, one wrong turn loses all progress.
+规则 4 的目标驱动执行将"测试通过"暗示为成功标准。实际上，Claude 把"测试通过"当作唯一目标，编写的代码能通过浅层测试但破坏其他一切。
 
 ```text
-## Rule 10 — Checkpoint after every significant step
-After completing each step in a multi-step task: summarize what was done, what's verified, what's left.
-Don't continue from a state you can't describe back to me.
-If you lose track, stop and restate.
+## 规则 9 —— 测试验证意图而非仅验证行为
+每个测试都必须编码"为什么"该行为重要，而不仅仅是"做了什么"。
+像 `expect(getUserName()).toBe('John')` 这样的测试毫无价值，如果该函数接收的是硬编码 ID。
+如果你写不出一个在业务逻辑变更时会失败的测试，那这个函数就是错的。
 ```
 
-**The moment:** A 6-step refactor went wrong on step 4. By the time I noticed, Claude had also done step 5 and 6 on top of the broken state. Untangling took longer than redoing the whole thing. Checkpoints would have caught it at step 4.
+**那个场景：** Claude 为一个认证函数写了 12 个测试。全部通过。但认证在生产环境中是坏的。这些测试只验证了函数返回了东西，而不是返回了正确的东西。函数能通过是因为它返回的是一个常量。
 
-## Rule 11 — Convention beats novelty
+## 规则 10 —— 长时间运行的操作需要检查点
 
-In a codebase with established patterns, Claude likes to introduce its own. Even when its way is "better," the introduction of two patterns is worse than either pattern alone.
+Karpathy 的模板假设一次性交互。真实的 Claude Code 工作是多步骤的——跨 20 个文件重构、跨整个会话构建功能、跨多个提交调试。没有检查点，一次错误转向就会失去所有进度。
 
 ```text
-## Rule 11 — Match the codebase's conventions, even if you disagree
-If the codebase uses snake_case and you'd prefer camelCase: snake_case.
-If the codebase uses class-based components and you'd prefer hooks: class-based.
-Disagreement is a separate conversation. Inside the codebase, conformance > taste.
-If you genuinely think the convention is harmful, surface it. Don't fork it silently.
+## 规则 10 —— 每完成一个重要步骤就设置检查点
+每完成一个多步骤任务的中间步骤后：总结已完成什么、已验证什么、还剩下什么。
+不要从你无法向我描述清楚的状态继续。
+如果你迷失了，停下来重新陈述。
 ```
 
-**The moment:** Claude introduced React hooks into a class-component codebase. They worked. They also broke the codebase's testing patterns, which assumed componentDidMount. Half a day to remove and rewrite.
+**那个场景：** 一个 6 步重构在第 4 步出了问题。等我发现时，Claude 已经在有问题的状态基础上完成了第 5 步和第 6 步。理清乱局比从头重做花的时间更长。检查点本可以在第 4 步就捕获问题。
 
-## Rule 12 — Fail visibly, not silently
+## 规则 11 —— 约定优于创新
 
-The most expensive Claude failures are the ones that look like success. A function "works" but returns wrong data. A migration "completes" but skipped 30 records. A test "passes" but only because the assertion was wrong.
+在一个已有既定模式的代码库中，Claude 喜欢引入自己的模式。即使它的方式"更好"，引入两种模式也比单独任何一种都更糟。
 
 ```text
-## Rule 12 — Fail loud
-If you can't be sure something worked, say so explicitly.
-"Migration completed" is wrong if 30 records were skipped silently.
-"Tests pass" is wrong if you skipped any.
-"Feature works" is wrong if you didn't verify the edge case I asked about.
-Default to surfacing uncertainty, not hiding it.
+## 规则 11 —— 遵循代码库的约定，即使你不同意
+如果代码库使用 snake_case 而你偏好 camelCase：用 snake_case。
+如果代码库使用类组件而你偏好 hooks：用类组件。
+不同意见是另外的话题。在代码库内部，一致性 > 个人品味。
+如果你真的认为某个约定有害，将其提出来。不要默默地另起炉灶。
 ```
 
-**The moment:** Claude said a database migration "completed successfully." It had silently skipped 14% of records that hit a constraint violation. The skip was logged but not surfaced. Discovered the problem 11 days later when reports started looking wrong.
+**那个场景：** Claude 在一个类组件代码库中引入了 React Hooks。它们确实能工作。但它们也破坏了依赖 componentDidMount 的测试模式。花了半天时间删除和重写。
 
-# The numbers
+## 规则 12 —— 失败要可见，不要静默失败
 
-I tracked the same set of 50 representative tasks across 30 codebases for 6 weeks. Three configurations:
+最昂贵的 Claude 失败是那些看起来像成功的。一个函数"工作"了但返回了错误数据。一次迁移"完成"了但跳过了 30 条记录。一个测试"通过"了但只是因为断言本身就是错的。
+
+```text
+## 规则 12 —— 大声失败
+如果你不能确定某件事成功了，就明确说出来。
+"迁移已完成"是错的，如果有 30 条记录被静默跳过。
+"测试通过"是错的，如果有任何一个测试被跳过。
+"功能正常"是错的，如果你没有验证我让你检查的边缘情况。
+默认暴露不确定性，而非隐藏它。
+```
+
+**那个场景：** Claude 说数据库迁移"成功完成"。它静默跳过了 14% 因约束冲突而失败的记录。跳过被记录了但没有被上报。11 天后报告开始出现异常时才发现问题。
+
+# 数据
+
+我在 6 周内，使用 30 个代码库，跟踪了同一组 50 个代表性任务。三种配置方案：
 
 ![Image](c370cd00b529.jpg)
 
-**Mistake rate** = task required correction or rewrite to match intent. Counts: silent wrong assumption, over-engineering, orthogonal damage, silent failure, convention violation, conflict averaging, missed checkpoint.
+**错误率** = 任务需要修正或重写以匹配意图的次数。包括：沉默的错误假设、过度工程化、连带损伤、静默失败、约定违反、冲突平均、遗漏检查点。
 
-**Compliance** = how often Claude visibly applied the relevant rule when it was applicable.
+**合规率** = 当相关规则适用时，Claude 可见地应用该规则的频率。
 
-The interesting result isn't the headline drop from 41% to 3%. It's that going from 4 rules to 12 added almost no compliance overhead (78% -> 76%) but cut the mistake rate by another 8 points. The new rules cover failure modes the original 4 didn't address — they don't compete for the same attention budget.
+有趣的结果不只是错误率从 41% 降至 3%。从 4 条规则增加到 12 条几乎没增加合规负担（78% → 76%），但错误率又下降了 8 个百分点。新规则覆盖的是原始 4 条未涉及的失败模式——它们不会争夺相同的注意力预算。
 
 ![Image](9c4b7c2023e1.jpg)
 
-# Where Karpathy's template silently breaks
+# Karpathy 模板静默失效的 4 个地方
 
-Four places where the original 4-rule template is not enough, even before adding new rules:
+即使在添加新规则之前，原始 4 条规则模板在以下 4 个地方也不够用：
 
-**1\. Long-running agent tasks.** Karpathy's rules target the moment Claude is writing code. They're silent on what happens when Claude is running a multi-step pipeline. No budget rule. No checkpoint rule. No "fail loud" rule. Pipelines drift.
+**1. 长时间运行的智能体任务。** Karpathy 的规则针对 Claude 正在编写代码的那一刻。对于 Claude 正在运行多步骤流水线的情况，它们保持沉默。没有预算规则。没有检查点规则。没有"大声失败"规则。流水线会漂移。
 
-**2\. Multi-codebase consistency.** "Match existing style" assumes one style. In a monorepo with 12 services, Claude has to pick which style. The original rules don't tell it how. It picks randomly or averages.
+**2. 多代码库一致性。** "匹配现有风格"假设有一种风格。在一个包含 12 个服务的 monorepo 中，Claude 必须选择哪一种。原始规则没有告诉它如何选择。它随机选择或取平均值。
 
-**3\. Test quality.** Goal-Driven Execution treats "tests pass" as success. Doesn't say tests have to be meaningful. The result is tests that test nothing useful but make Claude confident.
+**3. 测试质量。** 目标驱动执行将"测试通过"视为成功。没有说测试必须是有意义的。结果是测试什么都没验证但让 Claude 充满信心。
 
-**4\. Production vs prototype.** The same 4 rules that protect production code from over-engineering also slow down prototypes that legitimately need 100 lines of speculative scaffolding to figure out a direction. Karpathy's "Simplicity First" overfires on early-stage code.
+**4. 生产环境 vs 原型。** 保护生产代码免于过度工程的同一套 4 条规则，也会拖慢那些需要 100 行投机性脚手架来探索方向的原型。Karpathy 的"简洁优先"在早期代码上会过度触发。
 
-The 8 added rules don't replace Karpathy's 4. They patch the gaps where his model, January 2026, autocomplete-style coding, doesn't match May 2026's agent-driven, multi-step, multi-codebase work.
+额外增加的 8 条规则不会替代 Karpathy 的 4 条。它们修补的是他的模型（2026 年 1 月的自动补全式编码）与 2026 年 5 月的智能体驱动、多步骤、多代码库工作之间的差距。
 
 ![Image](43311b716ff4.jpg)
 
-# What didn't work
+# 验证无效的做法
 
-Things I tried before settling on the 12 rules:
+在确定这 12 条规则之前，我尝试过以下方法：
 
-- **Adding rules I'd seen on Reddit / X.** Most were either restatements of Karpathy's 4 with different words, or domain-specific rules ("always use Tailwind classes") that don't generalize. Cut them.
-- **More than 12 rules.** I tested up to 18. Compliance dropped from 76% to 52% past 14 rules. The 200-line ceiling is real. Past it, Claude starts pattern-matching to "rules exist" without actually reading them.
-- **Rules that depend on tooling that might not exist.** "Always use eslint" breaks when eslint isn't installed. Rule fails silently. Replaced with capability-agnostic phrasings: "match the codebase's enforced style" instead of "use eslint."
-- **Examples in CLAUDE.md instead of rules.** Examples are heavier than rules. Three examples cost as much context as ~10 rules and Claude over-fits to them. Rules are abstract, examples are specific. Use rules.
-- **"Be careful" / "think hard" / "really focus."** Pure noise. Compliance with these dropped to ~30% because they're not testable. Replaced with concrete imperatives ("state assumptions explicitly").
-- **Telling Claude to be "senior."** Doesn't work. Claude already thinks it's senior. The compliance gap is between thinking and doing. Imperative rules close the gap; identity prompts don't.
+- **添加 Reddit / X 上看到的规则。** 大多数要么是 Karpathy 的 4 条规则换了个说法，要么是领域特定规则（如"始终使用 Tailwind 类"）不具备普适性。全部剔除。
+- **超过 12 条规则。** 我测试到 18 条。超过 14 条后，合规率从 76% 降至 52%。200 行的上限是真实的。超过后，Claude 开始只做"规则存在"的模式匹配，而不真正阅读。
+- **依赖可能不存在的工具的规则。** "始终使用 eslint"在未安装 eslint 时会失败。规则静默失效。替换为与工具无关的表述："匹配代码库已强制执行的风格"而非"使用 eslint"。
+- **在 CLAUDE.md 中放示例而非规则。** 示例比规则更重。三个示例消耗的上下文约等于 10 条规则，且 Claude 会过拟合到示例上。规则是抽象的，示例是具体的。用规则。
+- **"小心"/"认真思考"/"真正集中注意力"。** 纯粹是噪音。这些的合规率降至约 30%，因为它们不可测试。替换为具体指令（"明确陈述你的假设"）。
+- **告诉 Claude 要"资深"。** 不起作用。Claude 已经认为自己很资深了。合规差距存在于思考和行动之间。具体指令填补这一差距；身份提示无法做到。
 
-# The full 12-rule CLAUDE.md (copy-paste ready)
+# 完整的 12 条规则 CLAUDE.md（可直接复制粘贴）
 
 ```text
-# CLAUDE.md — 12-rule template
+# CLAUDE.md — 12 条规则模板
 
-These rules apply to every task in this project unless explicitly overridden.
-Bias: caution over speed on non-trivial work. Use judgment on trivial tasks.
+这些规则适用于本项目中所有任务，除非被显式覆盖。
+偏差：非琐碎工作优先考虑谨慎而非速度。对于琐碎任务使用判断力。
 
-## Rule 1 — Think Before Coding
-State assumptions explicitly. If uncertain, ask rather than guess.
-Present multiple interpretations when ambiguity exists.
-Push back when a simpler approach exists.
-Stop when confused. Name what's unclear.
+## 规则 1 —— 先思考再编码
+明确陈述你的假设。如果不确定，先询问而非猜测。
+在存在歧义时呈现多种解释。
+当存在更简单的方法时提出反对。
+困惑时停下来。说出不清楚的地方。
 
-## Rule 2 — Simplicity First
-Minimum code that solves the problem. Nothing speculative.
-No features beyond what was asked. No abstractions for single-use code.
-Test: would a senior engineer say this is overcomplicated? If yes, simplify.
+## 规则 2 —— 简洁优先
+用最少的代码解决问题。不要做投机性功能。
+不要为一次性代码做抽象。
+测试：一个资深工程师会说这个过于复杂吗？如果是，简化。
 
-## Rule 3 — Surgical Changes
-Touch only what you must. Clean up only your own mess.
-Don't "improve" adjacent code, comments, or formatting.
-Don't refactor what isn't broken. Match existing style.
+## 规则 3 —— 精准修改
+只触碰必须改的地方。只清理自己制造的混乱。
+不要"改进"相邻代码、注释或格式。
+不要重构没坏的东西。匹配现有风格。
 
-## Rule 4 — Goal-Driven Execution
-Define success criteria. Loop until verified.
-Don't follow steps. Define success and iterate.
-Strong success criteria let you loop independently.
+## 规则 4 —— 目标驱动执行
+定义成功标准。循环验证直到达标。
+不要遵循步骤。定义成功然后迭代。
+强有力的成功标准让你能独立循环。
 
-## Rule 5 — Use the model only for judgment calls
-Use me for: classification, drafting, summarization, extraction.
-Do NOT use me for: routing, retries, deterministic transforms.
-If code can answer, code answers.
+## 规则 5 —— 仅将模型用于判断性调用
+使用我进行：分类、起草、摘要提取。
+不要使用我进行：路由、重试、确定性转换。
+如果代码可以回答，代码回答。
 
-## Rule 6 — Token budgets are not advisory
-Per-task: 4,000 tokens. Per-session: 30,000 tokens.
-If approaching budget, summarize and start fresh.
-Surface the breach. Do not silently overrun.
+## 规则 6 —— Token 预算不是建议
+每任务：4,000 token。每会话：30,000 token。
+如果接近预算，总结并重新开始。
+主动上报超额。不要静默超额。
 
-## Rule 7 — Surface conflicts, don't average them
-If two patterns contradict, pick one (more recent / more tested).
-Explain why. Flag the other for cleanup.
-Don't blend conflicting patterns.
+## 规则 7 —— 暴露冲突，不要取平均值
+如果两个现有模式矛盾，选一个（更新的 / 测试更充分的）。
+解释原因。标记另一个待清理。
+不要混合矛盾的模式。
 
-## Rule 8 — Read before you write
-Before adding code, read exports, immediate callers, shared utilities.
-"Looks orthogonal" is dangerous. If unsure why code is structured a way, ask.
+## 规则 8 —— 先阅读再编写
+在添加代码之前，先阅读文件的导出、直接调用者和共享工具函数。
+"在我看来这是正交的"是危险的。如果不确定代码为何如此组织，先问。
 
-## Rule 9 — Tests verify intent, not just behavior
-Tests must encode WHY behavior matters, not just WHAT it does.
-A test that can't fail when business logic changes is wrong.
+## 规则 9 —— 测试验证意图而非仅验证行为
+测试必须编码"为什么"该行为重要，而不仅仅是"做了什么"。
+一个在业务逻辑变更时不会失败的测试是错误的。
 
-## Rule 10 — Checkpoint after every significant step
-Summarize what was done, what's verified, what's left.
-Don't continue from a state you can't describe back.
-If you lose track, stop and restate.
+## 规则 10 —— 每完成一个重要步骤就设置检查点
+每完成一个多步骤任务的中间步骤后：总结已完成什么、已验证什么、还剩下什么。
+不要从你无法向我描述清楚的状态继续。
+如果你迷失了，停下来重新陈述。
 
-## Rule 11 — Match the codebase's conventions, even if you disagree
-Conformance > taste inside the codebase.
-If you genuinely think a convention is harmful, surface it. Don't fork silently.
+## 规则 11 —— 遵循代码库的约定，即使你不同意
+在代码库内部，一致性 > 个人品味。
+如果代码库使用 snake_case 而你偏好 camelCase：用 snake_case。
+如果代码库使用类组件而你偏好 hooks：用类组件。
+如果你真的认为某个约定有害，将其提出来。不要默默地另起炉灶。
 
-## Rule 12 — Fail loud
-"Completed" is wrong if anything was skipped silently.
-"Tests pass" is wrong if any were skipped.
-Default to surfacing uncertainty, not hiding it.
+## 规则 12 —— 大声失败
+如果你不能确定某件事成功了，就明确说出来。
+"已完成"是错的，如果有任何事被静默跳过。
+"测试通过"是错的，如果有任何测试被跳过。
+默认暴露不确定性，而非隐藏它。
 ```
 
-Save as CLAUDE.md at your repo root. Add project-specific rules below the 12 (stack, test commands, error patterns). Don't go past 200 lines combined, **past that, compliance falls off.**
+保存为项目根目录的 CLAUDE.md。在 12 条规则下方添加项目特定规则（技术栈、测试命令、错误模式）。合并后不要超过 200 行，**超过后合规率会下降。**
 
-# How to install
+# 如何安装
 
-Two steps:
+两步：
 
 ```text
-# 1. Append Karpathy's 4-rule baseline to your CLAUDE.md
+# 1. 将 Karpathy 的 4 条规则基线追加到你的 CLAUDE.md
 curl https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md >> CLAUDE.md
 
-# 2. Paste rules 5-12 from this article below
+# 2. 将规则 5-12 粘贴到下方
 ```
 
-Save at your repo root. The >> matters, it appends to your existing CLAUDE.md instead of overwriting any project-specific rules you already have.
+保存到项目根目录。`>>` 很重要——它会追加到你现有的 CLAUDE.md 而非覆盖你已有的项目特定规则。
 
-# The mental model
+# 核心心智模型
 
-CLAUDE.md is not a wishlist. It's a **behavioral contract** that closes specific failure modes you've observed.
+CLAUDE.md 不是愿望清单。它是一个**行为契约**，用来关闭你已观察到的特定失败模式。
 
-Every rule should answer: what mistake does this prevent?
+每条规则都应该回答：它能防止什么错误？
 
 ![Image](82c557f1a90a.jpg)
 
-**Karpathy's 4 prevent the failure modes he saw in January 2026:** silent assumptions, over-engineering, orthogonal damage, weak success criteria. They're foundational. Don't skip them.
+**Karpathy 的 4 条规则防止了 2026 年 1 月他观察到的失败模式：** 沉默假设、过度工程化、连带损伤、软弱的成功标准。它们是基础。不要跳过。
 
-**The 8 I added prevent failure modes that emerged in May 2026:** agent loops without budgets, multi-step tasks without checkpoints, tests that don't test, silent successes hiding silent failures. They're additive.
+**我额外添加的 8 条规则防止了 2026 年 5 月才出现的失败模式：** 没有预算的智能体循环、没有检查点的多步骤任务、不能验证意图的测试、用成功表象掩盖的静默失败。它们是补充性的。
 
-Your mileage will vary. If you don't run multi-step pipelines, Rule 10 doesn't matter. If your codebase has one consistent style enforced by linting, Rule 11 is redundant. **Read the 12, keep the ones that map to mistakes you've actually made, drop the rest.**
+你的情况可能不同。如果你不运行多步骤流水线，规则 10 无关紧要。如果你的代码库有一种风格且有 linting 强制执行，规则 11 是冗余的。**阅读 12 条规则，保留与你实际犯过的错误对应的那些，丢掉其余。**
 
-A 6-rule CLAUDE.md tuned to your real failure modes beats a 12-rule one with 6 rules you'll never need.
+一个针对你实际失败模式定制的 6 条规则 CLAUDE.md，胜过包含 6 条你永远不会用到的规则的 12 条规则版本。
 
-## T H E \_ E N D
+## 完
 
-Karpathy's January 2026 thread was a complaint. Forrest Chang turned it into 4 rules. 120,000 developers starred the result. Most of them are still running 4 rules today.
+Karpathy 2026 年 1 月的帖子是一次抱怨。Forrest Chang 将其变成了 4 条规则。120,000 名开发者为结果点了星。他们中大多数人至今仍在运行 4 条规则。
 
-The model has improved. The ecosystem has changed. Multi-step agents, hook cascades, skill loading, multi-codebase work — none of these existed when Karpathy wrote his thread. The 4 rules don't address them. They're not wrong; they're incomplete.
+模型在进步。生态系统在变化。多步骤智能体、钩子级联、技能加载、跨代码库工作——这些在 Karpathy 写帖子时都不存在。4 条规则无法应对这些问题。它们没错；它们不完整。
 
-8 more rules. 6 weeks of testing across 30 codebases. Mistake rate from 41% to 3%.
+再多 8 条规则。在 30 个代码库上测试了 6 周。错误率从 41% 降至 3%。
 
-> Bookmark this and paste the 12 rules into your CLAUDE.md tonight. Repost if it saved you a week of Claude wrong turns. Telegram for daily claude optimization tips: [https://t.me/+\_ZWrQN7GuDA3ZDEy](https://t.me/+_ZWrQN7GuDA3ZDEy)
+> 收藏这篇文章，今晚就把 12 条规则粘贴到你的 CLAUDE.md 中。如果它帮你节省了一周的 Claude 弯路时间，请转发。每日 Claude 优化技巧 Telegram 频道：[https://t.me/+\_ZWrQN7GuDA3ZDEy](https://t.me/+_ZWrQN7GuDA3ZDEy)
 
 ---
 
