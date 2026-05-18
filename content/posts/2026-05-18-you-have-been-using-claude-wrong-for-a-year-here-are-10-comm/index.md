@@ -421,5 +421,3 @@ Rules:
 默认模式是好好先生模式。这些命令打破它。
 
 ---
-
-> 原文地址：<a href="https://x.com/sairahul1/status/2056292143472202110">https://x.com/sairahul1/status/2056292143472202110</a>
