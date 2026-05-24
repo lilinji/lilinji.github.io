@@ -522,15 +522,3 @@ AI agents的安全不像传统应用安全。
 很少有人发布能可靠规模化运行的agents。
 
 差距就是这篇文章的一切。
-
-如果这有帮助：
-
-→ 转发分享
-→ 关注 [@sairahul1](https://x.com/@sairahul1) 获取更多类似的拆解
-→ 收藏——你构建时会参考它
-
-我写AI系统、产品构建和让你睡觉时也能运转的自动化。
-
-<blockquote>
-  原文地址：<a href="https://x.com/sairahul1/status/2058464422306443766">https://x.com/sairahul1/status/2058464422306443766</a>
-</blockquote>

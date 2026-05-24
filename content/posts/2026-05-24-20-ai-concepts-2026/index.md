@@ -656,15 +656,3 @@ Agent把AI从聊天机器人变成了协作者。
 大多数每天用AI的人并不懂。
 
 这就是你的优势。
-
-如果这有帮助：
-
-→ 转发分享给你的网络
-→ 关注 [@sairahul1](https://x.com/@sairahul1) 获取更多类似的拆解
-→ 收藏以便参考
-
-我写AI、构建产品和让你睡觉时也能运转的系统。
-
-<blockquote>
-  原文地址：<a href="https://x.com/sairahul1/status/2057740928908161461?s=46">https://x.com/sairahul1/status/2057740928908161461?s=46</a>
-</blockquote>
