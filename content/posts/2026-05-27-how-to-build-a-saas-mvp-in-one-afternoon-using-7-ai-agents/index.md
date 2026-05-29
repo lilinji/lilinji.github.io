@@ -624,9 +624,3 @@ Kimi 取代了产品思考中最初混乱的 70%。
 现在从一条提示词开始。
 
 试试 Kimi Agent Swarm：[kimi.com/agent-swarm](https://kimi.com/agent-swarm)
-
-关注 [@sairahul1](https://x.com/@sairahul1) — 我写关于 AI 系统、智能体工作流和构建在你睡觉时运行的产品。
-
----
-
-> **来源**: [https://x.com/sairahul1/status/2059561133691031733](https://x.com/sairahul1/status/2059561133691031733)
