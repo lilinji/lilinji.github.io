@@ -78,11 +78,7 @@ source: https://x.com/sairahul1/status/2059561133691031733
 
 会得到回复。
 
-这是输出 SaaS 的样子：
-
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2059254983019872256/img/EOKqZfcTGcTW5mux.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"><source type="video/mp4" src="blob:https://x.com/9e9e02c6-99c0-4557-99f1-21a224ebfb0e"></video>
-
-0:01 / 0:22
+这是输出 SaaS 的样子。
 
 ## 为什么大多数人在用 AI 构建产品时用错了方式
 
@@ -278,7 +274,7 @@ SaaS MVP 不需要完整。
 
 Kimi 设计的报告布局：
 
-━━━
+---
 
 **网站评分：62/100**
 
@@ -308,7 +304,7 @@ Kimi 设计的报告布局：
 
 业务影响：你的网站正在失去那些准备好立刻打电话的移动端访问者。
 
-━━━
+---
 
 那个布局很重要。
 
@@ -483,7 +479,7 @@ Kimi 的 QA 智能体立即发现：
 
 X 发布帖子是智能体写的：
 
-**\------------**
+------------
 
 **我构建了一个审计本地企业网站并将它们变成客户机会的 SaaS。**
 
@@ -493,7 +489,7 @@ X 发布帖子是智能体写的：
 
 **差的网站到处都是。现在每一个都是一条潜在客户。**
 
-**\------------**
+------------
 
 简单。清晰。实用。
 
@@ -633,4 +629,4 @@ Kimi 取代了产品思考中最初混乱的 70%。
 
 ---
 
-> 原文地址：<a href="https://x.com/sairahul1/status/2059561133691031733">https://x.com/sairahul1/status/2059561133691031733</a>
+> **来源**: [https://x.com/sairahul1/status/2059561133691031733](https://x.com/sairahul1/status/2059561133691031733)
