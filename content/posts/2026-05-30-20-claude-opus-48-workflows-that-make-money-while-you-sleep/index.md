@@ -10,9 +10,9 @@ tags:
 author: Ringi Lee
 showToc: true
 tocOpen: false
-source: "https://x.com/sairahul1/status/2060646901524156778"
 ---
 
+![](image.png)
 Anthropic 发布 Opus 4.8 的时候，我们大多数人都在睡觉。
 
 大多数人的反应是："更好的编程模型。"
