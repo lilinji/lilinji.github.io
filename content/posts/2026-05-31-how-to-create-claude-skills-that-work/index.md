@@ -1,6 +1,6 @@
 ---
 title: "如何创建真正有用的 Claude Skills：产品经理实战指南"
-date: 2026-05-25T00:00:00+08:00
+date: 2026-05-31T00:00:00+08:00
 draft: false
 tags:
   - AI相关
@@ -127,7 +127,3 @@ Anthropic 自己的文档陈述了几乎没教程遵循的规则：在写 skill 
 真正需要谨慎的一个是安全。SKILL.md 是纯文本，Claude 把它当作指令，这就是藏攻击的地方。恶意 skill 可以悄悄告诉 Claude 把你的 API 密钥附加到它获取的 URL，普通的代码扫描器会错过它，因为有效载荷是散文而不是代码。所以安装 skill 要像装软件一样：只从你信任的来源，当不信任时先读全部。有专门为此构建的扫描器，比如结构和大纲命令的 claudelint 以及注入和凭证泄露的 skill-lint，它们属于你开始使用他人写的 skills 时的 loop。
 
 还有一个现在学这个的理由。今年十二月，Anthropic 把 skill 格式发布为开放标准，主要编码工具都采用了它，所以你今天写的 skill 跨 Codex、Cursor、GitHub 和 VS Code 都能跑。你在这里学到的东西在底层工具变化时保持其价值。
-
-<blockquote>
-  原文地址：<a href="https://x.com/nurijanian/status/2060672098050490380">https://x.com/nurijanian/status/2060672098050490380</a>
-</blockquote>
