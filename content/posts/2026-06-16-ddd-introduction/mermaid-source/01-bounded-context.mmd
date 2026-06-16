@@ -1,0 +1,29 @@
+flowchart TB
+    subgraph 营销[营销上下文 Marketing]
+        Mkt[优惠码 / 活动引擎]
+    end
+
+    subgraph 订单[订单上下文 Order]
+        Ord[订单聚合根]
+    end
+
+    subgraph 库存[库存上下文 Inventory]
+        Inv[SKU 聚合根]
+    end
+
+    subgraph 支付[支付上下文 Payment]
+        Pay[支付单聚合根]
+    end
+
+    subgraph 会员[会员上下文 Member]
+        Mem[会员聚合根]
+    end
+
+    营销 -->|应用优惠码| 订单
+    订单 -->|预留库存| 库存
+    订单 -->|创建支付单| 支付
+    订单 -->|读取会员信息| 会员
+    会员 -.->|用户标签回流| 营销
+
+    classDef ctx fill:#f5f7fa,stroke:#4a5568,stroke-width:1.5px,color:#1a202c
+    class Mkt,Ord,Inv,Pay,Mem ctx

@@ -90,3 +90,17 @@ content/posts/YYYY-MM-DD-slug/
 **Do NOT edit:**
 - `public/` (generated output)
 - `resources/` (Hugo cache)
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues at `lilinji/lilinji.github.io` via `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Canonical defaults (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at repo root (created lazily by `/grill-with-docs`). See `docs/agents/domain.md`.

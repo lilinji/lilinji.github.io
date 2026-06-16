@@ -1,0 +1,15 @@
+flowchart TB
+    Generic[通用子域 Generic - 邮件/短信/支付网关/对象存储]
+    Supporting[支撑子域 Supporting - 订单管理/库存/物流/客服]
+    Core[核心子域 Core - 推荐算法/动态定价/派单逻辑]
+
+    Generic --> Supporting
+    Supporting --> Core
+
+    classDef core fill:#dc2626,stroke:#7f1d1d,stroke-width:2px,color:#fff
+    classDef sup fill:#f59e0b,stroke:#92400e,stroke-width:1.5px,color:#1a202c
+    classDef gen fill:#10b981,stroke:#064e3b,stroke-width:1.5px,color:#fff
+
+    class Core core
+    class Supporting sup
+    class Generic gen

@@ -1,0 +1,33 @@
+flowchart LR
+    subgraph 订单[订单上下文 Order - 下游主导]
+        Ord
+    end
+
+    subgraph 库存[库存上下文 Inventory - 上游]
+        Inv
+    end
+
+    subgraph 支付[支付上下文 Payment - 外部 SaaS]
+        Pay
+    end
+
+    subgraph 会员[会员上下文 Member - 上游]
+        Mem
+    end
+
+    subgraph 营销[营销上下文 Marketing - 上游]
+        Mkt
+    end
+
+    Ord ==>|Anti-Corruption Layer 翻译支付回调| Pay
+    Ord -->|Customer/Supplier 下游| Inv
+    Ord -.->|Conformist 顺从| Mem
+    Mkt ==>|Open Host Service 稳定API| Ord
+
+    classDef up fill:#fef3c7,stroke:#b45309,color:#1a202c
+    classDef down fill:#dbeafe,stroke:#1d4ed8,color:#1a202c
+    classDef ext fill:#fee2e2,stroke:#b91c1c,color:#1a202c
+
+    class Inv,Mem,Mkt up
+    class Ord down
+    class Pay ext

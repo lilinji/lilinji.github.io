@@ -1,0 +1,72 @@
+%% Figure 4 — Order Aggregate Internals
+%% Section 4.3 in the outline
+%% Renders to: imgs/mermaid-4-aggregate.png
+%%
+%% Conventions:
+%%   *--   composition (lives inside the aggregate, owned by the root)
+%%   -->   reference (Customer / Product live in OTHER aggregates, only an ID is held)
+%%   <<V>> value object marker
+%%   <<E>> enumeration marker
+
+classDiagram
+    direction TB
+
+    class Order {
+        +OrderId id
+        +CustomerId customerId
+        +List~OrderItem~ items
+        +OrderStatus status
+        +Address shippingAddress
+        +Money totalAmount
+        +addItem item
+        +removeItem item
+        +pay void
+        +cancel void
+    }
+
+    class OrderItem {
+        +ProductId productId
+        +int quantity
+        +Money unitPrice
+        +subtotal Money
+        +changeQuantity void
+    }
+
+    class Money {
+        <<V>>
+        +number amount
+        +string currency
+        +add Money
+        +multiply Money
+    }
+
+    class Address {
+        <<V>>
+        +string province
+        +string city
+        +string street
+        +string zipCode
+    }
+
+    class OrderStatus {
+        <<E>>
+        Pending
+        Paid
+        Shipped
+        Cancelled
+    }
+
+    class Customer {
+        <<external aggregate>>
+    }
+
+    class Product {
+        <<external aggregate>>
+    }
+
+    Order "1" *-- "1..*" OrderItem : contains
+    Order "1" *-- "1" Address : ships-to
+    Order "1" *-- "1" OrderStatus : in
+    OrderItem "1" *-- "1" Money : priced-in
+    Order "1" --> "1" Customer : references
+    OrderItem "1" --> "1" Product : references
