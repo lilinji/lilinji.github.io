@@ -25,11 +25,6 @@ AI 已经走进每个人的生活好几年了。但绝大多数每天都在用 A
 更快的方式就是 Loop（循环），而此刻它是全球最顶尖的 AI 工程师唯一关心的事。这篇文章要补上的，就是所有人都没讲清楚的那一块。读完之后，你对 Loop 的理解会超过你时间线上几乎所有的人：它是什么、底层到底怎么运转、什么时候值得用、什么时候是个陷阱、怎么在 Claude 或 ChatGPT 里自己搭一个最基础的版本，以及那些值得放到自己生活里去跑的轻量版。
 
 开始之前，先关注一下我的 X，并加入我刚开的 Telegram 频道，那上面我每天都会发更多 AI 内容。两个都免费。
-
-X - [https://x.com/AnatoliKopadze](https://x.com/AnatoliKopadze)
-
-Telegram - [https://t.me/kopadzemp](https://t.me/kopadzemp)
-
 ## 大多数人是怎么用 AI 的？
 
 仔细看一眼"一次提一个需求"的习惯，因为整个问题就在这里。每一步都要从你身上过：你决定问什么，你判断回答好不好，你决定下一步干什么。AI 不会自己动，除非你推它一把；你一停，它也停了。
@@ -41,8 +36,6 @@ Telegram - [https://t.me/kopadzemp](https://t.me/kopadzemp)
 > 6 月 8 日
 >
 > 每月的友情提醒：你不要再给编码 Agent 写 prompt 了，你应该设计 Loop，让 Loop 去 prompt 你的 Agent。
-
-<video preload="none" tabindex="-1" playsinline="" aria-label="Embedded video" poster="https://pbs.twimg.com/amplify_video_thumb/2068028099128643584/img/WqoEwyrbdk15hRD7.jpg" style="width: 100%; height: 100%; position: absolute; background-color: black; top: 0%; left: 0%; transform: rotate(0deg) scale(1.005);"><source type="video/mp4" src="blob:https://x.com/a7791a31-a70c-4bb6-a295-5935066c645b"></source></video>
 
 ![](cdd5b0bb1dfb.jpg)
 
@@ -106,23 +99,23 @@ ON STOP：总结改了什么、还剩什么失败
 
 往里看一层，一个真正的 Loop 由五个积木拼起来。Claude Code 和 Codex 现在都把这五块配齐了。
 
-**1\. 自动化（心跳）**
+**1. 自动化（心跳）**
 
 这是把"一次性跑一次"变成 Loop 的触发器。你定义一个 prompt、一个节奏、一个目标，它就按计划自己跑，不用你每次手动启动。在 Claude Code 里，`/loop` 会按固定间隔重跑一个 prompt；`/goal` 会让一个会话一直持续到你写的那个条件真正为真；hooks 会在 Agent 生命周期的关键节点触发命令；再激进一点，把它扔到 cron job 或 GitHub Actions 里，你合上电脑它还在跑。结论会自己送过来，不用你再到处查。
 
-**2\. Skill（可复用的指令）**
+**2. Skill（可复用的指令）**
 
 与其每次都贴一大坨指令，不如把它们存成一份文件，让 Loop 每次都去读：规则、要遵循的模式、以及一份它绝对不能碰的死清单。自动化只要按名字调用这个 Skill 就行，那份周期性跑的活儿就能一直保持可维护的状态，而不会烂在一个谁也不更新的计划里。
 
-**3\. Sub-agents（让干活的人和检查的人分开）**
+**3. Sub-agents（让干活的人和检查的人分开）**
 
 一个 Loop 里最有用的一条结构性技巧，就是把"干活的 Agent"和"检查的 Agent"切开。写出代码的那个模型，批自己作业时手太软。让第二个 Agent——指令不同、有时配上更贵、更用力的模型——去抓第一个自己说服自己的那些东西。让写手又快又便宜，让审稿人又慢又严。绝大多数质量就是从这种分离里来的。
 
-**4\. Connectors（让它能动手，不只是会建议）**
+**4. Connectors（让它能动手，不只是会建议）**
 
 这才是"Agent 说'这是修复方案'"和"Loop 自己开 PR、挂 ticket、build 一绿就 ping 频道"之间的差距。Connectors 让 Loop 在你真实的环境里真刀真枪地动手，而不只是描述"如果它能，它会怎么做"。
 
-**5\. Verifier（闸门）**
+**5. Verifier（闸门）**
 
 测试、类型检查、构建——能自动把烂活儿打回去的那个东西。这是决定 Loop 到底是在帮你、还是在帮你烧钱的那一块。其他的都只是管线，只有这一块让它变成真的。
 
@@ -305,9 +298,4 @@ Begin。一直跑到 FINAL 为止。
 ## 这对你到底意味着什么
 
 Loop 不是一阵风。它是"活儿到底是谁在干"的一次重新洗牌。AI 不再等你一步步推，它会自己把整份工作从头跑到尾。但话说回来，这不是什么值得硬塞进所有地方的东西。多数情况下，你只会白烧钱。我的看法是：先从那些已经免费摆在那里的东西开始用，等你真的感觉到它不够用了，再去想你到底需要什么。
-
-如果想跟上 AI 圈发生的所有事，关注我的 X 和 Telegram：X - [https://x.com/AnatoliKopadze](https://x.com/AnatoliKopadze) Telegram - [https://t.me/kopadzemp](https://t.me/kopadzemp)
-
----
-
-> 原文地址：<a href="https://x.com/AnatoliKopadze/status/2068328135611822149">https://x.com/AnatoliKopadze/status/2068328135611822149</a>
+--
