@@ -25,6 +25,7 @@ description: 将 Obsidian Clippings/笔记发布为 Hugo 博客文章。自动�
 | 文章目录 | `content/posts/` |
 | 作者 | `Ringi Lee` |
 | 默认标签 | 用户指定，常见：`AI相关` |
+| HTTP 代理 | `http://127.0.0.1:10808`（用于下载境外图片） |
 
 ## 执行流程
 
@@ -94,9 +95,34 @@ tocOpen: false              # 目录默认收起
 ### Step 4: 处理正文内容
 
 1. **图片处理**：
-   - **URL 图片**（如 `![Image](https://pbs.twimg.com/...)`）→ **保持不变**
+   - **URL 图片**（如 `![Image](https://pbs.twimg.com/...)`）→ **优先通过代理下载到本地 `images/` 目录**，然后替换为本地引用 `![描述](images/filename.jpg)`。下载失败时保留原始 URL。
    - **本地图片**（如 `![](image.jpg)`）→ 复制图片到博客文章目录，保持相对引用
    - **Obsidian 内部链接图片**（如 `![[image.png]]`）→ 转换为标准 markdown `![](image.png)` 并复制文件
+
+   **代理下载远程图片步骤：**
+
+   a. 在文章目录下创建 `images/` 子目录：
+   ```bash
+   mkdir -p "content/posts/YYYY-MM-DD-slug/images"
+   ```
+
+   b. 为每张远程图片取一个描述性文件名（如 `featured.jpg`、`turn-based.jpg`），用 curl 通过代理下载：
+   ```bash
+   curl -x http://127.0.0.1:10808 -sL "https://远程图片URL" \
+     -o "content/posts/YYYY-MM-DD-slug/images/文件名.jpg"
+   ```
+
+   c. 并行下载多张图片以提高效率（多个 curl 同时运行）。
+
+   d. 将文章中对应该图片的引用从远程 URL 替换为本地路径：
+   ```markdown
+   <!-- 替换前 -->
+   ![Image](https://pbs.twimg.com/media/abc?format=jpg&name=large)
+   <!-- 替换后 -->
+   ![描述](images/filename.jpg)
+   ```
+
+   e. 如果某张图片下载失败（超时或 404），保留原始远程 URL 不做替换。
 
 2. **Obsidian 语法清理**：
    - `[[@username]]` → `@username` 或保持为文本
@@ -167,7 +193,7 @@ obsidian://open?vault=lilinji&file=Clippings%2F搞懂缓存机制...
 ✅ 文章已创建: content/posts/2026-04-08-搞懂缓存机制从Gemma4到Claude-Code省80Token/index.md
    标题: 搞懂缓存机制，从Gemma4到Claude Code省80%Token
    标签: AI相关
-   图片: 3 张（URL，保持不变）
+   图片: 3 张（已通过代理下载到 images/ 目录）
    
 下一步:
 1. hugo server -D 预览
