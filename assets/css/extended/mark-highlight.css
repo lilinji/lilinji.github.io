@@ -1,0 +1,12 @@
+/* ==text== highlight rendering for Obsidian-style markdown */
+mark {
+    background: linear-gradient(180deg, transparent 60%, #fde047 60%);
+    color: inherit;
+    padding: 0 0.1em;
+    border-radius: 2px;
+}
+
+.dark mark {
+    background: linear-gradient(180deg, transparent 60%, #854d0e 60%);
+    color: inherit;
+}
