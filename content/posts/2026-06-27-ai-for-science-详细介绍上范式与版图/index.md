@@ -404,27 +404,12 @@ AI自动科研把这个问题放大了。一方面，大模型是**非确定性*
 
 **安全/诚信/评估批评**：Prioritizing Safeguarding Over Autonomy（Tang et al. 2024）、对Sakana AI Scientist的评估（arXiv 2502.14297）、LSST DESC AI/ML机会报告（arXiv 2601.14235）、天体物理RAG评估（arXiv 2507.07155）、ALeRCE text-to-SQL（arXiv 2606.18108）。
 
-# 作者其它文章（选）
+# 相关文章
 
-- [广义祖父积分学](https://x.com/snowboat84/status/2070291045007671732)
-- [什么是“涌现”？涌现的研究史](https://x.com/snowboat84/status/2069931234328027483)
-- [互联网泡沫简史](https://x.com/snowboat84/status/2069569161911812606)
-- [AI圈大V名单（名单不断扩充中）](https://x.com/snowboat84/status/2069206740546343372)
-- [我打造的个人AI系统：哲学基础](https://x.com/snowboat84/status/2068120320578629782)
-- [NFT的叙事是如何崩塌的](https://x.com/snowboat84/status/2067756975069516170)
-- [什么是耗散结构理论？它和AI有关系吗？](https://x.com/snowboat84/status/2067399314843000842)
-- [什么是具身智能？它跟AI的关系是什么？](https://x.com/snowboat84/status/2067032626821747178)
-- [长篇分析：SpaceX未来的展望](https://x.com/snowboat84/status/2066674353648046515)
-- [Vibe Coding把我系统搞崩了，我对此的总结和心得](https://x.com/snowboat84/status/2065586279010742687)
-- [一篇文章讲清楚美国的移民系统](https://x.com/snowboat84/status/2057980486501433383)
-- [一文讲清楚美国医疗系统](https://x.com/snowboat84/status/2055081426744422697)
-- [细说美国的华人老钱家族](https://x.com/snowboat84/status/2062326581776011623)
-- [美国的犹太人和华人分别抢到了什么资源？详细分析](https://x.com/snowboat84/status/2063049247805837815)
-- [一篇文章看懂美国教育全生态](https://x.com/snowboat84/status/2054359249917210633)
-- [什么是控制论？控制论是AI的上辈子吗？](https://x.com/snowboat84/status/2064496706042069340)
-- [祖父积分学概论](https://x.com/snowboat84/status/2056533111983493136)
-- [教宗良十四世论人工智能（精华版）](https://x.com/snowboat84/status/2059434342745866391)
-- [Vibe Reading：AI 时代读书的系统化方法](https://x.com/snowboat84/status/2050008577511973253)
-- [美国税收制度完全指南](https://x.com/snowboat84/status/2060511915617779821)
+- [AI for Science 详细介绍（上）：范式与版图](https://lilinji.github.io/2026/06/ai-for-science-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8A%E8%8C%83%E5%BC%8F%E4%B8%8E%E7%89%88%E5%9B%BE)
+- [AI for Science 详细介绍（中）：资本与格局](https://lilinji.github.io/2026/07/ai-for-science-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%AD%E8%B5%84%E6%9C%AC%E4%B8%8E%E6%A0%BC%E5%B1%80)
+
+- [AI for Science 详细介绍（下）：机会与入场](https://lilinji.github.io/2026/07/ai-for-science-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8B%E6%9C%BA%E4%BC%9A%E4%B8%8E%E5%85%A5%E5%9C%BA/)
+
 
 ---

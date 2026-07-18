@@ -287,30 +287,11 @@ LMArena就是这条路走通的活样本。它的前身Chatbot Arena，2023年�
 
 # 相关文章
 
-- [AI for Science 详细介绍（上）：范式与版图](https://x.com/snowboat84/status/2070656715515932930)
-- [AI for Science 详细介绍（中）：资本与格局](https://x.com/snowboat84/status/2075095303389413496)
+- [AI for Science 详细介绍（上）：范式与版图](https://lilinji.github.io/2026/06/ai-for-science-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8A%E8%8C%83%E5%BC%8F%E4%B8%8E%E7%89%88%E5%9B%BE)
+- [AI for Science 详细介绍（中）：资本与格局](https://lilinji.github.io/2026/07/ai-for-science-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%AD%E8%B5%84%E6%9C%AC%E4%B8%8E%E6%A0%BC%E5%B1%80)
+
+- [AI for Science 详细介绍（下）：机会与入场](https://lilinji.github.io/2026/07/ai-for-science-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8B%E6%9C%BA%E4%BC%9A%E4%B8%8E%E5%85%A5%E5%9C%BA/)
 
 # 作者其它文章（选）
-
-- [流体力学研究史](https://x.com/snowboat84/status/2077983459369418941)
-- [什么是推理模型？](https://x.com/snowboat84/status/2077613128746164625)
-- [什么是希尔伯特的第六问题？这个问题重要吗？](https://x.com/snowboat84/status/2077249534049259588)
-- [RAG：从前世今生到技术全景](https://x.com/snowboat84/status/2076868301809225932)
-- [什么是信息论？它和AI是什么关系？](https://x.com/snowboat84/status/2075781603847188852)
-- [AI可解释性综述](https://x.com/snowboat84/status/2075374060637503560)
-- [Skill是什么：写给零基础](https://x.com/snowboat84/status/2074652382299132237)
-- [元宇宙衰亡史：炒作，破产，谁赚走了钱？](https://x.com/snowboat84/status/2074278858988380322)
-- [AI 大V 人物小传（下）](https://x.com/snowboat84/status/2073554517065609544)
-- [区块链的叙事是如何崩塌的](https://x.com/snowboat84/status/2073195935883288671)
-- [一篇文章讲清楚美国的移民系统](https://x.com/snowboat84/status/2057980486501433383)
-- [一文讲清楚美国医疗系统](https://x.com/snowboat84/status/2055081426744422697)
-- [细说美国的华人老钱家族](https://x.com/snowboat84/status/2062326581776011623)
-- [美国的犹太人和华人分别抢到了什么资源？详细分析](https://x.com/snowboat84/status/2063049247805837815)
-- [一篇文章看懂美国教育全生态](https://x.com/snowboat84/status/2054359249917210633)
-- [AI圈大V名单（推特版）](https://x.com/snowboat84/status/2069206740546343372)
-- [什么是控制论？控制论是AI的上辈子吗？](https://x.com/snowboat84/status/2064496706042069340)
-- [祖父积分学概论](https://x.com/snowboat84/status/2056533111983493136)
-- [教宗良十四世论人工智能（精华版）](https://x.com/snowboat84/status/2059434342745866391)
-- [Vibe Reading：AI 时代读书的系统化方法](https://x.com/snowboat84/status/2050008577511973253)
 
 ---
