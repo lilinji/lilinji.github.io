@@ -1,6 +1,6 @@
 ---
 title: "World Model：从强化学习到具身智能的完整入门"
-date: 2026-05-08T00:00:00+08:00
+date: 2026-08-05T00:00:00+08:00
 draft: false
 tags:
   - AI相关
