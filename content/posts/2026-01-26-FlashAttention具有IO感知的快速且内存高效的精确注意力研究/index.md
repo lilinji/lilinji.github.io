@@ -15,13 +15,14 @@ tags:
 author: Ringi Lee
 showToc: true
 tocOpen: false
+math: true
 ---
 
 ![FlashAttention](<images/FlashAttention具有 IO 感知的快速且内存高效的精确注意力研究-flashattn_banner.jpg>)
 
 ## 引言
 
-Transformer 架构已经成为自然语言处理、计算机视觉等领域的基础模型。然而，其核心组件——自注意力机制（Self-Attention）的时间和空间复杂度都是 $O(N^2)$，其中 $N$ 是序列长度。这种二次方复杂度严重限制了模型处理长序列的能力。
+Transformer 架构已经成为自然语言处理、计算机视觉等领域的基础模型。然而，其核心组件——自注意力机制（Self-Attention）的时间和空间复杂度都是 \(O(N^2)\)，其中 \(N\) 是序列长度。这种二次方复杂度严重限制了模型处理长序列的能力。
 
 **FlashAttention** 是由斯坦福大学 Tri Dao 等人提出的一种革命性算法，通过深入理解 GPU 内存层级结构，实现了精确注意力计算的显著加速，同时大幅降低内存占用。
 
@@ -58,19 +59,19 @@ Transformer 架构已经成为自然语言处理、计算机视觉等领域的�
 6. 计算 O = PV（写入 HBM）
 ```
 
-这个过程中，中间结果 $S$ 和 $P$ 都是 $N \times N$ 的大矩阵，需要反复在 HBM 和 SRAM 之间传输，造成巨大的 IO 开销。
+这个过程中，中间结果 \(S\) 和 \(P\) 都是 \(N \times N\) 的大矩阵，需要反复在 HBM 和 SRAM 之间传输，造成巨大的 IO 开销。
 
 ## FlashAttention 核心算法
 
 ### 关键洞察
 
-FlashAttention 的核心思想是：**通过分块计算（Tiling）和重计算（Recomputation），避免将完整的 $N \times N$ 注意力矩阵写入 HBM**。
+FlashAttention 的核心思想是：**通过分块计算（Tiling）和重计算（Recomputation），避免将完整的 \(N \times N\) 注意力矩阵写入 HBM**。
 
 ### 分块 Softmax 算法
 
 标准 softmax 需要知道所有元素才能计算归一化因子。FlashAttention 使用了一个巧妙的在线 softmax 算法：
 
-对于向量 $x = [x_1, x_2, ..., x_n]$，softmax 可以增量计算：
+对于向量 \(x = [x_1, x_2, ..., x_n]\)，softmax 可以增量计算：
 
 $$m^{(j)} = \max(m^{(j-1)}, x_j)$$
 
@@ -78,7 +79,7 @@ $$\ell^{(j)} = e^{m^{(j-1)} - m^{(j)}} \ell^{(j-1)} + e^{x_j - m^{(j)}}$$
 
 $$o^{(j)} = e^{m^{(j-1)} - m^{(j)}} o^{(j-1)} + e^{x_j - m^{(j)}} v_j$$
 
-最终结果：$o = o^{(n)} / \ell^{(n)}$
+最终结果：\(o = o^{(n)} / \ell^{(n)}\)
 
 ### 算法流程
 
@@ -116,24 +117,24 @@ def flash_attention(Q, K, V, block_size):
 
 | 方法 | HBM 访问次数 | 内存占用 |
 |-----|-------------|---------|
-| 标准注意力 | $O(N^2 d + N^2)$ | $O(N^2)$ |
-| FlashAttention | $O(N^2 d^2 / M)$ | $O(N)$ |
+| 标准注意力 | \(O(N^2 d + N^2)\) | \(O(N^2)\) |
+| FlashAttention | \(O(N^2 d^2 / M)\) | \(O(N)\) |
 
-其中 $M$ 是 SRAM 大小，$d$ 是注意力头维度。当 $M > d^2$ 时（通常成立），FlashAttention 的 IO 复杂度接近最优。
+其中 \(M\) 是 SRAM 大小，\(d\) 是注意力头维度。当 \(M > d^2\) 时（通常成立），FlashAttention 的 IO 复杂度接近最优。
 
 ## 反向传播：重计算策略
 
 ### 传统方法的问题
 
-标准反向传播需要保存前向传播中的 $S$ 和 $P$ 矩阵，内存占用 $O(N^2)$。
+标准反向传播需要保存前向传播中的 \(S\) 和 \(P\) 矩阵，内存占用 \(O(N^2)\)。
 
 ### FlashAttention 的解决方案
 
-FlashAttention 在反向传播时**重新计算** $S$ 和 $P$，而不是从内存中读取：
+FlashAttention 在反向传播时**重新计算** \(S\) 和 \(P\)，而不是从内存中读取：
 
-1. 保存输出 $O$ 和 logsumexp 值 $L$
-2. 反向传播时重新计算 $S = QK^T$
-3. 使用保存的 $L$ 重建 $P = \text{softmax}(S)$
+1. 保存输出 \(O\) 和 logsumexp 值 \(L\)
+2. 反向传播时重新计算 \(S = QK^T\)
+3. 使用保存的 \(L\) 重建 \(P = \text{softmax}(S)\)
 4. 计算梯度
 
 虽然增加了 FLOPs，但由于减少了 IO，整体速度反而更快。这体现了一个重要原则：**在 IO 密集型场景下，用计算换 IO 是划算的**。

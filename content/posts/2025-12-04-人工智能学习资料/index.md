@@ -9,6 +9,7 @@ tags:
 author: Ringi Lee
 showToc: true
 tocOpen: false
+math: true
 ---
 
 # 人工智能学习资料 
