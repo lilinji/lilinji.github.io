@@ -14,6 +14,7 @@ author: Ringi Lee
 description: "以第一性原理视角拆解 Transformer：从 Self-Attention、QKV、FFN、RoPE、Pre-Norm 到 LLaMA-2 参数与显存手算，贯通 CUDA 算子、分布式训练与 vLLM 推理的 AI Infra 实战。"
 showToc: true
 tocOpen: false
+math: true
 ---
 # 🚀 AI Infra 大话西游实战之Transformer小白学习笔记（一）
 
@@ -38,14 +39,14 @@ tocOpen: false
   - [3.1 直觉理解：图书馆查资料与信息加权聚合](#31-直觉理解图书馆查资料与信息加权聚合)
   - [3.2 Q、K、V 的物理意义：同一个 Token 的三副眼镜](#32-qkv-的物理意义同一个-token-的三副眼镜)
   - [3.3 逐步拆解完整计算流程（6 步推导 + 数值小算盘）](#33-逐步拆解完整计算流程6-步推导--数值小算盘)
-  - [3.4 为什么复杂度是 $O(N^2)$？长上下文之痛](#34-为什么复杂度是-on2长上下文之痛)
+  - [3.4 为什么复杂度是 <span class="math">\(O(N^2)\)</span>？长上下文之痛](#34-为什么复杂度是-on2长上下文之痛)
   - [3.5 Multi-Head Attention：为什么要多头？](#35-multi-head-attention为什么要多头)
-  - [3.6 MHA $\to$ MQA $\to$ GQA 的演进直觉](#36-mha-to-mqa-to-gqa-的演进直觉)
+  - [3.6 MHA → MQA → GQA 的演进直觉](#36-mha--mqa--gqa-的演进直觉)
 - [4. 前馈网络（FFN）——深度加工厂](#4-前馈网络ffn深度加工厂)
   - [4.1 角色分工：Attention 负责开会，FFN 负责独立吸收](#41-角色分工attention-负责开会ffn-负责独立吸收)
   - [4.2 结构解析：为什么先升维再降维？](#42-结构解析为什么先升维再降维)
   - [4.3 参数量分析：为什么 FFN 占了模型 2/3 的参数？](#43-参数量分析为什么-ffn-占了模型-23-的参数)
-  - [4.4 激活函数演进：ReLU $\to$ GELU $\to$ SwiGLU](#44-激活函数演进relu-to-gelu-to-swiglu)
+  - [4.4 激活函数演进：ReLU → GELU → SwiGLU](#44-激活函数演进relu--gelu--swiglu)
 - [5. 位置编码（Position Encoding）——赋予序列时空感](#5-位置编码position-encoding赋予序列时空感)
   - [5.1 为什么 Transformer 天生是个“词序脸盲”？](#51-为什么-transformer-天生是个词序脸盲)
   - [5.2 经典方案：Sinusoidal 正余弦位置编码](#52-经典方案sinusoidal-正余弦位置编码)
@@ -138,17 +139,17 @@ GPT 系列（以及后来的 LLaMA、Mistral、Qwen、DeepSeek 等）证明了�
 
 ### 经典三段式数据流动流程：
 1. **输入阶段（Input Stage）**：
-   $$
+<div class="math">\[
    \text{Prompt Tokens} \longrightarrow \text{Token Embedding (词表查找)} \longrightarrow \text{注入位置编码 (如 RoPE)}
-   $$
+\]</div>
 2. **核心堆叠阶段（Repeated N Blocks）**：
-   $$
+<div class="math">\[
    X_{l+1} = X_l + \text{Self-Attention}(\text{Norm}(X_l)) + \text{FFN}(\text{Norm}(\dots))
-   $$
+\]</div>
 3. **输出阶段（Output Stage）**：
-   $$
+<div class="math">\[
    \text{Final Norm} \longrightarrow \text{LM Head 线性映射} \longrightarrow \text{Softmax 采样} \longrightarrow \text{预测下一个 Token}
-   $$
+\]</div>
 
 ---
 
@@ -174,9 +175,9 @@ Self-Attention 是 Transformer 的心脏，也是算力与显存消耗最密集�
 
 ## 3.1 直觉理解：图书馆查资料与信息加权聚合
 
-$$
+<div class="math">\[
 \boxed{\text{算谁重要（注意力权重）} \longrightarrow \text{按重要程度加权拿取信息}}
-$$
+\]</div>
 
 先建立一个小白直觉：**Attention 就是让句子里的每个词去“关注”其他所有词，然后按关注度加权打包信息。**
 
@@ -185,9 +186,9 @@ $$
 - 它需要知道“谁在吃”（小明，占 10% 注意力）；
 - “吃什么”（苹果，占 70% 注意力）；
 - 最终 `吃` 这个词更新后的特征向量为：
-  $$
+<div class="math">\[
   \text{New\_Feature}_{\text{吃}} = 0.1 \times \text{小明} + 0.1 \times \text{喜欢} + 0.1 \times \text{吃} + 0.7 \times \text{苹果}
-  $$
+\]</div>
 
 ---
 
@@ -197,93 +198,91 @@ $$
 
 ![Ringi 导师解构：Self-Attention 机制三工位流水线](images/ringi_self_attention.jpg)
 
-- **Query ($Q$)**：提问者，发出检索需求（*“我是‘吃’，我在找什么宾语？”*）；
-- **Key ($K$)**：索引标牌，用于和别人的 Query 匹配（*“我是‘苹果’，我是可食用水果”*）；
-- **Value ($V$)**：真正的内容载荷，匹配成功后贡献给别人（*“提供苹果的完整语义特征”*）。
+- **Query (<span class="math">\(Q\)</span>)**：提问者，发出检索需求（*“我是‘吃’，我在找什么宾语？”*）；
+- **Key (<span class="math">\(K\)</span>)**：索引标牌，用于和别人的 Query 匹配（*“我是‘苹果’，我是可食用水果”*）；
+- **Value (<span class="math">\(V\)</span>)**：真正的内容载荷，匹配成功后贡献给别人（*“提供苹果的完整语义特征”*）。
 
 > 📌 **核心口诀**：
 > 
-> $$
-> \boxed{Q \text{ 与 } K \text{ 点积决定【关注比例】，} V \text{ 决定【真正带走什么信息】}}
-> $$
+> <div class="math">\[\boxed{Q \text{ 与 } K \text{ 点积决定【关注比例】，} V \text{ 决定【真正带走什么信息】}}\]</div>
 
 ---
 
 ## 3.3 逐步拆解完整计算流程（6 步推导 + 数值小算盘）
 
-假设输入序列有 $N$ 个 token，隐藏层维度为 $d$（即输入矩阵 $X \in \mathbb{R}^{N \times d}$）。
+假设输入序列有 <span class="math">\(N\)</span> 个 token，隐藏层维度为 <span class="math">\(d\)</span>（即输入矩阵 <span class="math">\(X \in \mathbb{R}^{N \times d}\)</span>）。
 
-### 步骤 1：线性投影生成 $Q, K, V$
-$$
+### 步骤 1：线性投影生成 <span class="math">\(Q, K, V\)</span>
+<div class="math">\[
 Q = X W_Q, \quad K = X W_K, \quad V = X W_V
-$$
-其中 $X \in \mathbb{R}^{N \times d}$，$W_Q, W_K, W_V \in \mathbb{R}^{d \times d}$，输出的 $Q, K, V$ 形状均为 $(N, d)$。
+\]</div>
+其中 <span class="math">\(X \in \mathbb{R}^{N \times d}\)</span>，<span class="math">\(W_Q, W_K, W_V \in \mathbb{R}^{d \times d}\)</span>，输出的 <span class="math">\(Q, K, V\)</span> 形状均为 <span class="math">\((N, d)\)</span>。
 > 🛠️ **AI Infra 视点**：这是 3 次标准的 GEMM（通用矩阵乘法）操作，Tensor Core 的绝对主场。
 
 ---
 
-### 步骤 2：计算注意力原始分数（$Q K^T$）
+### 步骤 2：计算注意力原始分数（<span class="math">\(Q K^T\)</span>）
 衡量每对 token 之间的相关程度：
-$$
+<div class="math">\[
 S = Q K^T \in \mathbb{R}^{N \times N}
-$$
-$S[i][j]$ 表示第 $i$ 个 token 对第 $j$ 个 token 的原始打分。
+\]</div>
+<span class="math">\(S[i][j]\)</span> 表示第 <span class="math">\(i\)</span> 个 token 对第 <span class="math">\(j\)</span> 个 token 的原始打分。
 
 _小白极简数值推导_：
-若 $q = [1, 2]$，$k = [3, 4]$，则：
-$$
+若 <span class="math">\(q = [1, 2]\)</span>，<span class="math">\(k = [3, 4]\)</span>，则：
+<div class="math">\[
 q \cdot k^T = 1 \times 3 + 2 \times 4 = 11
-$$
+\]</div>
 点积数值越大，说明两个向量的方向越接近、语义越相关。
 
 ---
 
-### 步骤 3：缩放（Scale）——为什么要除以 $\sqrt{d_k}$？
-$$
+### 步骤 3：缩放（Scale）——为什么要除以 <span class="math">\(\sqrt{d_k}\)</span>？
+<div class="math">\[
 S_{\text{scaled}} = \frac{Q K^T}{\sqrt{d_k}}
-$$
+\]</div>
 > 👓 **Ringi 划重点（公式兼容与原理解析）**：
-> 当维度 $d_k$ 很大时（例如 $d_k = 128$），$Q$ 和 $K$ 的点积相当于 128 个独立分量相乘求和，方差会放大到 $d_k$。
+> 当维度 <span class="math">\(d_k\)</span> 很大时（例如 <span class="math">\(d_k = 128\)</span>），<span class="math">\(Q\)</span> 和 <span class="math">\(K\)</span> 的点积相当于 128 个独立分量相乘求和，方差会放大到 <span class="math">\(d_k\)</span>。
 > 这会导致点积数值极其巨大（比如上百），送入 Softmax 后输出会被“推向饱和区”——最大值变成 1，其他全变成 0，**梯度几乎完全消失（Gradient Vanishing）**！
-> 除以 $\sqrt{d_k}$ 就像给分数**“装上降温空调”**，把方差拉回到 1，保证反向传播梯度通畅。
+> 除以 <span class="math">\(\sqrt{d_k}\)</span> 就像给分数**“装上降温空调”**，把方差拉回到 1，保证反向传播梯度通畅。
 
 ---
 
 ### 步骤 4：Softmax 归一化（原始分数变注意力比例）
-$$
+<div class="math">\[
 A = \text{softmax}(S_{\text{scaled}}) \in \mathbb{R}^{N \times N}
-$$
-对 $S_{\text{scaled}}$ 矩阵的每一行进行 Softmax，使每行所有元素变成正数且和为 1：
-$$
+\]</div>
+对 <span class="math">\(S_{\text{scaled}}\)</span> 矩阵的每一行进行 Softmax，使每行所有元素变成正数且和为 1：
+<div class="math">\[
 A[i][j] = \frac{e^{S_{\text{scaled}}[i][j]}}{\sum_{k=1}^{N} e^{S_{\text{scaled}}[i][k]}}
-$$
+\]</div>
 
 ---
 
 ### 步骤 5：加权求和（用注意力比例捞取 Value）
-$$
+<div class="math">\[
 \text{Output} = A \cdot V \in \mathbb{R}^{N \times d}
-$$
-第 $i$ 个 token 的新向量就是序列中所有 token 的 $V$ 按照第 $i$ 行权重 $A[i]$ 进行加权融合。
+\]</div>
+第 <span class="math">\(i\)</span> 个 token 的新向量就是序列中所有 token 的 <span class="math">\(V\)</span> 按照第 <span class="math">\(i\)</span> 行权重 <span class="math">\(A[i]\)</span> 进行加权融合。
 
 ---
 
 ### 步骤 6：输出线性投影
-$$
+<div class="math">\[
 \text{Final} = \text{Output} \cdot W_O \in \mathbb{R}^{N \times d}
-$$
-经过权重矩阵 $W_O \in \mathbb{R}^{d \times d}$ 映射，完成当前多头特征的综合整理。
+\]</div>
+经过权重矩阵 <span class="math">\(W_O \in \mathbb{R}^{d \times d}\)</span> 映射，完成当前多头特征的综合整理。
 
 ---
 
 ### 🏆 完整标准公式总结
-$$
+<div class="math">\[
 \boxed{\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}} + \text{Mask}\right) V}
-$$
+\]</div>
 
 ---
 
-## 3.4 为什么复杂度是 $O(N^2)$？长上下文之痛
+## 3.4 为什么复杂度是 O(N^2)？长上下文之痛
 
 从数学公式即可清晰看出显存与计算瓶颈：
 
@@ -291,15 +290,13 @@ $$
 Q (N × d)  ×  K^T (d × N)  ───>  S (N × N 注意力矩阵)
 ```
 
-1. **计算量**：$O(N^2 \cdot d)$，因为生成 $N \times N$ 个元素，每个元素需要 $d$ 次乘加。
-2. **显存占用**：$O(N^2)$，必须在显存中开辟 $N \times N$ 大小的临时矩阵存储 Softmax 前后的权重。
+1. **计算量**：<span class="math">\(O(N^2 \cdot d)\)</span>，因为生成 <span class="math">\(N \times N\)</span> 个元素，每个元素需要 <span class="math">\(d\)</span> 次乘加。
+2. **显存占用**：<span class="math">\(O(N^2)\)</span>，必须在显存中开辟 <span class="math">\(N \times N\)</span> 大小的临时矩阵存储 Softmax 前后的权重。
 
 > 💥 **算力与显存暴击**：
-> 当上下文长度 $N$ 从 2K 扩展到 128K 时：
+> 当上下文长度 <span class="math">\(N\)</span> 从 2K 扩展到 128K 时：
 > 
-> $$
-> \left(\frac{128\text{K}}{2\text{K}}\right)^2 = 64^2 = 4096 \text{ 倍}
-> $$
+> <div class="math">\[\left(\frac{128\text{K}}{2\text{K}}\right)^2 = 64^2 = 4096 \text{ 倍}\]</div>
 > 
 > 计算量与注意力矩阵显存暴涨 **4096 倍**！
 
@@ -318,25 +315,25 @@ Q (N × d)  ×  K^T (d × N)  ───>  S (N × N 注意力矩阵)
 ## 3.5 Multi-Head Attention：为什么要多头？
 
 单头 Attention 就像一个人只有单重视角（可能只关注了语法搭配）。
-**Multi-Head Attention（MHA）** 将隐藏维度 $d_{\text{model}}$ 切分成 $h$ 个独立的“头”（Head），每个头维度 $d_k = d_{\text{model}} / h$。
+**Multi-Head Attention（MHA）** 将隐藏维度 <span class="math">\(d_{\text{model}}\)</span> 切分成 <span class="math">\(h\)</span> 个独立的“头”（Head），每个头维度 <span class="math">\(d_k = d_{\text{model}} / h\)</span>。
 
 ![Ringi 导师解构：Multi-Head Attention 与 GQA 分组共享机制](images/ringi_multi_head_gqa.jpg)
 
 ### 多头机制与张量并行（Tensor Parallelism）天然契合
 在 Megatron-LM 分布式训练中：
 - 32 个头可以均分给 4 张 GPU（每张卡算 8 个头）；
-- 各卡计算自身对应的 $W_Q, W_K, W_V$ 局部矩阵；
+- 各卡计算自身对应的 <span class="math">\(W_Q, W_K, W_V\)</span> 局部矩阵；
 - 最后各卡做一次 `AllReduce` 汇总，通信成本极低！
 
 ---
 
-## 3.6 MHA $\to$ MQA $\to$ GQA 的演进直觉
+## 3.6 MHA → MQA → GQA 的演进直觉
 
 为了在推理时大幅削减 KV Cache 显存占用，行业经历了三代演进：
 
-- **MHA (Multi-Head Attention)**：$Q, K, V$ 头部数量完全相等（1:1:1），效果好但推理显存巨大。
-- **MQA (Multi-Query Attention)**：所有 $Q$ 头共享同一对 $K, V$，KV Cache 暴降为 $1/h$，但模型表达力有所损耗。
-- **GQA (Grouped-Query Attention)**：折中方案！例如 8 个 $Q$ 头分为 2 组，每组共享 1 对 $K, V$（LLaMA-2-70B、LLaMA-3、Mistral 标配）。
+- **MHA (Multi-Head Attention)**：<span class="math">\(Q, K, V\)</span> 头部数量完全相等（1:1:1），效果好但推理显存巨大。
+- **MQA (Multi-Query Attention)**：所有 <span class="math">\(Q\)</span> 头共享同一对 <span class="math">\(K, V\)</span>，KV Cache 暴降为 <span class="math">\(1/h\)</span>，但模型表达力有所损耗。
+- **GQA (Grouped-Query Attention)**：折中方案！例如 8 个 <span class="math">\(Q\)</span> 头分为 2 组，每组共享 1 对 <span class="math">\(K, V\)</span>（LLaMA-2-70B、LLaMA-3、Mistral 标配）。
 
 ---
 
@@ -354,9 +351,9 @@ Q (N × d)  ×  K^T (d × N)  ───>  S (N × N 注意力矩阵)
 ## 4.2 结构解析：为什么先升维再降维？
 
 标准 FFN 结构为两层全连接：
-$$
+<div class="math">\[
 \text{FFN}(x) = W_2 \cdot \text{activation}(W_1 x + b_1) + b_2
-$$
+\]</div>
 
 ![Ringi 导师解构：FFN 前馈网络与 SwiGLU 升降维与门控加工厂](images/ringi_ffn_swiglu.jpg)
 
@@ -369,7 +366,7 @@ $$
 ## 4.3 参数量分析：为什么 FFN 占了模型 2/3 的参数？
 
 我们手算一个标准的 Transformer Block：
-- 隐藏维度为 $d_{\text{model}}$，FFN 中间维度 $d_{\text{ff}} \approx 4 d_{\text{model}}$。
+- 隐藏维度为 <span class="math">\(d_{\text{model}}\)</span>，FFN 中间维度 <span class="math">\(d_{\text{ff}} \approx 4 d_{\text{model}}\)</span>。
 
 | 模块 | 包含的权重参数矩阵 | 参数量公式 | LLaMA-2-7B 真实单层参数量 |
 | :--- | :--- | :--- | :--- |
@@ -383,26 +380,26 @@ $$
 
 ---
 
-## 4.4 激活函数演进：ReLU $\to$ GELU $\to$ SwiGLU
+## 4.4 激活函数演进：ReLU → GELU → SwiGLU
 
 ### 1. ReLU
-$$
+<div class="math">\[
 \text{ReLU}(x) = \max(0, x)
-$$
+\]</div>
 缺点：当输入为负时导数为 0，神经元容易“永久死亡”。
 
 ### 2. GELU（高斯误差线性单元）
-$$
+<div class="math">\[
 \text{GELU}(x) = x \cdot \Phi(x) = x \cdot P(X \le x), \quad X \sim \mathcal{N}(0, 1)
-$$
+\]</div>
 不是生硬地开/关，而是根据输入大小赋予平滑的通过概率，GPT-2/3、BERT 广泛采用。
 
 ### 3. SwiGLU（现代大模型标配）
-$$
+<div class="math">\[
 \text{SwiGLU}(x) = \left( \text{Swish}(x W_{\text{gate}}) \odot (x W_{\text{up}}) \right) W_{\text{down}}
-$$
-其中 $\text{Swish}(z) = z \cdot \sigma(z)$，$\odot$ 为逐元素相乘。
-> 🌟 **优势**：引入了一个专门负责**“把关”**的门控分支 $W_{\text{gate}}$，动态控制每个特征通道的放行比例，表达能力远超单个激活函数。
+\]</div>
+其中 <span class="math">\(\text{Swish}(z) = z \cdot \sigma(z)\)</span>，<span class="math">\(\odot\)</span> 为逐元素相乘。
+> 🌟 **优势**：引入了一个专门负责**“把关”**的门控分支 <span class="math">\(W_{\text{gate}}\)</span>，动态控制每个特征通道的放行比例，表达能力远超单个激活函数。
 
 ---
 
@@ -410,7 +407,7 @@ $$
 
 ## 5.1 为什么 Transformer 天生是个“词序脸盲”？
 
-回顾 Attention 计算公式：$S = Q K^T$。
+回顾 Attention 计算公式：<span class="math">\(S = Q K^T\)</span>。
 如果把句子 `猫 抓 鼠` 打乱成 `鼠 抓 猫`，只要输入向量跟着换行，计算出来的每对词之间的注意力值完全一样！
 数学上称为 **排列等变性（Permutation Equivariance）**——如果不显式注入位置信息，Transformer 根本分不清主语和宾语！
 
@@ -419,12 +416,12 @@ $$
 ## 5.2 经典方案：Sinusoidal 正余弦位置编码
 
 2017 年原始 Transformer 采用基于不同频率正弦/余弦的固定绝对位置编码：
-$$
+<div class="math">\[
 \begin{aligned}
 \text{PE}_{(\text{pos}, 2i)} &= \sin\left(\frac{\text{pos}}{10000^{2i / d_{\text{model}}}}\right) \\
 \text{PE}_{(\text{pos}, 2i+1)} &= \cos\left(\frac{\text{pos}}{10000^{2i / d_{\text{model}}}}\right)
 \end{aligned}
-$$
+\]</div>
 - **直觉**：类似于时钟系统，低维分量变化极快（像“秒针”），高维分量变化极慢（像“时针”），组合起来构成每个位置的唯一时间戳。
 - **缺点**：直接加到 Embedding 上，随着层数加深会被网络变换逐渐稀释，且长文本外推能力差。
 
@@ -437,9 +434,9 @@ RoPE（Rotary Position Embedding）由苏剑林等提出，是当今 LLaMA、Qwe
 ![Ringi 导师解构：RoPE 旋转位置编码几何魔术小剧场](images/ringi_rope_position.jpg)
 
 ### 几何旋转本质
-RoPE 不在输入 Embedding 上加向量，而是在**计算 Attention 前，把 $Q$ 和 $K$ 向量的每相邻两个维度当成 2D 平面坐标，按位置角度进行逆时针旋转**：
+RoPE 不在输入 Embedding 上加向量，而是在**计算 Attention 前，把 <span class="math">\(Q\)</span> 和 <span class="math">\(K\)</span> 向量的每相邻两个维度当成 2D 平面坐标，按位置角度进行逆时针旋转**：
 
-$$
+<div class="math">\[
 \begin{bmatrix} q'_{2i} \\ q'_{2i+1} \end{bmatrix}
 =
 \begin{bmatrix}
@@ -447,13 +444,13 @@ $$
 \sin(\text{pos} \cdot \theta_i) & \cos(\text{pos} \cdot \theta_i)
 \end{bmatrix}
 \begin{bmatrix} q_{2i} \\ q_{2i+1} \end{bmatrix}
-$$
+\]</div>
 
 ### 神奇的数学特性：相对位置自然涌现
-两个旋转后的向量做内积时，发生复数共轭相乘，**绝对位置消去，结果仅依赖于它们的相对距离 $(m - n)$**：
-$$
+两个旋转后的向量做内积时，发生复数共轭相乘，**绝对位置消去，结果仅依赖于它们的相对距离 <span class="math">\((m - n)\)</span>**：
+<div class="math">\[
 \langle \text{RoPE}(q, m), \text{RoPE}(k, n) \rangle = g(q, k, m - n)
-$$
+\]</div>
 
 > 💡 **Ringi 划重点**：
 > 
@@ -469,16 +466,16 @@ $$
 ![Ringi 导师解构：残差连接与 Pre-Norm 梯度高速公路](images/ringi_residual_highway.jpg)
 
 数学公式极简：
-$$
+<div class="math">\[
 y = x + \text{SubLayer}(x)
-$$
+\]</div>
 
 ### 为什么要加这条捷径？
 1. **彻底解决梯度消失**：反向传播求导时：
-   $$
+<div class="math">\[
    \frac{\partial y}{\partial x} = 1 + \frac{\partial \text{SubLayer}(x)}{\partial x}
-   $$
-   因为始终存在一个恒等项 $+1$，梯度可以沿着主干道无损直达最浅层，使得堆叠 100 层以上的超深网络成为可能。
+\]</div>
+   因为始终存在一个恒等项 <span class="math">\(+1\)</span>，梯度可以沿着主干道无损直达最浅层，使得堆叠 100 层以上的超深网络成为可能。
 2. **增量学习**：模型只需要学习每一层对输入的“微调增量”（Delta），学习难度大幅降低。
 
 ---
@@ -486,17 +483,15 @@ $$
 ## 6.2 LayerNorm：特征维度的信号调节器
 
 对单个 Token 向量在所有特征维度上做均值/方差归一化：
-$$
+<div class="math">\[
 \text{LayerNorm}(x) = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}} \odot \gamma + \beta
-$$
-其中 $\mu$ 为均值，$\sigma^2$ 为方差，$\gamma, \beta$ 为可学习的缩放与平移参数。
+\]</div>
+其中 <span class="math">\(\mu\)</span> 为均值，<span class="math">\(\sigma^2\)</span> 为方差，<span class="math">\(\gamma, \beta\)</span> 为可学习的缩放与平移参数。
 
 > 🛠️ **现代演进：RMSNorm**
-> 现代大模型（LLaMA/Mistral 等）普遍改用 **RMSNorm**，省去计算均值 $\mu$ 的步骤，直接用均方根归一化，效果几乎相同，但减少了一遍内存扫描，GPU 跑得更快！
+> 现代大模型（LLaMA/Mistral 等）普遍改用 **RMSNorm**，省去计算均值 <span class="math">\(\mu\)</span> 的步骤，直接用均方根归一化，效果几乎相同，但减少了一遍内存扫描，GPU 跑得更快！
 > 
-> $$
-> \text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{d} \sum_{i=1}^d x_i^2 + \epsilon}} \odot \gamma
-> $$
+> <div class="math">\[\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{d} \sum_{i=1}^d x_i^2 + \epsilon}} \odot \gamma\]</div>
 
 ---
 
@@ -523,9 +518,9 @@ $$
 ## 7.2 LLaMA-2-7B 全流程张量维度追踪（Shape 追踪表）
 
 以大模型基准 **LLaMA-2-7B** 为例：
-- 序列长度 $N = 2048$，隐藏层维度 $d_{\text{model}} = 4096$
-- 头数 $h = 32$，单头维度 $d_k = 128$
-- FFN 中间维度 $d_{\text{ff}} = 11008$
+- 序列长度 <span class="math">\(N = 2048\)</span>，隐藏层维度 <span class="math">\(d_{\text{model}} = 4096\)</span>
+- 头数 <span class="math">\(h = 32\)</span>，单头维度 <span class="math">\(d_k = 128\)</span>
+- FFN 中间维度 <span class="math">\(d_{\text{ff}} = 11008\)</span>
 
 | 执行步骤 | 算子 / 计算公式 | 输入 Shape | 输出 Shape | 说明 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -540,12 +535,12 @@ $$
 | **加权乘 V** | $A \cdot V$ | `(2048, 2048) x (2048, 128)` | `(32, 2048, 128)` | 聚合上下文信息 |
 | **Concat 拼接** | 合并所有头 | `(32, 2048, 128)` | `(2048, 4096)` | 恢复全维度 |
 | **输出投影** | $\text{Concat} \cdot W_O$ | `(2048, 4096)` | `(2048, 4096)` | 线性融合 |
-| **残差 1** | $X + \text{Attn\_Out}$ | `(2048, 4096)` | `(2048, 4096)` | 第一条高速公路 |
+| **残差 1** | $X + \text{Attn\\_Out}$ | `(2048, 4096)` | `(2048, 4096)` | 第一条高速公路 |
 | **Norm 2** | $\text{RMSNorm}(h)$ | `(2048, 4096)` | `(2048, 4096)` | 形状不变 |
 | **FFN Gate/Up** | $W_{\text{gate}}, W_{\text{up}}$ 投影 | `(2048, 4096)` | `(2048, 11008)` | 升维与门控通道 |
 | **SwiGLU 激活** | $\text{Swish}(\text{Gate}) \odot \text{Up}$ | `(2048, 11008)` | `(2048, 11008)` | 逐元素相乘 |
 | **FFN Down** | 降维投影 $W_{\text{down}}$ | `(2048, 11008)` | `(2048, 4096)` | 压缩回隐藏维度 |
-| **残差 2** | $h + \text{FFN\_Out}$ | `(2048, 4096)` | `(2048, 4096)` | 第二条高速公路 |
+| **残差 2** | $h + \text{FFN\\_Out}$ | `(2048, 4096)` | `(2048, 4096)` | 第二条高速公路 |
 
 > 🌟 **极其重要的性质**：
 > 输入是 `(2048, 4096)`，输出依然是 `(2048, 4096)`！
@@ -557,30 +552,30 @@ $$
 
 ### 1. 单个 Decoder Block 的参数量手算
 - **Attention 部分**：
-  $$
+<div class="math">\[
   W_Q, W_K, W_V, W_O \implies 4 \times (4096 \times 4096) = 4 \times 16,777,216 \approx \mathbf{67.11\text{ M}}
-  $$
+\]</div>
 - **FFN (SwiGLU) 部分**：
-  $$
+<div class="math">\[
   W_{\text{gate}}, W_{\text{up}}, W_{\text{down}} \implies 3 \times (4096 \times 11008) = 3 \times 45,088,768 \approx \mathbf{135.27\text{ M}}
-  $$
+\]</div>
 - **RMSNorm 缩放参数**：
-  $$
+<div class="math">\[
   2 \times 4096 \approx \mathbf{8.19\text{ K}}
-  $$
+\]</div>
 - **单层合计**：
-  $$
+<div class="math">\[
   67.11\text{M} + 135.27\text{M} \approx \mathbf{202.38\text{ M}}
-  $$
+\]</div>
 
 ### 2. 全模型总参数量手算（32 层）
-- **32 层 Block**：$32 \times 202.38\text{ M} \approx \mathbf{6,476\text{ M}}$
-- **Token Embedding**：$32000 \times 4096 \approx \mathbf{131.07\text{ M}}$
-- **LM Head 输出头**：$4096 \times 32000 \approx \mathbf{131.07\text{ M}}$
+- **32 层 Block**：<span class="math">\(32 \times 202.38\text{ M} \approx \mathbf{6,476\text{ M}}\)</span>
+- **Token Embedding**：<span class="math">\(32000 \times 4096 \approx \mathbf{131.07\text{ M}}\)</span>
+- **LM Head 输出头**：<span class="math">\(4096 \times 32000 \approx \mathbf{131.07\text{ M}}\)</span>
 - **全模型精确总计**：
-  $$
+<div class="math">\[
   6,476\text{M} + 131\text{M} + 131\text{M} \approx \mathbf{6.738\text{ B}} \approx \mathbf{7\text{B}}
-  $$
+\]</div>
 
 ---
 
@@ -595,21 +590,21 @@ $$
 ```
 
 1. **纯模型权重（FP16 / BF16，每个参数 2 字节）**：
-   $$
+<div class="math">\[
    6.74\text{B} \times 2\text{ Bytes} \approx \mathbf{13.48\text{ GB}}
-   $$
+\]</div>
 2. **反向传播梯度（FP16，每个参数 2 字节）**：
-   $$
+<div class="math">\[
    6.74\text{B} \times 2\text{ Bytes} \approx \mathbf{13.48\text{ GB}}
-   $$
+\]</div>
 3. **AdamW 优化器状态（FP32 Master 权重 + 一阶动量 + 二阶动量 = 每个参数 16 字节）**：
-   $$
+<div class="math">\[
    6.74\text{B} \times 16\text{ Bytes} \approx \mathbf{107.84\text{ GB}}
-   $$
+\]</div>
 4. **训练静态显存总计**：
-   $$
+<div class="math">\[
    13.48 + 13.48 + 107.84 = \mathbf{134.8\text{ GB}} \quad (\gg 80\text{ GB}!)
-   $$
+\]</div>
    > 💡 这就是为什么必须使用 **ZeRO / FSDP** 显存切分技术，将优化器状态分摊到多张显卡上！
 
 ---
@@ -646,38 +641,38 @@ LLM 在线推理分为性质完全不同的两个阶段：
 
 ## 8.3 KV Cache 的由来与计算量优化
 
-在 Decode 阶段，生成第 $n$ 个词时：
-- 新 Token 的 $Q_n$ 需要和历史前 $(n-1)$ 个 Token 的 $K_1, \dots, K_{n-1}$ 做点积；
-- 然后与历史的 $V_1, \dots, V_{n-1}$ 做加权求和。
+在 Decode 阶段，生成第 <span class="math">\(n\)</span> 个词时：
+- 新 Token 的 <span class="math">\(Q_n\)</span> 需要和历史前 <span class="math">\((n-1)\)</span> 个 Token 的 <span class="math">\(K_1, \dots, K_{n-1}\)</span> 做点积；
+- 然后与历史的 <span class="math">\(V_1, \dots, V_{n-1}\)</span> 做加权求和。
 
-- **无 KV Cache**：每生成一个新词，都要把前面所有的词重新算一遍 $Q, K, V$，计算复杂度为 $O(N^2 \cdot d^2)$，算力极度浪费。
-- **开启 KV Cache**：Prefill 阶段一次性将历史的 $K, V$ 缓存在 GPU 显存中，Decode 阶段每一步只需计算当前 1 个 Token 的 $Q, K, V$，并将新 $K, V$ 追加到 Cache 中，计算复杂度降为 $O(N \cdot d^2)$！
+- **无 KV Cache**：每生成一个新词，都要把前面所有的词重新算一遍 <span class="math">\(Q, K, V\)</span>，计算复杂度为 <span class="math">\(O(N^2 \cdot d^2)\)</span>，算力极度浪费。
+- **开启 KV Cache**：Prefill 阶段一次性将历史的 <span class="math">\(K, V\)</span> 缓存在 GPU 显存中，Decode 阶段每一步只需计算当前 1 个 Token 的 <span class="math">\(Q, K, V\)</span>，并将新 <span class="math">\(K, V\)</span> 追加到 Cache 中，计算复杂度降为 <span class="math">\(O(N \cdot d^2)\)</span>！
 
 ---
 
 ## 8.4 KV Cache 显存开销与现代推理系统（PagedAttention）
 
 ### 1. KV Cache 显存占用手算公式（LLaMA-2-7B）
-$$
+<div class="math">\[
 \text{单 Token 显存} = 2 \times (\text{层数 } L) \times (\text{头数 } h) \times (\text{头维度 } d_k) \times (\text{精度字节数})
-$$
+\]</div>
 代入 LLaMA-2-7B（32 层，32 头，每头 128 维，FP16 占 2 字节）：
-$$
+<div class="math">\[
 \text{单 Token 显存} = 2 \times 32 \times 32 \times 128 \times 2\text{ Bytes} = \mathbf{524,288\text{ Bytes}} = \mathbf{512\text{ KB}}
-$$
+\]</div>
 
 - 若一个请求长 **4096 Token**：
-  $$
+<div class="math">\[
   4096 \times 512\text{ KB} = \mathbf{2\text{ GB}}
-  $$
+\]</div>
 - 若并发 Batch Size 为 **16**：
-  $$
+<div class="math">\[
   16 \times 2\text{ GB} = \mathbf{32\text{ GB}} \quad (\text{已占据 80GB 显卡的近一半显存！})
-  $$
+\]</div>
 
 > 💡 **Ringi 划重点**：
-> 传统的连续显存预分配会导致严重的内存碎片化（利用率通常 $< 40\%$）。
-> **vLLM (PagedAttention)** 借鉴了操作系统的虚拟内存分页机制，将 KV Cache 划分为固定大小的物理 Block，通过 Page Table 动态按需映射，彻底消除了显存碎片，将显存利用率提升至 **$96\%$ 以上**！这也是现代大模型推理服务吞吐暴涨的核心秘诀。
+> 传统的连续显存预分配会导致严重的内存碎片化（利用率通常 <span class="math">\(< 40\%\)</span>）。
+> **vLLM (PagedAttention)** 借鉴了操作系统的虚拟内存分页机制，将 KV Cache 划分为固定大小的物理 Block，通过 Page Table 动态按需映射，彻底消除了显存碎片，将显存利用率提升至 **<span class="math">\(96\%\)</span> 以上**！这也是现代大模型推理服务吞吐暴涨的核心秘诀。
 
 ---
 
@@ -715,12 +710,12 @@ $$
 
 - [ ] **Q1**：能不看资料，在纸上画出一个完整的 Pre-Norm Decoder Block 结构流向图，并标注所有残差与 Norm 位置吗？
 - [ ] **Q2**：能说清为什么现代大模型全都在用 Decoder-only 架构，而不是 Encoder-Decoder 吗？
-- [ ] **Q3**：能用自己的话说清 $Q, K, V$ 三个矩阵的物理含义，以及点积的几何直觉吗？
-- [ ] **Q4**：能默写 Attention 核心公式，并准确解释为什么要除以 $\sqrt{d_k}$ 吗？
-- [ ] **Q5**：能推导出 Self-Attention 的 $O(N^2)$ 计算量与显存开销，并说明 FlashAttention 优化的核心思想吗？
+- [ ] **Q3**：能用自己的话说清 <span class="math">\(Q, K, V\)</span> 三个矩阵的物理含义，以及点积的几何直觉吗？
+- [ ] **Q4**：能默写 Attention 核心公式，并准确解释为什么要除以 <span class="math">\(\sqrt{d_k}\)</span> 吗？
+- [ ] **Q5**：能推导出 Self-Attention 的 <span class="math">\(O(N^2)\)</span> 计算量与显存开销，并说明 FlashAttention 优化的核心思想吗？
 - [ ] **Q6**：能说明为什么 Multi-Head Attention 天然适合做 Megatron-LM 张量并行（TP）切分吗？
 - [ ] **Q7**：能独立手算出 LLaMA-2-7B 的单层 Block 和全模型参数量（~6.7B），并解释为什么 FFN 占了 67% 吗？
-- [ ] **Q8**：能解释为什么 RoPE 旋转位置编码做内积时只与相对位置差 $(m-n)$ 有关吗？
+- [ ] **Q8**：能解释为什么 RoPE 旋转位置编码做内积时只与相对位置差 <span class="math">\((m-n)\)</span> 有关吗？
 - [ ] **Q9**：能说清 Prefill 和 Decode 两个阶段的物理特性区别（Compute Bound vs Memory Bound）吗？
 - [ ] **Q10**：能手算出给定配置下 KV Cache 的显存大小，并解释 vLLM 的 PagedAttention 解决了什么痛点吗？
 
