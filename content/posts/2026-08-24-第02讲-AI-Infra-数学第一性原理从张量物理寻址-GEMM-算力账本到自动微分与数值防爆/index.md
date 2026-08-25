@@ -755,12 +755,12 @@ $$
 ## 7.3 Adam 与 AdamW 状态自适应与 16 字节显存账本
 
 AdamW 维护一阶矩 \(m_t\) 与二阶矩 \(v_t\)。对于每个模型参数：
-- 模型权重（FP16）：\(2\text{ 字节}\)
-- 梯度（FP16）：\(2\text{ 字节}\)
-- FP32 Master Weights：\(4\text{ 字节}\)
-- FP32 Momentum \(m_t\)：\(4\text{ 字节}\)
-- FP32 Variance \(v_t\)：\(4\text{ 字节}\)
-- **总显存消耗**：\(2 + 2 + 4 + 4 + 4 = 16\text{ 字节 / 参数}\)！
+- 模型权重（FP16）：\(2\) 字节
+- 梯度（FP16）：\(2\) 字节
+- FP32 Master Weights：\(4\) 字节
+- FP32 Momentum \(m_t\)：\(4\) 字节
+- FP32 Variance \(v_t\)：\(4\) 字节
+- **总显存消耗**：\(2 + 2 + 4 + 4 + 4 = 16\) 字节 / 参数！
 
 ---
 
@@ -903,10 +903,10 @@ Stable Softmax、Welford 方差与 Fused CrossEntropy 不仅解决了数值稳�
 ### 9.2 算例二：多头 Attention 完整维度与 \(O(S^2)\) 显存爆炸推导
 从输入 \(X \in \mathbb{R}^{B \times S \times H}\) 生成 \(Q, K, V \in \mathbb{R}^{B \times N_h \times S \times D_h}\)：
 - **分数矩阵**：\(S = \frac{QK^\top}{\sqrt{D_h}} \in \mathbb{R}^{B \times N_h \times S \times S}\)；
-- **显存占用（FP16）**：\(2 B N_h S^2\text{ 字节}\)；
+- **显存占用（FP16）**：\(2 B N_h S^2\) 字节；
 - **当 \(B=1, N_h=32, S=32768\) 时**：
   $$
-  2 \times 1 \times 32 \times 32768^2 = 68,719,476,736\text{ 字节} = 64\text{ GiB}！
+  2 \times 1 \times 32 \times 32768^2 = 68,719,476,736\text{ bytes} = 64\text{ GiB}
   $$
 - **结论**：这就是为什么长上下文必须用 FlashAttention（不显式物化 \(S \times S\) 矩阵）！
 
@@ -1083,7 +1083,7 @@ print(f"Loss Scale 放大并还原后的结果: {(scaled_grad.to(torch.float32) 
   2. AdamW 优化器为了数值稳定，维护 **FP32 Master Weights（4 字节）**；
   3. 维护 **FP32 一阶动量 Momentum \(m_t\)（4 字节）**；
   4. 维护 **FP32 二阶方差 Variance \(v_t\)（4 字节）**；
-  5. 加上 FP16 梯度本身的 2 字节与 FP16 权重的 2 字节，参数相关总显存为 \(2 + 2 + 4 + 4 + 4 = 16\text{ 字节/参数}\)！
+  5. 加上 FP16 梯度本身的 2 字节与 FP16 权重的 2 字节，参数相关总显存为 \(2 + 2 + 4 + 4 + 4 = 16\) 字节/参数！
 
 ---
 

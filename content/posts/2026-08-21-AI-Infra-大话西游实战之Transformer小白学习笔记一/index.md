@@ -140,7 +140,7 @@ GPT 系列（以及后来的 LLaMA、Mistral、Qwen、DeepSeek 等）证明了�
 ### 经典三段式数据流动流程：
 1. **输入阶段（Input Stage）**：
 <div class="math">$$
-   \text{Prompt Tokens} \longrightarrow \text{Token Embedding (词表查找)} \longrightarrow \text{注入位置编码 (如 RoPE)}
+   \text{Prompt Tokens} \longrightarrow \text{Token Embedding} \longrightarrow \text{Positional Encoding (RoPE)}
 $$</div>
 2. **核心堆叠阶段（Repeated N Blocks）**：
 <div class="math">$$
@@ -148,7 +148,7 @@ $$</div>
 $$</div>
 3. **输出阶段（Output Stage）**：
 <div class="math">$$
-   \text{Final Norm} \longrightarrow \text{LM Head 线性映射} \longrightarrow \text{Softmax 采样} \longrightarrow \text{预测下一个 Token}
+   \text{Final Norm} \longrightarrow \text{LM Head} \longrightarrow \text{Softmax Sampling} \longrightarrow \text{Next-Token Prediction}
 $$</div>
 
 ---
@@ -175,9 +175,7 @@ Self-Attention 是 Transformer 的心脏，也是算力与显存消耗最密集�
 
 ## 3.1 直觉理解：图书馆查资料与信息加权聚合
 
-<div class="math">$$
-\boxed{\text{算谁重要（注意力权重）} \longrightarrow \text{按重要程度加权拿取信息}}
-$$</div>
+**算谁重要（注意力权重） → 按重要程度加权拿取信息**
 
 先建立一个小白直觉：**Attention 就是让句子里的每个词去“关注”其他所有词，然后按关注度加权打包信息。**
 
@@ -187,7 +185,7 @@ $$</div>
 - “吃什么”（苹果，占 70% 注意力）；
 - 最终 `吃` 这个词更新后的特征向量为：
 <div class="math">$$
-  \text{New\_Feature}_{\text{吃}} = 0.1 \times \text{小明} + 0.1 \times \text{喜欢} + 0.1 \times \text{吃} + 0.7 \times \text{苹果}
+  \text{New\_Feature}_{\text{eat}} = 0.1 \times \text{Xiaoming} + 0.1 \times \text{like} + 0.1 \times \text{eat} + 0.7 \times \text{apple}
 $$</div>
 
 ---
@@ -204,7 +202,7 @@ $$</div>
 
 > 📌 **核心口诀**：
 > 
-> <div class="math">$$\boxed{Q \text{ 与 } K \text{ 点积决定【关注比例】，} V \text{ 决定【真正带走什么信息】}}$$</div>
+> **\(Q\) 与 \(K\) 点积决定【关注比例】，\(V\) 决定【真正带走什么信息】**
 
 ---
 
@@ -296,7 +294,7 @@ Q (N × d)  ×  K^T (d × N)  ───>  S (N × N 注意力矩阵)
 > 💥 **算力与显存暴击**：
 > 当上下文长度 <span class="math">\(N\)</span> 从 2K 扩展到 128K 时：
 > 
-> <div class="math">$$\left(\frac{128\text{K}}{2\text{K}}\right)^2 = 64^2 = 4096 \text{ 倍}$$</div>
+> <div class="math">$$\left(\frac{128\text{K}}{2\text{K}}\right)^2 = 64^2 = 4096$$</div>
 > 
 > 计算量与注意力矩阵显存暴涨 **4096 倍**！
 
@@ -654,11 +652,11 @@ LLM 在线推理分为性质完全不同的两个阶段：
 
 ### 1. KV Cache 显存占用手算公式（LLaMA-2-7B）
 <div class="math">$$
-\text{单 Token 显存} = 2 \times (\text{层数 } L) \times (\text{头数 } h) \times (\text{头维度 } d_k) \times (\text{精度字节数})
+\text{Per-Token Memory} = 2 \times (\text{Layers } L) \times (\text{Heads } h) \times (\text{Head Dim } d_k) \times (\text{Bytes per Precision})
 $$</div>
 代入 LLaMA-2-7B（32 层，32 头，每头 128 维，FP16 占 2 字节）：
 <div class="math">$$
-\text{单 Token 显存} = 2 \times 32 \times 32 \times 128 \times 2\text{ Bytes} = \mathbf{524,288\text{ Bytes}} = \mathbf{512\text{ KB}}
+\text{Per-Token Memory} = 2 \times 32 \times 32 \times 128 \times 2\text{ Bytes} = \mathbf{524,288\text{ Bytes}} = \mathbf{512\text{ KB}}
 $$</div>
 
 - 若一个请求长 **4096 Token**：
@@ -667,8 +665,9 @@ $$</div>
 $$</div>
 - 若并发 Batch Size 为 **16**：
 <div class="math">$$
-  16 \times 2\text{ GB} = \mathbf{32\text{ GB}} \quad (\text{已占据 80GB 显卡的近一半显存！})
+  16 \times 2\text{ GB} = \mathbf{32\text{ GB}}
 $$</div>
+（已占据 80GB 显卡的近一半显存！）
 
 > 💡 **Ringi 划重点**：
 > 传统的连续显存预分配会导致严重的内存碎片化（利用率通常 <span class="math">\(\lt 40\%\)</span>）。
