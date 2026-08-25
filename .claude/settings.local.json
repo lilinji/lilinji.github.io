@@ -58,5 +58,10 @@
       "Bash(ls:*)"
     ]
   },
+  "skillOverrides": {
+    "go-build": "off",
+    "cost-aware-llm-pipeline": "name-only",
+    "gsd:fast": "name-only"
+  },
   "enabledPlugins": {}
 }
