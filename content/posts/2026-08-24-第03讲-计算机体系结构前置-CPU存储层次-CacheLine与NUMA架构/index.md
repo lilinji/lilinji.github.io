@@ -1,7 +1,7 @@
 ---
 title: "第03讲：计算机体系结构前置——CPU 存储层次、Cache Line 与 NUMA 架构"
 description: "从 CPU 存储层次（L1/L2/L3/DRAM）、64 字节 Cache Line 伪共享、内存对齐到 NUMA 跨插槽拓扑对齐与 Pinned Memory 锁页内存，彻底打破 GPU 算力饥饿与数据加载瓶颈。"
-date: 2026-08-24T00:00:00+08:00
+date: 2026-08-25T00:00:00+08:00
 draft: false
 tags:
   - AI基础设施
