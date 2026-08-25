@@ -372,8 +372,9 @@ load average: 12.50, 8.20, 4.15
 > Linux 的平均负载统计的是：**系统处于「可运行状态（R 状态）」与「不可中断睡眠状态（D 状态）」的平均活跃任务数之和！**
 > 
 > $$
-> \text{Active Tasks} = N_{\text{TASK\_RUNNING (CPU就绪与运行)}} + N_{\text{TASK\_UNINTERRUPTIBLE (D状态IO阻塞)}}
+> \text{Active Tasks} = N_{\text{TASK\_RUNNING}} + N_{\text{TASK\_UNINTERRUPTIBLE}}
 > $$
+> 其中 `TASK_RUNNING` = 可运行状态（R 状态），`TASK_UNINTERRUPTIBLE` = 不可中断睡眠（D 状态，IO 阻塞）。
 >
 > 内核每隔 5 秒对当前活跃任务数采样一次，并采用**指数衰减移动平均（Exponential Decay Moving Average）** 进行更新：
 > 
