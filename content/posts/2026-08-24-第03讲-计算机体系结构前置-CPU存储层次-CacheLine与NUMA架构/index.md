@@ -112,15 +112,6 @@ source: ""
 
 ![Ringi 导师解构：现代计算机存储金字塔与纳秒级时间账本全景](images/ringi_03_memory_hierarchy_pyramid.png)
 
-> 🎨 **Ringi 3D 架构工坊插图蓝图（Prompt Blueprint）**
->
-> - **Type / Scene Mode**: `infographic` & `architecture`（存储金字塔与纳秒级时间账本全景）
-> - **核心隐喻 (Core Metaphor)**: 具象化阶梯金字塔与数字秒表，将纳秒到微秒的物理时延具象化为不同高度和速度的发光工作层。
-> - **Ringi 交互 (Ringi Action)**: Ringi（黑色利落短寸头、细金属框透明方框眼镜、森林绿连帽卫衣内搭纯白T恤）站在发光的中央数字检测平台上，手持全息时钟，对比 sub-nanosecond CPU 寄存器与微秒级外存的万倍鸿沟。
-> - **风格与配色 (Style & Palette)**: `retro-flat-3d`，16:9 横版宽屏，延伸至四边的**纯白无界背景（Pure Solid White Canvas）**，哑光手办潮玩质感（Matte Vinyl Toy），柔和接触阴影，极客绿、暗金、岩板蓝与莫兰迪紫。
-> - **Prompt Blueprint (AI 生图全量提示词)**:  
->   `16:9 ultra-clean isometric 3D infographic and architecture stage on a pure solid white canvas. In the center rises a stepped memory hierarchy pyramid: golden top platform for CPU Registers (0.5ns), emerald green tier for L1 Cache (1ns), cyan tier for L2 Cache (4ns), deep indigo tier for L3 Shared LLC (15ns), matte violet tier for DDR5 Main Memory (80ns), and bottom titanium tier for PCIe NVMe SSD (10us). Stylized 3D vinyl toy figure of Ringi, an energetic Asian male engineer in his 30s with a neat black buzz cut, clear square thin-frame glasses, forest green zip hoodie over a white t-shirt, dark cargo pants, and sneakers, standing on a robotic inspection platform holding a glowing holographic digital stopwatch, comparing the extreme speed gap. Clean studio lighting, soft ambient contact shadows, minimal aesthetic, ultra-high definition, 2K resolution.`
-
 ---
 
 ## 0.2 算力与搬运的物理鸿沟：Host-to-Device 瓶颈
@@ -322,15 +313,6 @@ Cache 的硬件组织方式分为三种经典形态：
 
 ![Ringi 导师解构：64 字节 Cache Line 伪共享物理冲突与 MESI 协议状态乒乓](images/ringi_03_cache_line_false_sharing.png)
 
-> 🎨 **Ringi 3D 架构工坊插图蓝图（Prompt Blueprint）**
->
-> - **Type / Scene Mode**: `core-action` & `comparison`（伪共享冲突与隔离挡板）
-> - **核心隐喻 (Core Metaphor)**: 具象化 64B 透明 Cache Line 托盘，左右两格分别放独立变量，两个机械工位高频敲击引发总线失效火花，加装 `alignas(64)` 挡板后化解冲突。
-> - **Ringi 交互 (Ringi Action)**: Ringi 站在中央控制台，佩戴透明方框眼镜，手持标有 `alignas(64)` 的钛合金隔离挡板，将一个 shared Cache Line 稳准快地切分为两个独立物理行，平息总线风暴。
-> - **风格与配色 (Style & Palette)**: `retro-flat-3d`，16:9 横版，**纯白背景（Solid Pure White Canvas）**，哑光潮玩质感，警示橙、电光蓝与极客绿。
-> - **Prompt Blueprint (AI 生图全量提示词)**:  
->   `16:9 ultra-high-definition 3D stylized toy workshop stage on a pure solid white canvas. In the center, a 64-Byte translucent glass-and-metal Cache Line tray is split into two slots: Slot A (variable A) and Slot B (variable B). Two robotic worker arms on left and right hammer the respective slots simultaneously, causing bright red holographic sparks and glowing 'INVALIDATION' warning lightning across a central bus line. Ringi, a focused Asian male engineer with neat black short hair, clear square glasses, green hoodie, and black pants, uses a high-tech robotic tool to insert a titanium spacer bar labeled 'alignas(64)', cleanly separating the single tray into two independent 64B cache lines. Matte vinyl clay texture, soft studio lighting, crisp shadows, 2K render.`
-
 现在我们来看一个极其隐蔽、但对多线程高并发系统杀伤力巨大的性能杀手——**伪共享（False Sharing）**。
 
 ### 🚨 物理冲突根源
@@ -421,15 +403,6 @@ struct ManualPaddedCounter {
 - 16 字节数据（SIMD 向量 `__m128`, GPU `float4`）：地址必须是 16 的倍数（地址末 4 位为 0）。
 
 ![Ringi 导师解构：自然对齐单次总线直达 vs 非对齐跨界二次访存与 SIMD 向量化契约](images/ringi_03_memory_alignment_simd.png)
-
-> 🎨 **Ringi 3D 架构工坊插图蓝图（Prompt Blueprint）**
->
-> - **Type / Scene Mode**: `comparison` & `memory-map`（内存对齐双轨流水线）
-> - **核心隐喻 (Core Metaphor)**: 双轨传送带：上轨是对齐传送带，数据块规整地卡在 16B/64B 网格中，单次机械手臂轻松抓取；下轨是非对齐传送带，数据块斜跨在两条格线中间，触发了报警红灯和慢速双重液压拼接爪。
-> - **Ringi 交互 (Ringi Action)**: Ringi 站在质检工位，佩戴方形透明眼镜，手持卡尺对数据块进行 16-byte alignment 对齐校准，展示 AVX-512 与 CUDA `float4` 极速加载通道。
-> - **风格与配色 (Style & Palette)**: `retro-flat-3d`，16:9 横版，**纯白背景（Solid Pure White Canvas）**，极简工业风，机械银灰、极客绿与暖姜黄。
-> - **Prompt Blueprint (AI 生图全量提示词)**:  
->   `16:9 ultra-clean 3D stylized conveyor belt comparison stage on a pure solid white background. Top Track (Fast Path): Perfect Natural Alignment, memory data blocks are neatly positioned within 16-byte and 64-byte grid boundaries, a single sleek robotic arm effortlessly reads them in 1 clock cycle under a soft green glow. Bottom Track (Slow Path): Misaligned memory block crosses the line boundary, triggering a red warning light where two clumsy hydraulic claws have to perform split reads and manual shifting. Ringi, an Asian engineer in green hoodie, white inner shirt, and clear glasses, calibrates the alignment ruler ensuring smooth SIMD/CUDA 128-bit vectorization. Matte toy texture, soft shadows, 2K render.`
 
 ```text
 物理内存按 8 字节排布的字边界 (Word Boundaries):
@@ -544,15 +517,6 @@ __global__ void vectorized_copy_kernel(const T* __restrict__ src, T* __restrict_
 ## 4.2 双路 / 多路服务器物理拓扑：Socket、本地内存控制器与 UPI/QPI 互联总线
 
 ![Ringi 导师解构：双路 NUMA 拓扑与 GPU/NIC/CPU 亲和性对齐全景工坊](images/ringi_03_numa_topology_alignment.png)
-
-> 🎨 **Ringi 3D 架构工坊插图蓝图（Prompt Blueprint）**
->
-> - **Type / Scene Mode**: `architecture` & `pipeline-workshop`（双路 NUMA 与 PCIe 拓扑全景工坊）
-> - **核心隐喻 (Core Metaphor)**: 将双路服务器构建为左右两个对称的高速工作岛，中间由跨片 UPI 发光桥梁相连；左岛为 Socket 0（绿光 DDR5 与 4 张绿色 H100），右岛为 Socket 1（紫光 DDR5 与 4 张紫色 H100）。
-> - **Ringi 交互 (Ringi Action)**: Ringi 站在拓扑路由器前，将 DataLoader 的数据流引导至同岛的本地 DDR5 与 GPU PCIe 通道，避免跨 UPI 桥梁造成交通堵塞。
-> - **风格与配色 (Style & Palette)**: `retro-flat-3d`，16:9 宽屏，**纯白背景（Pure Solid White Canvas）**，哑光黏土质感，极客绿、科技紫与岩板蓝。
-> - **Prompt Blueprint (AI 生图全量提示词)**:  
->   `16:9 ultra-wide isometric 3D architecture stage on a pure solid white canvas. Left side features [CPU Socket 0 / NUMA Node 0] with emerald green illuminated local DDR5 memory banks and 4 green NVIDIA H100 GPUs attached via PCIe Root Complex; Right side features [CPU Socket 1 / NUMA Node 1] with purple DDR5 banks and 4 purple GPUs. A high-speed glowing Intel UPI optical bridge connects the two CPU sockets in the middle. Ringi, an Asian male engineer in glasses and forest green hoodie, manages routing switches on a master topology dashboard, demonstrating how binding data workers locally avoids cross-socket congestion. Matte vinyl toy style, clean studio lighting, soft contact shadows, 2K.`
 
 在 NUMA 架构下，服务器被切分为多个独立的 **NUMA Node（节点）**，每个 Node 通常对应一个物理 CPU 插槽（Socket）：
 
@@ -686,15 +650,6 @@ Linux 内核提供了四种核心 NUMA 内存分配策略（Memory Policy）：
 ## 5.2 为什么 GPU DMA 必须访问物理连续且不被换页的 Pinned Memory？
 
 ![Ringi 导师解构：可分页内存两次拷贝 vs 锁页内存直接 DMA 传输流水线](images/ringi_03_pinned_memory_dma_pipeline.png)
-
-> 🎨 **Ringi 3D 架构工坊插图蓝图（Prompt Blueprint）**
->
-> - **Type / Scene Mode**: `comparison` & `pipeline-workshop`（锁页直接 DMA 异步流水线）
-> - **核心隐喻 (Core Metaphor)**: 双层机械传送带：上层（Pageable 慢速通道）数据需经由 CPU 搬运工二次转存到临时 Buffer，引发 CPU 过载与等待；下层（Pinned 高速通道）由专用 PCIe DMA 机械吊车直接抓取锁页内存块送入 GPU HBM。
-> - **Ringi 交互 (Ringi Action)**: Ringi 站在高速控制台前，启动标有 `pin_memory=True, non_blocking=True` 的异步流水线开关，展示计算与传输的 100% 重叠流动。
-> - **风格与配色 (Style & Palette)**: `retro-flat-3d`，16:9 横版，**纯白画布（Pure Solid White Canvas）**，哑光潮玩质感，极客绿、明亮金与深海蓝。
-> - **Prompt Blueprint (AI 生图全量提示词)**:  
->   `16:9 ultra-high-definition 3D stylized conveyor belt stage on a pure solid white canvas. Top Conveyor (Slow Path): Pageable memory data has to be copied by a CPU worker into a temporary staging buffer first, causing heavy CPU lag and delay. Bottom Conveyor (Fast Path): Pinned Memory allows a high-speed robotic PCIe DMA crane to directly load data blocks from host physical memory straight into GPU HBM at full 64 GB/s speed with zero CPU interference. Ringi, an Asian male engineer in glasses and forest green hoodie, activates the control lever marked 'pin_memory=True, non_blocking=True', demonstrating perfect asynchronous overlap between compute and data transfer. Studio lighting, soft contact shadows, 2K render.`
 
 GPU 与 Host 内存之间的高速数据搬运，是通过 GPU 上的硬件 **DMA 引擎（Direct Memory Access，直接内存访问）** 完成的。
 
