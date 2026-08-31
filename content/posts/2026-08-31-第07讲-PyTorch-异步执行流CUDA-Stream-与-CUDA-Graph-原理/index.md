@@ -405,13 +405,13 @@ Stream 2 (Transfer): ──► [ H2D DMA Copy Engine ] ──► [ Kernel C (SM 
 
 ```mermaid
 graph TD
-    subgraph Legacy_Mode [Legacy Default Stream 模式: 全局大锁]
+    subgraph Legacy_Mode ["Legacy Default Stream 模式: 全局大锁"]
         S1[Stream 1 运行中] -->|阻断| LDS[Legacy Default Stream 插入任务]
         S2[Stream 2 运行中] -->|阻断| LDS
         LDS -->|必须等其全部结束| RESUME[其他 Stream 才能继续]
     end
 
-    subgraph PTDS_Mode [Modern / PTDS 模式: 彼此解耦]
+    subgraph PTDS_Mode ["Modern / PTDS 模式: 彼此解耦"]
         PS1[Stream 1 自由运行]
         PS2[Stream 2 自由运行]
         PDS[Per-Thread Stream 自由运行]
@@ -765,23 +765,23 @@ GPU 算力利用率 = 1.728 ms / 10.08 ms ≈ 17.1% !
 
 ```mermaid
 graph LR
-    subgraph Eager_Execution [传统 Eager 模式: 1440 次 CPU 下发]
+    subgraph Eager_Execution ["传统 Eager 模式: 1440 次 CPU 下发"]
         direction TB
-        E_CPU1[CPU Launch 1] -->|PCIe 5μs| E_GPU1[GPU Run 1.5μs]
-        E_GPU1 -.->|气泡等待| E_CPU2[CPU Launch 2]
-        E_CPU2 -->|PCIe 5μs| E_GPU2[GPU Run 1.5μs]
-        E_GPU2 -.->|气泡等待| E_CPU3[CPU Launch 3]
-        E_CPU3 -->|PCIe 5μs| E_GPU3[GPU Run 1.5μs]
+        E_CPU1["CPU Launch 1"] -->|PCIe 5μs| E_GPU1["GPU Run 1.5μs"]
+        E_GPU1 -.->|气泡等待| E_CPU2["CPU Launch 2"]
+        E_CPU2 -->|PCIe 5μs| E_GPU2["GPU Run 1.5μs"]
+        E_GPU2 -.->|气泡等待| E_CPU3["CPU Launch 3"]
+        E_CPU3 -->|PCIe 5μs| E_GPU3["GPU Run 1.5μs"]
     end
 
-    subgraph CUDA_Graph_Execution [CUDA Graph 模式: 1 次单发，GPU 芯片内极速流转]
+    subgraph CUDA_Graph_Execution ["CUDA Graph 模式: 1 次单发，GPU 芯片内极速流转"]
         direction TB
-        G_CPU[CPU Launch Graph 1次 (3μs)] --> G_GPU_ALL[GPU 芯片硬件调度引擎]
-        subgraph GPU_On_Chip [GPU 内部拓扑极速流转 (0 气泡!)]
-            G_N1[Node 1: RMSNorm] --> G_N2[Node 2: QKV GEMM]
-            G_N2 --> G_N3[Node 3: RoPE]
-            G_N3 --> G_N4[Node 4: Attention]
-            G_N4 --> G_N5[Node 5: FFN]
+        G_CPU["CPU Launch Graph 1次 (3μs)"] --> G_GPU_ALL["GPU 芯片硬件调度引擎"]
+        subgraph GPU_On_Chip ["GPU 内部拓扑极速流转 (0 气泡!)"]
+            G_N1["Node 1: RMSNorm"] --> G_N2["Node 2: QKV GEMM"]
+            G_N2 --> G_N3["Node 3: RoPE"]
+            G_N3 --> G_N4["Node 4: Attention"]
+            G_N4 --> G_N5["Node 5: FFN"]
         end
         G_GPU_ALL --> G_N1
     end
