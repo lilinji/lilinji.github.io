@@ -1,6 +1,6 @@
 ---
 title: "第12讲：GPU-Util 100% 算力却只有 15%？——SM 执行、Warp 调度、Tensor Core 与 Roofline 模型的第一性原理"
-date: 2026-08-31T00:00:00+08:00
+date: 2026-09-03T00:00:00+08:00
 draft: false
 description: "深入剖析 GPU 硬件执行与存储层次：从 SM 微架构、Warp 调度、Tensor Core MMA 原语到 Register/Shared Memory/L2/HBM 存储金字塔，结合 Arithmetic Intensity 与 Roofline 模型彻底破解 GPU 算力利用率指标陷阱。"
 tags:
