@@ -27,7 +27,7 @@ source: ""
 > 很多工程师遇到性能瓶颈时，第一反应往往是凭经验瞎猜：“是不是 Attention 矩阵乘法太慢了？要不要手写个 Triton 融合算子？”——结果吭哧吭哧死磕了两周，端到端吞吐仅仅提升了 2%，最后用 Profiler 拍出一张时间线 X 光片才发现：整整 85% 的时间全在被 Python 端单进程数据加载（DataLoader）阻塞，GPU 核心绝大部分时间其实在发呆等数据！  
 > **调优千万条，Profiling 第一条！** 性能优化的本质，往往不是“让 GPU 算得更快”，而是“让 GPU 少等”。PyTorch Profiler 就是我们手中的工业级全身 CT 机。本讲我们将彻底告别盲目摸黑调优，从 Kineto / CUPTI 硬件时间戳探针的第一性原理出发，带你掌握四阶 Schedule 采样周期、Chrome Trace / Perfetto 时间线四大典型病灶排障、TensorBoard 性能看板，亲手完成一次工业级大模型训练系统的深度性能体检！
 
-![Ringi 导师解构：PyTorch Profiler 性能体检与 Trace 全景工坊](ringi_11_profiler_overview.png)
+![Ringi 导师解构：PyTorch Profiler 性能体检与 Trace 全景工坊](images/ringi_11_profiler_overview.png)
 
 ```text
 =================================================================================================
@@ -163,7 +163,7 @@ source: ""
 
 很多同学好奇：`torch.profiler` 是如何在几乎不拖慢程序的情况下，精确记录下每一个 CUDA Kernel 是在哪一微秒启动、在哪一微秒结束的？
 
-![Ringi 导师解构：PyTorch Profiler 探针与底层硬件时间戳捕获](ringi_11_profiler_cupti_probe.png)
+![Ringi 导师解构：PyTorch Profiler 探针与底层硬件时间戳捕获](images/ringi_11_profiler_cupti_probe.png)
 
 ### 物理工作流拆解：
 1. **CPU 侧（PyTorch 核心拦截层）**：  
@@ -249,7 +249,7 @@ def custom_loss_function(logits, labels):
   - `A / D`：左移 / 右移时间线；
   - `M`：选中当前区间并精确测量耗时（微秒级）。
 
-![Ringi 导师解构：Chrome Trace 时间线四大典型病灶与排障诊断](ringi_11_trace_timeline_anatomy.png)
+![Ringi 导师解构：Chrome Trace 时间线四大典型病灶与排障诊断](images/ringi_11_trace_timeline_anatomy.png)
 
 ---
 
@@ -295,7 +295,7 @@ pip install torch-tb-profiler
 tensorboard --logdir=./log/profiler_trace
 ```
 
-![Ringi 导师解构：TensorBoard Profiler 概览看板与算子耗时分布](ringi_11_tensorboard_profiler_dashboard.png)
+![Ringi 导师解构：TensorBoard Profiler 概览看板与算子耗时分布](images/ringi_11_tensorboard_profiler_dashboard.png)
 
 ---
 
